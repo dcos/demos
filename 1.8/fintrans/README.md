@@ -5,7 +5,28 @@
 
 ### Preparation
 
-Using [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/): 
+[Install](https://github.com/dcos/examples/tree/master/1.8/kafka) the Apache Kafka package and then figure out where the brokers are:
+
+```bash
+$ dcos kafka connection
+
+{
+  "address": [
+    "10.0.3.178:9398",
+    "10.0.3.176:9382",
+    "10.0.3.177:9363"
+  ],
+  "zookeeper": "master.mesos:2181/dcos-service-kafka",
+  "dns": [
+    "broker-0.kafka.mesos:9398",
+    "broker-1.kafka.mesos:9382",
+    "broker-2.kafka.mesos:9363"
+  ],
+  "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
+}
+```
+
+Now, using [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/): 
 
 ```bash
 $ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
@@ -30,8 +51,8 @@ Note that it may be necessary to [add the announced DNS servers]( https://suppor
 With the VPN tunnel enabled, we can run the fintrans generator:
 
 ```bash
-$ ./fintrans
-2016/12/05 11:50:27 > message sent to partition 0 at offset 0
+$ ./fintrans -broker broker-1.kafka.mesos:9382
+INFO[0000] Message sent to partition 0 at offset 0
 ```
 
 Then, in order to consume the messages:
