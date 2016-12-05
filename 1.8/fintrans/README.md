@@ -7,22 +7,24 @@ We're using Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) pack
 
 ### Preparation
 
-[Install](https://github.com/dcos/examples/tree/master/1.8/kafka) the Apache Kafka package and then figure out where the brokers are:
+[Install](https://github.com/dcos/examples/tree/master/1.8/kafka) the Apache Kafka package with the following [options](kafka-config.json):
+
+```bash
+$ dcos package install kafka --options=kafka-config.json
+```
+
+Next, figure out where the broker is:
 
 ```bash
 $ dcos kafka connection
 
 {
   "address": [
-    "10.0.3.178:9398",
-    "10.0.3.176:9382",
-    "10.0.3.177:9363"
+    "10.0.3.178:9398"
   ],
   "zookeeper": "master.mesos:2181/dcos-service-kafka",
   "dns": [
-    "broker-0.kafka.mesos:9398",
-    "broker-1.kafka.mesos:9382",
-    "broker-2.kafka.mesos:9363"
+    "broker-0.kafka.mesos:9398"
   ],
   "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
 }
@@ -53,7 +55,7 @@ Note that it may be necessary to [add the announced DNS servers]( https://suppor
 With the VPN tunnel enabled, we can run the fintrans generator:
 
 ```bash
-$ ./fintrans --broker broker-1.kafka.mesos:9382
+$ ./fintrans --broker broker-0.kafka.mesos:9398
 INFO[0001] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Value:"678 816 2957", Metadata:interface {}(nil), Offset:10, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
 INFO[0003] &sarama.ProducerMessage{Topic:"SF", Key:sarama.Encoder(nil), Value:"762 543 6395", Metadata:interface {}(nil), Offset:4, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
 INFO[0005] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Value:"680 840 8115", Metadata:interface {}(nil), Offset:11, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
@@ -83,3 +85,4 @@ root@e7c989566a22:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 
 As a result you should see something like above until you hit `CTRL+C`. The wire format of the messages is: `source_account target_account amount`.
 
+Note: if you want to reset the topics, do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics.
