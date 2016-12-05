@@ -28,7 +28,7 @@ import (
 const (
 	VERSION         string = "0.1.0"
 	MAX_ACCOUNT_NUM int    = 1000
-	MAX_AMOUNT      int    = 1000000
+	MAX_AMOUNT      int    = 10000
 )
 
 var (
