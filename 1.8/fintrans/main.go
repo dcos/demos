@@ -19,18 +19,26 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
+	"math/rand"
 	"os"
 	"strconv"
+	"time"
 )
 
 const (
-	VERSION string = "0.1.0"
+	VERSION         string = "0.1.0"
+	MAX_ACCOUNT_NUM int    = 1000
+	MAX_AMOUNT      int    = 1000000
 )
 
 var (
-	DEBUG    bool
-	version  bool
-	broker   string
+	version bool
+	cities  = []string{}
+	// FQDN/IP + port of a Kafka broker:
+	broker string
+	// how many seconds to wait between generating a message (default is 2):
+	genwaitsec time.Duration
+	// the Kafka producer:
 	producer sarama.SyncProducer
 )
 
@@ -39,9 +47,15 @@ func about() {
 }
 
 func init() {
+	cities = []string{
+		"London",
+		"NYC",
+		"SF",
+		"Moscow",
+		"Tokyo",
+	}
 	flag.BoolVar(&version, "version", false, "Display version information")
 	flag.StringVar(&broker, "broker", "", "The FQDN or IP address and port of a Kafka broker. Example: broker-1.kafka.mesos:9382 or 10.0.3.178:9398")
-
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [args]\n\n", os.Args[0])
 		fmt.Println("Arguments:")
@@ -49,16 +63,16 @@ func init() {
 	}
 	flag.Parse()
 
-	DEBUG = false
-	if envd := os.Getenv("DEBUG"); envd != "" {
-		if d, err := strconv.ParseBool(envd); err == nil {
-			DEBUG = d
+	genwaitsec = 2
+	if gw := os.Getenv("GEN_WAIT_SEC"); gw != "" {
+		if gwi, err := strconv.Atoi(gw); err == nil {
+			genwaitsec = time.Duration(gwi)
 		}
 	}
 }
 
 func main() {
-	if version || broker == "" {
+	if version {
 		about()
 		os.Exit(0)
 	}
@@ -80,11 +94,21 @@ func main() {
 		}
 	}()
 
-	msg := &sarama.ProducerMessage{Topic: "fintrans", Value: sarama.StringEncoder("123")}
-	if partition, offset, err := producer.SendMessage(msg); err != nil {
-		log.Error("Failed to send message ", err)
-		os.Exit(1)
-	} else {
-		log.Info("Message sent to partition ", partition, " at offset ", offset)
+	for {
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		city := cities[r.Intn(len(cities))]
+		source := r.Intn(MAX_ACCOUNT_NUM)
+		target := r.Intn(MAX_ACCOUNT_NUM)
+		amount := r.Intn(MAX_AMOUNT)
+		if source != target {
+			rawmsg := fmt.Sprintf("%d %d %d", source, target, amount)
+			msg := &sarama.ProducerMessage{Topic: string(city), Value: sarama.StringEncoder(rawmsg)}
+			if _, _, err := producer.SendMessage(msg); err != nil {
+				log.Error("Failed to send message ", err)
+			} else {
+				log.Info(fmt.Sprintf("%#v", msg))
+			}
+		}
+		time.Sleep(genwaitsec * time.Second)
 	}
 }
