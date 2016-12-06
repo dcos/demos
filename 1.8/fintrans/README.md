@@ -111,6 +111,8 @@ INFO[0020] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"
 
 ## Consuming transactions
 
+### Real-time transaction volume dashboard
+
 One consumer is the InfluxDB ingestion process that uses Grafana as the visual frontend. Again, assuming VPN tunnel is enabled, you need to find out the InfluxDB API URL and provide it via an environment variable `INFLUX_API` (note that this is only for local development necessary, not in prod):
 
 ```bash
@@ -166,6 +168,12 @@ Note 1: if you want to consume all topics at once you can use `./kafka-console-c
 Note 2: if you want to reset the topics, do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics.
 
 
+### Money laundering detector
 
+```bash
+$ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
+$ go build
+$ ./laundering-detector --broker broker-0.kafka.mesos:9398
+``` 
 
 
