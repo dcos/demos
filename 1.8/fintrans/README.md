@@ -1,18 +1,74 @@
 # Fast Data: Financial Transaction Processing
 
+Note that a DC/OS 1.8.7+ cluster and the DC/OS CLI 0.14+ installed locally are the prerequisites for the following.
 
-## Local development
+This repo should be available locally (use: `git clone https://github.com/dcos/demos.git`)
+and going forward we'll call the directory it resides in `$DEMO_HOME`.
 
-We're using Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) package to communicate with Kafka.
+Services and libraries used in this demo:
 
-This repo should be available locally (use: `git clone https://github.com/dcos/demos.git`) we'll call the directory
-it resides in `$DEMO_HOME` in the following.
+- Apache Kafka 0.10.0 with Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) package, client-side.
+- InfluxDB 0.13.0 with [influxdata v2](https://github.com/influxdata/influxdb/tree/master/client/v2) package, client-side.
+- Grafana v3.1.1
 
-### Preparation
+## Preparation
+
+Before running the demo, here are a few things you have to set up.
+
+### OPTIONAL: For local development
+
+For local development we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine:
+
+```bash
+$ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
+Password:
+*** Unknown ssh-rsa host key for 35.156.70.254: 13ec7cde1d3967d2371eb375f48c4690
+
+ATTENTION: IF DNS DOESN'T WORK, add these DNS servers!
+198.51.100.1
+198.51.100.2
+198.51.100.3
+
+Waiting for VPN server in container 'openvpn-6nps1efm' to come up...
+
+VPN server output at /tmp/tmpn34d7n0d
+VPN client output at /tmp/tmpw6aq3v4z
+```
+
+Note that it may be necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure they are the first in the list.
+
+### InfluxDB
+
+Install InfluxDB with the following [options](kafka-config.json):
+
+```bash
+$ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
+$ dcos package install --options=influx-config.json influxdb
+```
+
+### Grafana
+
+Install Marathon-LB and Grafana (the latter uses the former):
+
+```bash
+$ dcos package install marathon-lb
+$ dcos package install grafana
+
+```
+
+The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't know `$PUBLIC_AGENT_IP` yet, [find it out first](https://dcos.io/docs/1.8/administration/locate-public-agent/). Log in with: `admin`/`admin`.
+
+Next, we set up a datasource, connecting Grafana to InfluxDB. Use `http://influxdb.marathon.l4lb.thisdcos.directory:8086` as the URL under `Http settings` with `root`/`root` as credential and `fintrans` as the value for `Database` under `InfluxDB Details`. The result should be:
+
+![](img/influx-ds-in-grafana.png)
+
+
+### Kafka
 
 [Install](https://github.com/dcos/examples/tree/master/1.8/kafka) the Apache Kafka package with the following [options](kafka-config.json):
 
 ```bash
+$ cd $DEMO_HOME/1.8/fintrans/
 $ dcos package install kafka --options=kafka-config.json
 ```
 
@@ -33,25 +89,6 @@ $ dcos kafka connection
 }
 ```
 
-Now, using [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/): 
-
-```bash
-$ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
-Password:
-*** Unknown ssh-rsa host key for 35.156.70.254: 13ec7cde1d3967d2371eb375f48c4690
-
-ATTENTION: IF DNS DOESN'T WORK, add these DNS servers!
-198.51.100.1
-198.51.100.2
-198.51.100.3
-
-Waiting for VPN server in container 'openvpn-6nps1efm' to come up...
-
-VPN server output at /tmp/tmpn34d7n0d
-VPN client output at /tmp/tmpw6aq3v4z
-```
-
-Note that it may be necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure they are the first in the list.
 
 ### Producing and consuming messages
 

@@ -1,0 +1,7 @@
+{
+  "storage": {
+    "pre_create_database": true,
+    "pre_create_database_name": "fintrans",
+    "host_volume_influxdb": "/tmp"
+  }
+}
