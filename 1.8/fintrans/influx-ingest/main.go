@@ -23,24 +23,37 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
 const (
-	VERSION    string = "0.1.0"
-	INFLUX_API string = "http://influxdb.marathon.l4lb.thisdcos.directory:8086"
+	VERSION         string = "0.1.0"
+	PROD_INFLUX_API string = "http://influxdb.marathon.l4lb.thisdcos.directory:8086"
 )
 
 var (
 	version bool
-	cities  = []string{}
+	wg      sync.WaitGroup
+	cities  []string
 	// FQDN/IP + port of a Kafka broker:
 	broker string
+	// the URL for the InfluxDB HTTP API:
+	influxAPI string
 	// into which InfluxDB database to ingest transactions:
 	targetdb string
 	// how many seconds to wait between ingesting transactions:
 	ingestwaitsec time.Duration
+	// the ingestion queue
+	iqueue chan Transaction
 )
+
+type Transaction struct {
+	City   string
+	Source string
+	Target string
+	Amount int
+}
 
 func about() {
 	fmt.Printf("\nThis is the fintrans InfluxDB ingestion util in version %s\n", VERSION)
@@ -54,6 +67,7 @@ func init() {
 		"Moscow",
 		"Tokyo",
 	}
+	// the commend line parameters:
 	flag.BoolVar(&version, "version", false, "Display version information")
 	flag.StringVar(&broker, "broker", "", "The FQDN or IP address and port of a Kafka broker. Example: broker-1.kafka.mesos:9382 or 10.0.3.178:9398")
 	flag.Usage = func() {
@@ -62,6 +76,12 @@ func init() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
+	// the optional environment variables:
+	influxAPI = PROD_INFLUX_API
+	if ia := os.Getenv("INFLUX_API"); ia != "" {
+		influxAPI = ia
+	}
 	targetdb = "fintrans"
 	if td := os.Getenv("INFLUX_TARGET_DB"); td != "" {
 		targetdb = td
@@ -72,46 +92,11 @@ func init() {
 			ingestwaitsec = time.Duration(iwi)
 		}
 	}
+	// creating the buffered channel holding up to 100 transactions:
+	iqueue = make(chan Transaction, 100)
 }
 
-func write(c client.Client, transaction string) {
-	if bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-		Database:  targetdb,
-		Precision: "s", // second resultion
-	}); err != nil {
-		log.WithFields(log.Fields{"func": "write"}).Error(err)
-	} else {
-		log.WithFields(log.Fields{"func": "write"}).Info("Connected to ", fmt.Sprintf("%#v", c))
-		t := strings.Split(transaction, " ")
-		log.WithFields(log.Fields{"func": "write"}).Info("Extracted ", fmt.Sprintf("%#v", t))
-		tags := map[string]string{
-			"source": t[0],
-			"target": t[1],
-		}
-		amount := 0
-		if a, err := strconv.Atoi(t[2]); err == nil {
-			amount = a
-		}
-		log.WithFields(log.Fields{"func": "write"}).Info(fmt.Sprintf("source=%s target=%s amount=%d", t[0], t[1], amount))
-		fields := map[string]interface{}{
-			"amount": amount,
-		}
-		if pt, err := client.NewPoint("transaction", tags, fields, time.Now()); err != nil {
-			log.WithFields(log.Fields{"func": "write"}).Error(err)
-		} else {
-			bp.AddPoint(pt)
-			log.WithFields(log.Fields{"func": "write"}).Info(fmt.Sprintf("Added %#v", pt))
-		}
-		if err := c.Write(bp); err != nil {
-			log.WithFields(log.Fields{"func": "write"}).Error(err)
-		} else {
-			log.WithFields(log.Fields{"func": "write"}).Info(fmt.Sprintf("Wrote %#v", bp))
-		}
-	}
-}
-
-func ingest2Influx(transaction string) {
-	log.WithFields(log.Fields{"func": "ingest2Influx"}).Info("Trying to ingest ", transaction)
+func ingest2Influx() {
 	if c, err := client.NewHTTPClient(client.HTTPConfig{
 		Addr:     INFLUX_API,
 		Username: "root",
@@ -119,12 +104,39 @@ func ingest2Influx(transaction string) {
 	}); err != nil {
 		log.WithFields(log.Fields{"func": "ingest2Influx"}).Error(err)
 	} else {
-		write(c, transaction)
+		defer c.Close()
+
+		log.WithFields(log.Fields{"func": "ingest2Influx"}).Info("Connected to ", fmt.Sprintf("%#v", c))
+		for {
+			t := <-iqueue
+			log.WithFields(log.Fields{"func": "ingest2Influx"}).Info(fmt.Sprintf("Dequeued %#v", t))
+			bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
+				Database:  targetdb,
+				Precision: "s", // second resultion
+			})
+			tags := map[string]string{
+				"source": t.Source,
+				"target": t.Target,
+			}
+			fields := map[string]interface{}{
+				"amount": t.Amount,
+			}
+			pt, _ := client.NewPoint(t.City, tags, fields, time.Now())
+			bp.AddPoint(pt)
+			log.WithFields(log.Fields{"func": "ingest2Influx"}).Info("BEFORE")
+			if err = c.Write(bp); err != nil {
+				log.WithFields(log.Fields{"func": "ingest2Influx"}).Error("Error ingesting transaction: ", err.Error())
+			} else {
+				log.WithFields(log.Fields{"func": "ingest2Influx"}).Info("INGESTED")
+				// log.WithFields(log.Fields{"func": "ingest2Influx"}).Info(fmt.Sprintf("Ingested %#v", bp))
+			}
+		}
 	}
 }
 
 func consume(topic string) {
 	var consumer sarama.Consumer
+	defer wg.Done()
 	if c, err := sarama.NewConsumer([]string{broker}, nil); err != nil {
 		log.WithFields(log.Fields{"func": "consume"}).Error(err)
 		return
@@ -146,12 +158,49 @@ func consume(topic string) {
 				log.WithFields(log.Fields{"func": "consume"}).Error(err)
 			}
 		}()
-
 		for {
 			msg := <-partitionConsumer.Messages()
-			ingest2Influx(string(msg.Value))
+			traw := strings.Split(string(msg.Value), " ")
+			amount := 0
+			if a, err := strconv.Atoi(traw[2]); err == nil {
+				amount = a
+			}
+			t := Transaction{City: msg.Topic, Source: traw[0], Target: traw[1], Amount: amount}
+			// iqueue <- t
+			log.WithFields(log.Fields{"func": "consume"}).Info(fmt.Sprintf("Got %#v", t))
+
+			if c, err := client.NewHTTPClient(client.HTTPConfig{
+				Addr:     INFLUX_API,
+				Username: "root",
+				Password: "root",
+			}); err != nil {
+				log.WithFields(log.Fields{"func": "consume"}).Error(err)
+			} else {
+				defer c.Close()
+
+				log.WithFields(log.Fields{"func": "consume"}).Info(fmt.Sprintf("Connected to %#v", c))
+				bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
+					Database:  targetdb,
+					Precision: "s", // second resultion
+				})
+				log.WithFields(log.Fields{"func": "consume"}).Info(fmt.Sprintf("Preparing batch %#v", bp))
+				tags := map[string]string{
+					"source": t.Source,
+					"target": t.Target,
+				}
+				fields := map[string]interface{}{
+					"amount": t.Amount,
+				}
+				pt, _ := client.NewPoint(t.City, tags, fields, time.Now())
+				bp.AddPoint(pt)
+				log.WithFields(log.Fields{"func": "consume"}).Info(fmt.Sprintf("Added point %#v", pt))
+				if err := c.Write(bp); err != nil {
+					log.WithFields(log.Fields{"func": "consume"}).Error("Error ingesting transaction: ", err.Error())
+				} else {
+					log.WithFields(log.Fields{"func": "ingest2Influx"}).Info(fmt.Sprintf("Ingested %#v", bp))
+				}
+			}
 			time.Sleep(ingestwaitsec * time.Second)
-			log.WithFields(log.Fields{"func": "consume"}).Info(fmt.Sprintf("%s: %#v", msg.Topic, string(msg.Value)))
 		}
 	}
 }
@@ -165,11 +214,9 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-
+	wg.Add(len(cities))
 	for _, city := range cities {
 		go consume(city)
 	}
-
-	for {
-	}
+	wg.Wait()
 }

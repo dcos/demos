@@ -60,9 +60,6 @@ The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't
 
 Next, we set up a datasource, connecting Grafana to InfluxDB. Use `http://influxdb.marathon.l4lb.thisdcos.directory:8086` as the URL under `Http settings` with `root`/`root` as credential and `fintrans` as the value for `Database` under `InfluxDB Details`. The result should be:
 
-![](img/influx-ds-in-grafana.png)
-
-
 ### Kafka
 
 [Install](https://github.com/dcos/examples/tree/master/1.8/kafka) the Apache Kafka package with the following [options](kafka-config.json):
@@ -89,7 +86,7 @@ $ dcos kafka connection
 }
 ```
 
-## Producing and consuming messages
+## Producing transactions
 
 With the VPN tunnel enabled, we can run the fintrans generator:
 
@@ -110,20 +107,31 @@ INFO[0020] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"
 ^C
 ```
 
-And the InfluxDB ingestion:
+## Consuming transactions
+
+One consumer is the InfluxDB ingestion process that uses Grafana as the visual frontend. Again, assuming VPN tunnel is enabled, you need to find out the InfluxDB API URL and provide it via an environment variable `INFLUX_API` (note that this is only for local development necessary, not in prod):
 
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
 $ go build
-$ ./influx-ingest --broker broker-0.kafka.mesos:9398
-INFO[0003] Trying to ingest 10 250 9821                  func=ingest2Influx
-INFO[0003] Connected to &client.client{url:url.URL{Scheme:"http", Opaque:"", User:(*url.Userinfo)(nil), Host:"influxdb.marathon.l4lb.thisdcos.directory:8086", Path:"", RawPath:"", RawQuery:"", Fragment:""}, username:"root", password:"root", useragent:"InfluxDBClient", httpClient:(*http.Client)(0xc82015a6c0), transport:(*http.Transport)(0xc8202e4000)}  func=write
-INFO[0003] Extracted []string{"10", "250", "9821"}       func=write
-INFO[0003] source=10 target=250 amount=9821              func=write
-INFO[0003] Added &client.Point{pt:(*models.point)(0xc8202e0b40)}  func=write
+$ INFLUX_API=http://10.0.3.178:11973 ./influx-ingest --broker broker-0.kafka.mesos:9398
+INFO[0003] Got main.Transaction{City:"Tokyo", Source:"836", Target:"378", Amount:1211}  func=consume
+INFO[0003] Connected to &client.client{url:url.URL{Scheme:"http", Opaque:"", User:(*url.Userinfo)(nil), Host:"10.0.3.178:11973", Path:"", RawPath:"", RawQuery:"", Fragment:""}, username:"root", password:"root", useragent:"InfluxDBClient", httpClient:(*http.Client)(0xc82000bb30), transport:(*http.Transport)(0xc8200d00c0)}  func=consume
+INFO[0003] Preparing batch &client.batchpoints{points:[]*client.Point(nil), database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=consume
+INFO[0003] Added point &client.Point{pt:(*models.point)(0xc8200839e0)}  func=consume
+INFO[0003] Ingested &client.batchpoints{points:[]*client.Point{(*client.Point)(0xc82000f9f0)}, database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=ingest2Influx
+INFO[0005] Got main.Transaction{City:"London", Source:"597", Target:"378", Amount:7394}  func=consume
+INFO[0005] Connected to &client.client{url:url.URL{Scheme:"http", Opaque:"", User:(*url.Userinfo)(nil), Host:"10.0.3.178:11973", Path:"", RawPath:"", RawQuery:"", Fragment:""}, username:"root", password:"root", useragent:"InfluxDBClient", httpClient:(*http.Client)(0xc8202c2d20), transport:(*http.Transport)(0xc82021a300)}  func=consume
+INFO[0005] Preparing batch &client.batchpoints{points:[]*client.Point(nil), database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=consume
+INFO[0005] Added point &client.Point{pt:(*models.point)(0xc820206b40)}  func=consume
+INFO[0005] Ingested &client.batchpoints{points:[]*client.Point{(*client.Point)(0xc8200e5010)}, database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=ingest2Influx
 ```
 
-Alternatively you can consume the messages like so:
+In Grafana at `$PUBLIC_AGENT_IP:13000`, after loading the [dashboard](influx-ingest/grafana-dashboard.json), you should see something like this:
+
+![Transactions in Grafana](img/grafana-dashboard.png)
+
+Alternatively you can consume the messages manually like so:
 
 ```bash
 $ dcos node ssh --master-proxy --leader
@@ -154,3 +162,8 @@ So, for example, the following:
 Note 1: if you want to consume all topics at once you can use `./kafka-console-consumer.sh --zookeeper leader.mesos:2181/dcos-service-kafka --whitelist London,NYC,SF,Moscow,Tokyo`.
 
 Note 2: if you want to reset the topics, do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics.
+
+
+
+
+
