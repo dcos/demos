@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
-	"github.com/influxdata/influxdb/client/v2"
 	"os"
 	"strconv"
 	"strings"
@@ -28,8 +27,7 @@ import (
 )
 
 const (
-	VERSION         string = "0.1.0"
-	PROD_INFLUX_API string = "http://influxdb.marathon.l4lb.thisdcos.directory:8086"
+	VERSION string = "0.1.0"
 )
 
 var (
@@ -38,13 +36,6 @@ var (
 	cities  []string
 	// FQDN/IP + port of a Kafka broker:
 	broker string
-	// the URL for the InfluxDB HTTP API:
-	influxAPI string
-	// into which InfluxDB database to ingest transactions:
-	targetdb string
-	// how many seconds to wait between ingesting transactions:
-	ingestwaitsec time.Duration
-	// the ingestion queue
 	iqueue chan Transaction
 )
 
@@ -56,7 +47,7 @@ type Transaction struct {
 }
 
 func about() {
-	fmt.Printf("\nThis is the fintrans InfluxDB ingestion consumer in version %s\n", VERSION)
+	fmt.Printf("\nThis is the fintrans money laundering detection consumer in version %s\n", VERSION)
 }
 
 func init() {
