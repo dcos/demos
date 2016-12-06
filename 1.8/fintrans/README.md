@@ -39,7 +39,7 @@ Note that it may be necessary to [add the announced DNS servers]( https://suppor
 
 ### InfluxDB
 
-Install InfluxDB with the following [options](kafka-config.json):
+Install InfluxDB with the following [options](influx-ingest/influx-config.json):
 
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
@@ -89,8 +89,7 @@ $ dcos kafka connection
 }
 ```
 
-
-### Producing and consuming messages
+## Producing and consuming messages
 
 With the VPN tunnel enabled, we can run the fintrans generator:
 
@@ -111,7 +110,20 @@ INFO[0020] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"
 ^C
 ```
 
-Then, in order to consume the messages:
+And the InfluxDB ingestion:
+
+```bash
+$ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
+$ go build
+$ ./influx-ingest --broker broker-0.kafka.mesos:9398
+INFO[0003] Trying to ingest 10 250 9821                  func=ingest2Influx
+INFO[0003] Connected to &client.client{url:url.URL{Scheme:"http", Opaque:"", User:(*url.Userinfo)(nil), Host:"influxdb.marathon.l4lb.thisdcos.directory:8086", Path:"", RawPath:"", RawQuery:"", Fragment:""}, username:"root", password:"root", useragent:"InfluxDBClient", httpClient:(*http.Client)(0xc82015a6c0), transport:(*http.Transport)(0xc8202e4000)}  func=write
+INFO[0003] Extracted []string{"10", "250", "9821"}       func=write
+INFO[0003] source=10 target=250 amount=9821              func=write
+INFO[0003] Added &client.Point{pt:(*models.point)(0xc8202e0b40)}  func=write
+```
+
+Alternatively you can consume the messages like so:
 
 ```bash
 $ dcos node ssh --master-proxy --leader
