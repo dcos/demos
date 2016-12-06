@@ -28,12 +28,31 @@ const (
 
 var (
 	version bool
+	cities  = []string{}
 	// FQDN/IP + port of a Kafka broker:
 	broker string
 )
 
 func about() {
 	fmt.Printf("\nThis is the fintrans InfluxDB ingestion util in version %s\n", VERSION)
+}
+
+func init() {
+	cities = []string{
+		"London",
+		"NYC",
+		"SF",
+		"Moscow",
+		"Tokyo",
+	}
+	flag.BoolVar(&version, "version", false, "Display version information")
+	flag.StringVar(&broker, "broker", "", "The FQDN or IP address and port of a Kafka broker. Example: broker-1.kafka.mesos:9382 or 10.0.3.178:9398")
+	flag.Usage = func() {
+		fmt.Printf("Usage: %s [args]\n\n", os.Args[0])
+		fmt.Println("Arguments:")
+		flag.PrintDefaults()
+	}
+	flag.Parse()
 }
 
 func ingest(topic string) {
@@ -68,17 +87,6 @@ func ingest(topic string) {
 	}
 }
 
-func init() {
-	flag.BoolVar(&version, "version", false, "Display version information")
-	flag.StringVar(&broker, "broker", "", "The FQDN or IP address and port of a Kafka broker. Example: broker-1.kafka.mesos:9382 or 10.0.3.178:9398")
-	flag.Usage = func() {
-		fmt.Printf("Usage: %s [args]\n\n", os.Args[0])
-		fmt.Println("Arguments:")
-		flag.PrintDefaults()
-	}
-	flag.Parse()
-}
-
 func main() {
 	if version {
 		about()
@@ -88,10 +96,11 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	go ingest("London")
-	go ingest("NYC")
-	go ingest("Tokyo")
-	for {
 
+	for _, city := range cities {
+		go ingest(city)
+	}
+
+	for {
 	}
 }
