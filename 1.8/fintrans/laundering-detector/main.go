@@ -23,17 +23,19 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 const (
-	VERSION string = "0.1.0"
+	VERSION         string = "0.1.0"
+	MAX_ACCOUNT_NUM int    = 1000
 )
 
 var (
 	version bool
 	wg      sync.WaitGroup
 	cities  []string
+	// the aggregate transaction volume [source][target]
+	volume [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int
 	// FQDN/IP + port of a Kafka broker:
 	broker string
 	iqueue chan Transaction
@@ -68,62 +70,31 @@ func init() {
 	}
 	flag.Parse()
 
-	// the optional environment variables:
-	influxAPI = PROD_INFLUX_API
-	if ia := os.Getenv("INFLUX_API"); ia != "" {
-		influxAPI = ia
-	}
-	targetdb = "fintrans"
-	if td := os.Getenv("INFLUX_TARGET_DB"); td != "" {
-		targetdb = td
-	}
-	ingestwaitsec = 1
-	if iw := os.Getenv("INGEST_WAIT_SEC"); iw != "" {
-		if iwi, err := strconv.Atoi(iw); err == nil {
-			ingestwaitsec = time.Duration(iwi)
-		}
-	}
+	volume = [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int{}
+
 	// creating the buffered channel holding up to 100 transactions:
 	iqueue = make(chan Transaction, 100)
 }
 
-func ingest() {
-	if c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     influxAPI,
-		Username: "root",
-		Password: "root",
-	}); err != nil {
-		log.WithFields(log.Fields{"func": "ingest"}).Error(err)
-	} else {
-		defer c.Close()
+func detect() {
+	for {
+		t := <-iqueue
+		log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("Dequeued %#v", t))
 
-		log.WithFields(log.Fields{"func": "ingest"}).Info("Connected to ", fmt.Sprintf("%#v", c))
-		for {
-			t := <-iqueue
-			log.WithFields(log.Fields{"func": "ingest"}).Info(fmt.Sprintf("Dequeued %#v", t))
-			bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
-				Database:  targetdb,
-				Precision: "s", // second resultion
-			})
-			log.WithFields(log.Fields{"func": "ingest"}).Info(fmt.Sprintf("Preparing batch %#v", bp))
-			tags := map[string]string{
-				"source": t.Source,
-				"target": t.Target,
-			}
-			fields := map[string]interface{}{
-				"amount": t.Amount,
-			}
-			pt, _ := client.NewPoint(t.City, tags, fields, time.Now())
-			bp.AddPoint(pt)
-			log.WithFields(log.Fields{"func": "ingest"}).Info(fmt.Sprintf("Added point %#v", pt))
-			if err := c.Write(bp); err != nil {
-				log.WithFields(log.Fields{"func": "ingest"}).Error("Could not ingest transaction: ", err.Error())
-			} else {
-				log.WithFields(log.Fields{"func": "ingest"}).Info(fmt.Sprintf("Ingested %#v", bp))
-			}
-			time.Sleep(ingestwaitsec * time.Second)
-			log.WithFields(log.Fields{"func": "ingest"}).Info(fmt.Sprintf("Current queue length: %d", len(iqueue)))
+		source := -1
+		if s, err := strconv.Atoi(t.Source); err == nil {
+			source = s
 		}
+		target := -1
+		if t, err := strconv.Atoi(t.Target); err == nil {
+			target = t
+		}
+
+		if volume[source][target] > 5000 {
+			log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("POTENTIAL MONEY LAUNDERING: %s -> %s", t.Source, t.Target))
+		}
+		volume[source][target] = volume[source][target] + t.Amount
+		log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("Current queue length: %d", len(iqueue)))
 	}
 }
 
@@ -175,7 +146,7 @@ func main() {
 		os.Exit(1)
 	}
 	wg.Add(len(cities))
-	go ingest()
+	go detect()
 	for _, city := range cities {
 		go consume(city)
 	}
