@@ -30,12 +30,42 @@ var (
 	version bool
 	// FQDN/IP + port of a Kafka broker:
 	broker string
-	// the Kafka consumer:
-	consumer sarama.Consumer
 )
 
 func about() {
 	fmt.Printf("\nThis is the fintrans InfluxDB ingestion util in version %s\n", VERSION)
+}
+
+func ingest(topic string) {
+	var consumer sarama.Consumer
+	if c, err := sarama.NewConsumer([]string{broker}, nil); err != nil {
+		log.Error(err)
+		os.Exit(1)
+	} else {
+		consumer = c
+	}
+	defer func() {
+		if err := consumer.Close(); err != nil {
+			log.Error(err)
+			os.Exit(1)
+		}
+	}()
+
+	if partitionConsumer, err := consumer.ConsumePartition(topic, 0, sarama.OffsetNewest); err != nil {
+		log.Error(err)
+		os.Exit(1)
+	} else {
+		defer func() {
+			if err := partitionConsumer.Close(); err != nil {
+				log.Fatalln(err)
+			}
+		}()
+
+		for {
+			msg := <-partitionConsumer.Messages()
+			log.Info(fmt.Sprintf("%s: %#v", msg.Topic, string(msg.Value)))
+		}
+	}
 }
 
 func init() {
@@ -58,33 +88,10 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
+	go ingest("London")
+	go ingest("NYC")
+	go ingest("Tokyo")
+	for {
 
-	if c, err := sarama.NewConsumer([]string{broker}, nil); err != nil {
-		log.Error(err)
-		os.Exit(1)
-	} else {
-		consumer = c
-	}
-	defer func() {
-		if err := consumer.Close(); err != nil {
-			log.Error(err)
-			os.Exit(1)
-		}
-	}()
-
-	if partitionConsumer, err := consumer.ConsumePartition("London", 0, sarama.OffsetNewest); err != nil {
-		log.Error(err)
-		os.Exit(1)
-	} else {
-		defer func() {
-			if err := partitionConsumer.Close(); err != nil {
-				log.Fatalln(err)
-			}
-		}()
-
-		for {
-			msg := <-partitionConsumer.Messages()
-			log.Info(fmt.Sprintf("%#v", msg))
-		}
 	}
 }
