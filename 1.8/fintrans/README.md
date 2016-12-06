@@ -83,6 +83,20 @@ root@e7c989566a22:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 ^CProcessed a total of 3 messages
 ```
 
-As a result you should see something like above until you hit `CTRL+C`. The wire format of the messages is: `source_account target_account amount`.
+As a result, consuming a specific topic (`NYC` in the above case) you should see something like above until you hit `CTRL+C`: the wire format of the messages is:
 
-Note: if you want to reset the topics, do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics.
+```
+source_account target_account amount
+```
+
+So, for example, the following:
+
+```
+396 465 6789
+```
+
+… means that USD `6789` have been transferred from account no `396` to `465`.
+
+Note 1: if you want to consume all topics at once you can use `./kafka-console-consumer.sh --zookeeper leader.mesos:2181/dcos-service-kafka --whitelist London,NYC,SF,Moscow,Tokyo`.
+
+Note 2: if you want to reset the topics, do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics.
