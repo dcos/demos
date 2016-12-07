@@ -80,7 +80,6 @@ func detect() {
 	for {
 		t := <-iqueue
 		log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("Dequeued %#v", t))
-
 		source := -1
 		if s, err := strconv.Atoi(t.Source); err == nil {
 			source = s
@@ -89,11 +88,13 @@ func detect() {
 		if t, err := strconv.Atoi(t.Target); err == nil {
 			target = t
 		}
-
-		if volume[source][target] > 5000 {
-			log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("POTENTIAL MONEY LAUNDERING: %s -> %s", t.Source, t.Target))
+		if source != -1 && target != -1 { // we have a valid transaction
+			volume[source][target] = volume[source][target] + t.Amount
+			log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("%s -> %s totalling %d now", t.Source, t.Target, volume[source][target]))
+			if volume[source][target] > 5000 {
+				log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("POTENTIAL MONEY LAUNDERING: %s -> %s", t.Source, t.Target))
+			}
 		}
-		volume[source][target] = volume[source][target] + t.Amount
 		log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("Current queue length: %d", len(iqueue)))
 	}
 }
