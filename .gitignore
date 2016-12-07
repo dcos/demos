@@ -1,1 +1,4 @@
 .DS_Store
+1.8/fintrans/generator/generator
+1.8/fintrans/influx-ingest/influx-ingest
+1.8/fintrans/laundering-detector/laundering-detector

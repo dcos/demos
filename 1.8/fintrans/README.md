@@ -174,6 +174,17 @@ Note 2: if you want to reset the topics, do a `dcos kafka topic list` and `dcos 
 $ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
 $ go build
 $ ./laundering-detector --broker broker-0.kafka.mesos:9398
+INFO[0003] Queued main.Transaction{City:"Tokyo", Source:"279", Target:"19", Amount:7490}  func=consume
+INFO[0003] Dequeued main.Transaction{City:"Tokyo", Source:"279", Target:"19", Amount:7490}  func=detect
+INFO[0003] 279 -> 19 totalling 7490 now                  func=detect
+INFO[0003] POTENTIAL MONEY LAUNDERING: 279 -> 19         func=detect
+INFO[0003] Current queue length: 0                       func=detect
+INFO[0005] Queued main.Transaction{City:"NYC", Source:"757", Target:"700", Amount:9641}  func=consume
+INFO[0005] Dequeued main.Transaction{City:"NYC", Source:"757", Target:"700", Amount:9641}  func=detect
+INFO[0005] 757 -> 700 totalling 9641 now                 func=detect
+INFO[0005] POTENTIAL MONEY LAUNDERING: 757 -> 700        func=detect
+INFO[0005] Current queue length: 0                       func=detect
+^C
 ``` 
 
 
