@@ -25,6 +25,8 @@ For the sake of this demo let's assume you're responsible for building a data pr
 
 - A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 2 private agents each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
+- The JSON query util [jq](https://github.com/stedolan/jq/wiki/Installation) must be installed.
+- [SSH](https://dcos.io/docs/1.8/administration/access-node/sshcluster/) cluster access must be set up.
 
 Going forward we'll call the directory you cloned the `dcos/demo` Git repo into `$DEMO_HOME`.
 
@@ -115,6 +117,17 @@ $ dcos kafka connection
 
 Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`, you will need it if you want to do local [development and testing](#development).
 
+### Generator and consumers
+
+Last but not least it's time to launch the financial transaction generator and the consumers:
+
+```bash
+$ cd $DEMO_HOME/1.8/fintrans/
+$ ./install-services.sh
+```
+
+Now, since we have all components (Kafka, InfluxDB, Grafana, the fintrans generator and the two consumer services) installed, we are ready to use the demo.
+
 ## Use
 
 The following sections describe how to use the demo after having installed it.
@@ -148,7 +161,8 @@ The core piece of this demo is consuming the financial transactions in some mean
 
 #### Recent transactions dashboard
 
-One consumer of the transactions we stored in Kafka is a combination of InfluxDB and Grafana, using Grafana as the visual frontend, showing a breakdown of average and total transaction volume per city for the past hour. 
+One consumer of the transactions we stored in Kafka is a combination of InfluxDB and Grafana, called the [influx-ingest](influx-ingest/) consumer.
+This consumer uses Grafana as the visual frontend, showing a breakdown of average and total transaction volume per city for the past hour. 
 
 Now, to see the recent financial transaction streaming in, locate the Grafana dashboard at `$PUBLIC_AGENT_IP:13000` (note: you might need to [find out the IP of the public agent](https://dcos.io/docs/1.8/administration/locate-public-agent/ first) and log in with: `admin`/`admin`. Next, load the prepared [Grafana dashboard](influx-ingest/grafana-dashboard.json) and you should see something like this:
 
@@ -158,44 +172,26 @@ Feel free to change the Grafana graphs or add new ones, at this stage.
 
 #### Money laundering detector
 
-Another consumer of the transactions stored in Kafka is the money laundering detector. It is a command line tool that alerts when the aggregate transaction volume from a source to a target account hits a certain (configurable) treshold. 
+Another consumer of the transactions stored in Kafka is the money [laundering detector](laundering-detector/). It is a command line tool that alerts when the aggregate transaction volume from a source to a target account hits a certain (configurable) treshold. 
 
-Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if there indeed fraudulent transactions have been taken place, you can launch the detector as follows:
+Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if there indeed fraudulent transactions have been taken place.
 
-```bash
-$ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
-$ go build
-$ ALERT_THRESHOLD=6000 ./laundering-detector --broker broker-0.kafka.mesos:9398
-INFO[0002] Queued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=consume
-INFO[0002] Dequeued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=detect
-INFO[0002] 970 -> 477 totalling 1102 now                 func=detect
-INFO[0002] Current queue length: 0                       func=detect
-INFO[0004] Queued main.Transaction{City:"London", Source:"236", Target:"367", Amount:9128}  func=consume
-INFO[0004] Dequeued main.Transaction{City:"London", Source:"236", Target:"367", Amount:9128}  func=detect
-INFO[0004] 236 -> 367 totalling 9128 now                 func=detect
-POTENTIAL MONEY LAUNDERING: 236 -> 367 totalling 9128 now
-INFO[0004] Current queue length: 0                       func=detect
-INFO[0006] Queued main.Transaction{City:"London", Source:"603", Target:"634", Amount:5012}  func=consume
-INFO[0006] Dequeued main.Transaction{City:"London", Source:"603", Target:"634", Amount:5012}  func=detect
-INFO[0006] 603 -> 634 totalling 5012 now                 func=detect
-INFO[0006] Current queue length: 0                       func=detect
-^C
-``` 
+In order to see the  money laundering alerts alerts, locate the money laundering detector in the DC/OS UI. Look for a service with an ID of `/fintrans/laundering-detector` and go to the `Logs` tab:
 
-Note that if you're only interested in the money laundering alerts you can execute it as follows, effectively hiding all the `INFO` messages:
+![Accessing the money laundering detector in the DC/OS UI](img/laundering-detector.png)
+
+Alternatively, from the command line, you can see the logs as follows: TODO
 
 ```bash
-$ ALERT_THRESHOLD=6000 ./laundering-detector --broker broker-0.kafka.mesos:9398 2>/dev/null
-POTENTIAL MONEY LAUNDERING: 292 -> 693 totalling 7104 now
-POTENTIAL MONEY LAUNDERING: 314 -> 666 totalling 6613 now
-^C
+$ dcos task
+$ dcos logs --follow ...
 ```
 
 ## Development
 
 ### Tunneling 
 
-For local development and testing we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine:
+For local development and testing we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine. The following instructions are only an example (using Tunnelblick on macOS) and the concrete steps necessary depend on your platform as well as on what VPN client you're using.
 
 ```bash
 $ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
@@ -213,7 +209,7 @@ VPN server output at /tmp/tmpn34d7n0d
 VPN client output at /tmp/tmpw6aq3v4z
 ```
 
-Note that it may be necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure they are the first in the list.
+Note that it is necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure the are they appear at the top of the list, before any other DNS server entries.
 
 ### Generating and consuming transactions
 
@@ -226,13 +222,6 @@ $ ./generator --broker broker-0.kafka.mesos:9398
 INFO[0001] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Value:"678 816 2957", Metadata:interface {}(nil), Offset:10, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
 INFO[0003] &sarama.ProducerMessage{Topic:"SF", Key:sarama.Encoder(nil), Value:"762 543 6395", Metadata:interface {}(nil), Offset:4, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
 INFO[0005] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Value:"680 840 8115", Metadata:interface {}(nil), Offset:11, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0007] &sarama.ProducerMessage{Topic:"SF", Key:sarama.Encoder(nil), Value:"363 101 9878", Metadata:interface {}(nil), Offset:5, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0009] &sarama.ProducerMessage{Topic:"SF", Key:sarama.Encoder(nil), Value:"302 505 5777", Metadata:interface {}(nil), Offset:6, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0011] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Value:"848 948 2683", Metadata:interface {}(nil), Offset:12, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0013] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"611 695 5484", Metadata:interface {}(nil), Offset:9, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0015] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"396 465 6789", Metadata:interface {}(nil), Offset:10, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0018] &sarama.ProducerMessage{Topic:"Moscow", Key:sarama.Encoder(nil), Value:"132 570 3197", Metadata:interface {}(nil), Offset:9, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
-INFO[0020] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"607 672 9732", Metadata:interface {}(nil), Offset:11, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
 ^C
 ```
 
@@ -247,14 +236,10 @@ INFO[0003] Connected to &client.client{url:url.URL{Scheme:"http", Opaque:"", Use
 INFO[0003] Preparing batch &client.batchpoints{points:[]*client.Point(nil), database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=consume
 INFO[0003] Added point &client.Point{pt:(*models.point)(0xc8200839e0)}  func=consume
 INFO[0003] Ingested &client.batchpoints{points:[]*client.Point{(*client.Point)(0xc82000f9f0)}, database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=ingest2Influx
-INFO[0005] Got main.Transaction{City:"London", Source:"597", Target:"378", Amount:7394}  func=consume
-INFO[0005] Connected to &client.client{url:url.URL{Scheme:"http", Opaque:"", User:(*url.Userinfo)(nil), Host:"10.0.3.178:11973", Path:"", RawPath:"", RawQuery:"", Fragment:""}, username:"root", password:"root", useragent:"InfluxDBClient", httpClient:(*http.Client)(0xc8202c2d20), transport:(*http.Transport)(0xc82021a300)}  func=consume
-INFO[0005] Preparing batch &client.batchpoints{points:[]*client.Point(nil), database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=consume
-INFO[0005] Added point &client.Point{pt:(*models.point)(0xc820206b40)}  func=consume
-INFO[0005] Ingested &client.batchpoints{points:[]*client.Point{(*client.Point)(0xc8200e5010)}, database:"fintrans", precision:"s", retentionPolicy:"", writeConsistency:""}  func=ingest2Influx
+^C
 ```
 
-Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if there indeed fraudulent transactions have been taken place, you can launch the money laundering detector as follows from your local development machine (note:[DC/OS VPN tunnel](#tunneling) must be enabled):
+You can launch the money laundering detector as follows from your local development machine (note:[DC/OS VPN tunnel](#tunneling) must be enabled):
 
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
@@ -268,11 +253,6 @@ INFO[0004] Queued main.Transaction{City:"London", Source:"236", Target:"367", Am
 INFO[0004] Dequeued main.Transaction{City:"London", Source:"236", Target:"367", Amount:9128}  func=detect
 INFO[0004] 236 -> 367 totalling 9128 now                 func=detect
 POTENTIAL MONEY LAUNDERING: 236 -> 367 totalling 9128 now
-INFO[0004] Current queue length: 0                       func=detect
-INFO[0006] Queued main.Transaction{City:"London", Source:"603", Target:"634", Amount:5012}  func=consume
-INFO[0006] Dequeued main.Transaction{City:"London", Source:"603", Target:"634", Amount:5012}  func=detect
-INFO[0006] 603 -> 634 totalling 5012 now                 func=detect
-INFO[0006] Current queue length: 0                       func=detect
 ^C
 ``` 
 

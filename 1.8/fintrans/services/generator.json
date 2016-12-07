@@ -1,0 +1,12 @@
+{
+  "id": "/fintrans/generator",
+  "instances": 3,
+  "cpus": 0.1,
+  "mem": 32,
+  "cmd": "curl -s -L https://github.com/dcos/demos/releases/download/0.1/generator -o generator && chmod u+x generator && ./generator --broker BROKER",
+  "env": {
+    "GITHUB_TARGET_ORG": "dcos",
+    "FETCH_WAIT_SEC": "60",
+    "INFLUX_TARGET_DB": "githuborgs"
+  }
+}
