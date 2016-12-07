@@ -1,43 +1,57 @@
 # Fast Data: Financial Transaction Processing
 
-Note that a DC/OS 1.8.7+ cluster and the DC/OS CLI 0.14+ installed locally are the prerequisites for the following.
+This demo is all about processing, monitoring and understanding high-volume financial transactions. There are several challenges that we tackle here: 1. the frequency of transaction, 2. the volume of transaction, 3. scaling. 
 
-This repo should be available locally (use: `git clone https://github.com/dcos/demos.git`)
-and going forward we'll call the directory it resides in `$DEMO_HOME`.
+For the sake of this demo let's assume you're responsible for building a data processing infrastructure that allows insights about recent transactions from multiple locations (with recent being, for example, the past hour) as well as being able to spot fraudulent transactions, for example such that violate money laundering regulations. In the context of money laundering, what happens is that a large amount, say $1,000,000 is split into many small batches, each just under the allowed value of, for example, $10,000. With many tens or hundreds thousands of transactions going on at any given point in time it's hard to keep a running total for each account in real time and react appropriately. Failure to report or react on attempted money laundering typically means fines for the financial institutions—something best avoided altogether. See also [US](https://www.fincen.gov/history-anti-money-laundering-laws) and [EU](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32015L0849) legislation and regulations on this topic for more information.
 
-Services and libraries used in this demo:
+- Estimated time for completion: 
+ - Fast track: 15min
+ - Manual: 45min
+ - Development: unbounded
+- Target audience: Anyone interested stream data processing and analytics with Apache Kafka.
+
+**Table of Contents**:
+
+- [Prerequisites](#prerequisites)
+- Install the demo:
+ - [Single command](#single-command)
+ - [Manual](#manual)
+- [Use](#use) the demo
+ - [Generating transactions](#generating-transactions)
+ - [Consuming transactions](#consuming-transactions)
+- [Development and testing](#development)
+
+## Prerequisites
+
+- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 2 private agents each with 2 CPUs and 5 GB of RAM available.
+- [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or above
+- The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
+
+Going forward we'll call the directory you cloned the `dcos/demo` Git repo into `$DEMO_HOME`.
+
+The DC/OS services and support libraries used in the demo are as follows:
 
 - Apache Kafka 0.10.0 with Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) package, client-side.
 - InfluxDB 0.13.0 with [influxdata v2](https://github.com/influxdata/influxdb/tree/master/client/v2) package, client-side.
 - Grafana v3.1.1
 
-## Preparation
+## Install
+### Single command
 
-Before running the demo, here are a few things you have to set up.
-
-### OPTIONAL: For local development
-
-For local development we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine:
+If you want to install the demo with a single command, use:
 
 ```bash
-$ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
-Password:
-*** Unknown ssh-rsa host key for 35.156.70.254: 13ec7cde1d3967d2371eb375f48c4690
-
-ATTENTION: IF DNS DOESN'T WORK, add these DNS servers!
-198.51.100.1
-198.51.100.2
-198.51.100.3
-
-Waiting for VPN server in container 'openvpn-6nps1efm' to come up...
-
-VPN server output at /tmp/tmpn34d7n0d
-VPN client output at /tmp/tmpw6aq3v4z
+$ cd $DEMO_HOME
+$ ./install-all.sh
 ```
 
-Note that it may be necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure they are the first in the list.
+Now you can jump to ...
 
-### InfluxDB
+### Manual
+
+If you want to install the demo manually here are the required services that you'd need to set up.
+
+#### InfluxDB
 
 Install InfluxDB with the following [options](influx-ingest/influx-config.json):
 
@@ -46,9 +60,9 @@ $ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
 $ dcos package install --options=influx-config.json influxdb
 ```
 
-### Grafana
+#### Grafana
 
-Install Marathon-LB and Grafana (the latter uses the former):
+Install Marathon-LB and Grafana (the latter uses the former to be accessible from outside the cluster):
 
 ```bash
 $ dcos package install marathon-lb
@@ -62,7 +76,7 @@ Next, we set up a datasource, connecting Grafana to InfluxDB. Use `http://influx
 
 ![Configuring InfluxDB as Grafana data source](img/influx-ds-in-grafana.png)
 
-### Kafka
+#### Kafka
 
 [Install](https://github.com/dcos/examples/tree/master/1.8/kafka) the Apache Kafka package with the following [options](kafka-config.json):
 
@@ -88,7 +102,10 @@ $ dcos kafka connection
 }
 ```
 
-## Producing transactions
+Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`, you will need it if you want to do local [development and testing](#development)
+
+## Use
+### Generating transactions
 
 The first step necessary is to produce financial transactions. The format used to represent a transaction is as follows:
 
@@ -127,9 +144,9 @@ INFO[0020] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"
 
 Note that if you want to reset the topics, that is remove all messages for a certain topic (= city) stored in Kafka, you can do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics (cities).
 
-## Consuming transactions
+### Consuming transactions
 
-### Real-time transaction volume dashboard
+#### Real-time transaction volume dashboard
 
 One consumer of the transactions we stored in Kafka above is the InfluxDB ingestion process. It uses Grafana as the visual frontend, showing a breakdown of average and total transaction volume per city. 
 
@@ -155,9 +172,9 @@ In Grafana at `$PUBLIC_AGENT_IP:13000`, after loading the [dashboard](influx-ing
 
 ![Transactions in Grafana](img/grafana-dashboard.png)
 
-### Money laundering detector
+#### Money laundering detector
 
-Another consumer of the transactions stored in Kafka is the money laundering detector. It is a command line tool only that alerts when the aggregate transaction volume from a certain source to a target account hits a certain (configurable) treshold. The underlying idea here is that often, for money laundering purposes, a big amount, say $1,000,000 is split into many small batches, each just under the allowed value of, for example $10,000. With many thousands of transactions going on in real time it's hard to keep a running total for each account and react appropriately. Failure to report or react on attempted money laundering typically means fines for the financial institutions—something best avoided altogether. See also [US](https://www.fincen.gov/history-anti-money-laundering-laws) and [EU](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32015L0849) legislation and regulations on this topic for more information.
+Another consumer of the transactions stored in Kafka is the money laundering detector. It is a command line tool only that alerts when the aggregate transaction volume from a certain source to a target account hits a certain (configurable) treshold. 
 
 Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if there indeed fraudulent transactions have been taken place, you can launch the detector as follows:
 
@@ -189,3 +206,25 @@ POTENTIAL MONEY LAUNDERING: 292 -> 693 totalling 7104 now
 POTENTIAL MONEY LAUNDERING: 314 -> 666 totalling 6613 now
 ^C
 ```
+
+## Development
+
+For local development and testing we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine:
+
+```bash
+$ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
+Password:
+*** Unknown ssh-rsa host key for 35.156.70.254: 13ec7cde1d3967d2371eb375f48c4690
+
+ATTENTION: IF DNS DOESN'T WORK, add these DNS servers!
+198.51.100.1
+198.51.100.2
+198.51.100.3
+
+Waiting for VPN server in container 'openvpn-6nps1efm' to come up...
+
+VPN server output at /tmp/tmpn34d7n0d
+VPN client output at /tmp/tmpw6aq3v4z
+```
+
+Note that it may be necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure they are the first in the list.
