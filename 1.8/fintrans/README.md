@@ -90,7 +90,23 @@ $ dcos kafka connection
 
 ## Producing transactions
 
-With the VPN tunnel enabled, we can run the fintrans generator:
+The first step necessary is to produce financial transactions. The format used to represent a transaction is as follows:
+
+```
+source_account target_account amount
+```
+
+For example, `396 465 6789` means that $6789 have been transferred from account no `396` to `465`.
+
+It's the job of the fintrans generator to produce (random) transactions; the generator itself is stateless and ingests the transactions in Kafka, organized by city. That is, the city the transaction originated in is represented by a Kafka topic. The five cities used are:
+
+    London
+    NYC
+    SF
+    Moscow
+    Tokyo
+
+Now, for a local dev/test setup (and with the VPN tunnel enabled) we can run the fintrans generator as follows:
 
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/generator/
@@ -109,11 +125,15 @@ INFO[0020] &sarama.ProducerMessage{Topic:"NYC", Key:sarama.Encoder(nil), Value:"
 ^C
 ```
 
+Note that if you want to reset the topics, that is remove all messages for a certain topic (= city) stored in Kafka, you can do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics (cities).
+
 ## Consuming transactions
 
 ### Real-time transaction volume dashboard
 
-One consumer is the InfluxDB ingestion process that uses Grafana as the visual frontend. Again, assuming VPN tunnel is enabled, you need to find out the InfluxDB API URL and provide it via an environment variable `INFLUX_API` (note that this is only for local development necessary, not in prod):
+One consumer of the transactions we stored in Kafka above is the InfluxDB ingestion process. It uses Grafana as the visual frontend, showing a breakdown of average and total transaction volume per city. 
+
+Again, assuming VPN tunnel is enabled, you need to find out the InfluxDB API URL and provide it via an environment variable `INFLUX_API` (note that this is only for local development necessary, not in prod):
 
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
@@ -135,56 +155,37 @@ In Grafana at `$PUBLIC_AGENT_IP:13000`, after loading the [dashboard](influx-ing
 
 ![Transactions in Grafana](img/grafana-dashboard.png)
 
-Alternatively you can consume the messages manually like so:
-
-```bash
-$ dcos node ssh --master-proxy --leader
-...
-core@ip-10-0-6-69 ~ $ docker run -it mesosphere/kafka-client
-...
-root@e7c989566a22:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:2181/dcos-service-kafka --topic NYC --from-beginning
-611 695 5484
-396 465 6789
-607 672 9732
-^CProcessed a total of 3 messages
-```
-
-As a result, consuming a specific topic (`NYC` in the above case) you should see something like above until you hit `CTRL+C`: the wire format of the messages is:
-
-```
-source_account target_account amount
-```
-
-So, for example, the following:
-
-```
-396 465 6789
-```
-
-… means that USD `6789` have been transferred from account no `396` to `465`.
-
-Note 1: if you want to consume all topics at once you can use `./kafka-console-consumer.sh --zookeeper leader.mesos:2181/dcos-service-kafka --whitelist London,NYC,SF,Moscow,Tokyo`.
-
-Note 2: if you want to reset the topics, do a `dcos kafka topic list` and `dcos kafka topic delete XXX` with `XXX` being one of the listed topics.
-
-
 ### Money laundering detector
+
+Another consumer of the transactions stored in Kafka is the money laundering detector. It is a command line tool only that alerts when the aggregate transaction volume from a certain source to a target account hits a certain (configurable) treshold. The underlying idea here is that often, for money laundering purposes, a big amount, say $1,000,000 is split into many small batches, each just under the allowed value of, for example $10,000. With many thousands of transactions going on in real time it's hard to keep a running total for each account and react appropriately. Failure to report or react on attempted money laundering typically means fines for the financial institutions—something best avoided altogether. See also [US](https://www.fincen.gov/history-anti-money-laundering-laws) and [EU](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32015L0849) legislation and regulations on this topic for more information.
+
+Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if there indeed fraudulent transactions have been taken place, you can launch the detector as follows:
 
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
 $ go build
-$ ./laundering-detector --broker broker-0.kafka.mesos:9398
-INFO[0003] Queued main.Transaction{City:"Tokyo", Source:"279", Target:"19", Amount:7490}  func=consume
-INFO[0003] Dequeued main.Transaction{City:"Tokyo", Source:"279", Target:"19", Amount:7490}  func=detect
-INFO[0003] 279 -> 19 totalling 7490 now                  func=detect
-INFO[0003] POTENTIAL MONEY LAUNDERING: 279 -> 19         func=detect
-INFO[0003] Current queue length: 0                       func=detect
-INFO[0005] Queued main.Transaction{City:"NYC", Source:"757", Target:"700", Amount:9641}  func=consume
-INFO[0005] Dequeued main.Transaction{City:"NYC", Source:"757", Target:"700", Amount:9641}  func=detect
-INFO[0005] 757 -> 700 totalling 9641 now                 func=detect
-INFO[0005] POTENTIAL MONEY LAUNDERING: 757 -> 700        func=detect
-INFO[0005] Current queue length: 0                       func=detect
+$ ALERT_THRESHOLD=6000 ./laundering-detector --broker broker-0.kafka.mesos:9398
+INFO[0002] Queued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=consume
+INFO[0002] Dequeued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=detect
+INFO[0002] 970 -> 477 totalling 1102 now                 func=detect
+INFO[0002] Current queue length: 0                       func=detect
+INFO[0004] Queued main.Transaction{City:"London", Source:"236", Target:"367", Amount:9128}  func=consume
+INFO[0004] Dequeued main.Transaction{City:"London", Source:"236", Target:"367", Amount:9128}  func=detect
+INFO[0004] 236 -> 367 totalling 9128 now                 func=detect
+POTENTIAL MONEY LAUNDERING: 236 -> 367 totalling 9128 now
+INFO[0004] Current queue length: 0                       func=detect
+INFO[0006] Queued main.Transaction{City:"London", Source:"603", Target:"634", Amount:5012}  func=consume
+INFO[0006] Dequeued main.Transaction{City:"London", Source:"603", Target:"634", Amount:5012}  func=detect
+INFO[0006] 603 -> 634 totalling 5012 now                 func=detect
+INFO[0006] Current queue length: 0                       func=detect
 ^C
 ``` 
 
+Note that if you're only interested in the money laundering alerts you can execute it as follows, effectively hiding all the `INFO` messages:
 
+```bash
+$ ALERT_THRESHOLD=6000 ./laundering-detector --broker broker-0.kafka.mesos:9398 2>/dev/null
+POTENTIAL MONEY LAUNDERING: 292 -> 693 totalling 7104 now
+POTENTIAL MONEY LAUNDERING: 314 -> 666 totalling 6613 now
+^C
+```

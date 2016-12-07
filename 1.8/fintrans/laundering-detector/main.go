@@ -38,7 +38,10 @@ var (
 	volume [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int
 	// FQDN/IP + port of a Kafka broker:
 	broker string
+	// the ingestion queue
 	iqueue chan Transaction
+	// aggregate volume alert threshold
+	threshold int
 )
 
 type Transaction struct {
@@ -70,8 +73,16 @@ func init() {
 	}
 	flag.Parse()
 
-	volume = [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int{}
+	// the optional environment variables:
+	threshold = 10000
+	if at := os.Getenv("ALERT_THRESHOLD"); at != "" {
+		if ati, err := strconv.Atoi(at); err == nil {
+			threshold = ati
+		}
+	}
 
+	// creating the aggregate transaction volume matrix with format [source][target]:
+	volume = [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int{}
 	// creating the buffered channel holding up to 100 transactions:
 	iqueue = make(chan Transaction, 100)
 }
@@ -91,8 +102,8 @@ func detect() {
 		if source != -1 && target != -1 { // we have a valid transaction
 			volume[source][target] = volume[source][target] + t.Amount
 			log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("%s -> %s totalling %d now", t.Source, t.Target, volume[source][target]))
-			if volume[source][target] > 5000 {
-				log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("POTENTIAL MONEY LAUNDERING: %s -> %s", t.Source, t.Target))
+			if volume[source][target] > threshold {
+				fmt.Println(fmt.Sprintf("\x1b[31;1mPOTENTIAL MONEY LAUNDERING:\x1b[0m %s -> %s totalling %d now ", t.Source, t.Target, volume[source][target]))
 			}
 		}
 		log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("Current queue length: %d", len(iqueue)))
