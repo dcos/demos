@@ -98,6 +98,8 @@ The result should look as follows (note the `Success` message after you hit the 
 
 ![Configuring InfluxDB as Grafana data source](img/influx-ds-in-grafana.png)
 
+Note that if you came here from the single command install then you're done: you're ready to [use](#use) the demo.
+
 #### Kafka
 
 Install the Apache Kafka package with the following [options](kafka-config.json):
