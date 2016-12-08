@@ -81,7 +81,7 @@ $ dcos package install grafana
 
 ```
 
-<a name="grafana-influxdn"></a>
+<a name="grafana-influxdb"></a>
 The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't know `$PUBLIC_AGENT_IP` yet, [find it out first](https://dcos.io/docs/1.8/administration/locate-public-agent/). Log in with: `admin`/`admin`.
 
 Next, we set up InfluxDB as a data source in Grafana, effectively connecting Grafana to InfluxDB. Use the following values:
