@@ -124,9 +124,18 @@ Last but not least it's time to launch the financial transaction generator and t
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/
 $ ./install-services.sh
+deploying the fintrans generator ...
+Created deployment 56d3e77d-08e6-4a43-87cd-bcc6a107e8c3
+==========================================================================
+deploying the recent financial transactions consumer ...
+Created deployment 78440e10-17e0-4046-b22d-d60fd388ffad
+==========================================================================
+deploying the money laundering detector ...
+Created deployment 7e2cd878-d651-4cb2-bf87-7d25799758a3
+DONE ====================================================================
 ```
 
-Now, since we have all components (Kafka, InfluxDB, Grafana, the fintrans generator and the two consumer services) installed, we are ready to use the demo.
+Now, since we have all components, that is, Kafka, InfluxDB, Grafana, the fintrans generator and the two consumer services installed, we are ready to use the demo.
 
 ## Use
 
@@ -176,16 +185,37 @@ Another consumer of the transactions stored in Kafka is the money [laundering de
 
 Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if there indeed fraudulent transactions have been taken place.
 
-In order to see the  money laundering alerts alerts, locate the money laundering detector in the DC/OS UI. Look for a service with an ID of `/fintrans/laundering-detector` and go to the `Logs` tab:
+In order to see the  money laundering alerts, locate the money laundering detector in the DC/OS UI. Look for a service with an ID of `/fintrans/laundering-detector` and go to the `Logs` tab:
 
 ![Accessing the money laundering detector in the DC/OS UI](img/laundering-detector.png)
 
-Alternatively, from the command line, you can see the logs as follows: TODO
+Alternatively, from the command line, you can see the logs as follows: 1. Find out the task ID of the money laundering detector with `dcos task` and then use `dcos task log --follow $TASKID` to view the logs:
 
 ```bash
 $ dcos task
-$ dcos logs --follow ...
+NAME                          HOST        USER  STATE  ID
+broker-0                      10.0.3.178  root    R    broker-0__a0b599da-391b-480b-a5ed-f566dd8baab4
+broker-1                      10.0.3.176  root    R    broker-1__a1e0047b-a697-4d19-ae8f-230fe6f9fc0a
+broker-2                      10.0.3.177  root    R    broker-2__330430dc-4541-4af7-91a8-4b1c533917b1
+generator.fintrans            10.0.3.178  root    R    fintrans_generator.5b9b2ad4-bd5e-11e6-be40-fecdab8d68a1
+grafana                       10.0.3.178  root    R    grafana.3405e61e-bb9d-11e6-be40-fecdab8d68a1
+influx-ingest.fintrans        10.0.3.178  root    R    fintrans_influx-ingest.5e97c905-bd5e-11e6-be40-fecdab8d68a1
+influxdb                      10.0.3.178  root    R    influxdb.328a7b9c-bb9b-11e6-be40-fecdab8d68a1
+kafka                         10.0.3.177  root    R    kafka.d0fdf95b-ba1a-11e6-be40-fecdab8d68a1
+laundering-detector.fintrans  10.0.3.177  root    R    fintrans_laundering-detector.5e97c906-bd5e-11e6-be40-fecdab8d68a1
+marathon-lb                   10.0.7.58   root    R    marathon-lb.27367add-bb9d-11e6-be40-fecdab8d68a1
+
+$ dcos task log --follow fintrans_laundering-detector.5e97c906-bd5e-11e6-be40-fecdab8d68a1
+POTENTIAL MONEY LAUNDERING: 516 -> 482 totalling 8644 now
+POTENTIAL MONEY LAUNDERING: 246 -> 308 totalling 9336 now
+POTENTIAL MONEY LAUNDERING: 856 -> 804 totalling 8994 now
+POTENTIAL MONEY LAUNDERING: 233 -> 954 totalling 8710 now
+POTENTIAL MONEY LAUNDERING: 318 -> 273 totalling 8883 now
+POTENTIAL MONEY LAUNDERING: 303 -> 24 totalling 8431 now
+^CUser interrupted command with Ctrl-C
 ```
+
+Note that the alert treshold by default is set to $8000 but you can change that at any time by editing the [service definition](service/laundering-detector.json).
 
 ## Development
 
