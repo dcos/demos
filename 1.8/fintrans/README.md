@@ -52,7 +52,7 @@ After either single command install or manual install method your DC/OS UI shoul
 If you want to install the demo with a single command, use:
 
 ```bash
-$ cd $DEMO_HOME
+$ cd $DEMO_HOME/1.8/fintrans
 $ ./install-all.sh
 ```
 
