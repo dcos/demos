@@ -4,8 +4,6 @@ This demo is all about processing, monitoring and understanding high-volume fina
 
 For the sake of this demo let's assume you're responsible for building a data processing infrastructure that allows insights about recent transactions from multiple locations (with recent being, for example, the past hour) as well as being able to spot fraudulent transactions, for example such that violate money laundering regulations. In the context of money laundering, what happens is that a large amount, say $1,000,000 is split into many small batches, each just under the allowed value of, for example, $10,000. With many tens or hundreds thousands of transactions going on at any given point in time it's hard to keep a running total for each account in real time and react appropriately. Failure to report or react on attempted money laundering typically means fines for the financial institutions—something best avoided altogether. See also [US](https://www.fincen.gov/history-anti-money-laundering-laws) and [EU](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32015L0849) legislation and regulations on this topic for more information.
 
-![Financial transaction processing demo architecture](img/fintrans-architecture.png)
-
 - Estimated time for completion: 
  - Fast track: 15min
  - Manual: 45min
@@ -14,6 +12,7 @@ For the sake of this demo let's assume you're responsible for building a data pr
 
 **Table of Contents**:
 
+- [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - Install the demo:
  - [Single command](#single-command)
@@ -22,6 +21,10 @@ For the sake of this demo let's assume you're responsible for building a data pr
  - [Generating transactions](#generating-transactions)
  - [Consuming transactions](#consuming-transactions)
 - [Development and testing](#development)
+
+## Architecture
+
+![Financial transaction processing demo architecture](img/fintrans-architecture.png)
 
 ## Prerequisites
 
