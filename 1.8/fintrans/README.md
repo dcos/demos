@@ -56,7 +56,7 @@ $ cd $DEMO_HOME
 $ ./install-all.sh
 ```
 
-Now you can jump to ...
+Now continue with the [Grafana](#grafana-influxdb) setup and after that you're ready to [use](#use) the demo.
 
 ### Manual
 
@@ -81,6 +81,7 @@ $ dcos package install grafana
 
 ```
 
+<a name="grafana-influxdn"></a>
 The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't know `$PUBLIC_AGENT_IP` yet, [find it out first](https://dcos.io/docs/1.8/administration/locate-public-agent/). Log in with: `admin`/`admin`.
 
 Next, we set up InfluxDB as a data source in Grafana, effectively connecting Grafana to InfluxDB. Use the following values:
