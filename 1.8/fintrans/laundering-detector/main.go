@@ -34,14 +34,16 @@ var (
 	version bool
 	wg      sync.WaitGroup
 	cities  []string
-	// the aggregate transaction volume [source][target]
+	// the aggregate transaction volume [source][target]:
 	volume [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int
 	// FQDN/IP + port of a Kafka broker:
 	broker string
-	// the ingestion queue
+	// the ingestion queue:
 	iqueue chan Transaction
-	// aggregate volume alert threshold
+	// aggregate volume alert threshold:
 	threshold int
+	// defines how the output is rendered:
+	prodout bool
 )
 
 type Transaction struct {
@@ -81,6 +83,13 @@ func init() {
 		}
 	}
 
+	prodout = true
+	if po := os.Getenv("PROD_OUTPUT"); po != "" {
+		if strings.ToLower(po) == "false" {
+			prodout = false
+		}
+	}
+
 	// creating the aggregate transaction volume matrix with format [source][target]:
 	volume = [MAX_ACCOUNT_NUM][MAX_ACCOUNT_NUM]int{}
 	// creating the buffered channel holding up to 100 transactions:
@@ -103,7 +112,11 @@ func detect() {
 			volume[source][target] = volume[source][target] + t.Amount
 			log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("%s -> %s totalling %d now", t.Source, t.Target, volume[source][target]))
 			if volume[source][target] > threshold {
-				fmt.Println(fmt.Sprintf("\x1b[31;1mPOTENTIAL MONEY LAUNDERING:\x1b[0m %s -> %s totalling %d now ", t.Source, t.Target, volume[source][target]))
+				if prodout {
+					fmt.Println(fmt.Sprintf("POTENTIAL MONEY LAUNDERING: %s -> %s totalling %d now ", t.Source, t.Target, volume[source][target]))
+				} else {
+					fmt.Println(fmt.Sprintf("\x1b[31;1mPOTENTIAL MONEY LAUNDERING:\x1b[0m %s -> %s totalling %d now ", t.Source, t.Target, volume[source][target]))
+				}
 			}
 		}
 		log.WithFields(log.Fields{"func": "detect"}).Info(fmt.Sprintf("Current queue length: %d", len(iqueue)))
