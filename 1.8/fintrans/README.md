@@ -1,6 +1,6 @@
 # Fast Data: Financial Transaction Processing
 
-This demo is all about processing, monitoring and understanding high-volume financial transactions. There are several challenges that we tackle here: 1. the frequency of transactions, 2. the volume of transactions, 3. scaling out the processing. 
+This demo is all about processing, visualizing and understanding high-volume financial transactions. There are several challenges that we tackle here: 1. the frequency of transactions, 2. the volume of transactions, 3. scaling out the processing. 
 
 For the sake of this demo let's assume you're responsible for building a data processing infrastructure that allows insights about recent transactions from multiple locations (with recent being, for example, the past hour) as well as being able to spot fraudulent transactions, for example such that violate money laundering regulations. In the context of money laundering, what happens is that a large amount, say $1,000,000 is split into many small batches, each just under the allowed value of, for example, $10,000. With many tens or hundreds thousands of transactions going on at any given point in time it's hard to keep a running total for each account in real time and react appropriately. Failure to report or react on attempted money laundering typically means fines for the financial institutions—something best avoided altogether. See also [US](https://www.fincen.gov/history-anti-money-laundering-laws) and [EU](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32015L0849) legislation and regulations on this topic for more information.
 
@@ -25,6 +25,13 @@ For the sake of this demo let's assume you're responsible for building a data pr
 ## Architecture
 
 ![Financial transaction processing demo architecture](img/fintrans-architecture.png)
+
+Apache Kafka plays the central role in the architecture of this demo. There is one producer, the [generator](#generating-transactions)
+and two [consumers](#consuming-transactions), three stateless [DC/OS services](service/) written in Go. The generator continuously produces
+(random) financial transactions and pushes them into Kafka. One consumer reads out these transactions and ingests it into InfluxDB,
+a time series datastore with a retention period of one hour, and further on is connected to Grafana to provide a visual representation.
+A second consumer reads out the transactions and performs a simple fraud detection on it, enabling a human operator to review potential
+money laundering activities.
 
 ## Prerequisites
 
@@ -307,3 +314,16 @@ POTENTIAL MONEY LAUNDERING: 292 -> 693 totalling 7104 now
 POTENTIAL MONEY LAUNDERING: 314 -> 666 totalling 6613 now
 ^C
 ```
+
+## Discussion
+
+In this demo we used Kafka to handle the storage and routing of high-volume financial transactions and provided two exemplary ways
+how those could be consumed. A few notes concerning the setup and applicability to practical environments:
+
+- While the consumers are deliberately kept simple, you can use them as a basis for a real world implementation.
+- Besides monitoring, this architecture and setup is production-ready. Kafka takes care of the scaling issues around data capturing and ingestion and via the System Marathon (`Services` tab in the DC/OS UI) the generator and the two consumers can be scaled. Further, the System Marathon makes sure that should any of the stateless services fail it will be re-started, acting as a distributed supervisor for these long-running tasks.
+- The overall utilization of the system, even in the basic configuration, that is, with only a single generator and respectively one consumer of each type is actually pretty good, see also the screen shot of the DC/OS dashboard below.
+
+![Financial transaction processing demo overall utilization](img/dcos-dashboard.png)
+
+Should you have any questions or suggestions concerning the demo, please raise an [issue](https://dcosjira.atlassian.net/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
