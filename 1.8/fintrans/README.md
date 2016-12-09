@@ -301,7 +301,7 @@ You can launch the money laundering detector as follows from your local developm
 ```bash
 $ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
 $ go build
-$ ALERT_THRESHOLD=6000 ./laundering-detector --broker broker-0.kafka.mesos:9398
+$ ALERT_THRESHOLD=6000 PROD_OUTPUT=false ./laundering-detector --broker broker-0.kafka.mesos:9398
 INFO[0002] Queued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=consume
 INFO[0002] Dequeued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=detect
 INFO[0002] 970 -> 477 totalling 1102 now                 func=detect
@@ -316,7 +316,7 @@ POTENTIAL MONEY LAUNDERING: 236 -> 367 totalling 9128 now
 Note that if you're only interested in the money laundering alerts themselves you can execute it as follows, effectively hiding all the `INFO` messages:
 
 ```bash
-$ ALERT_THRESHOLD=6000 ./laundering-detector --broker broker-0.kafka.mesos:9398 2>/dev/null
+$ ALERT_THRESHOLD=6000 PROD_OUTPUT=false ./laundering-detector --broker broker-0.kafka.mesos:9398 2>/dev/null
 POTENTIAL MONEY LAUNDERING: 292 -> 693 totalling 7104 now
 POTENTIAL MONEY LAUNDERING: 314 -> 666 totalling 6613 now
 ^C
