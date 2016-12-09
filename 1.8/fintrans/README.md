@@ -35,7 +35,7 @@ money laundering activities.
 
 ## Prerequisites
 
-- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 2 private agents each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
+- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 2 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
 - The JSON query util [jq](https://github.com/stedolan/jq/wiki/Installation) must be installed.
 - [SSH](https://dcos.io/docs/1.8/administration/access-node/sshcluster/) cluster access must be set up.
@@ -201,15 +201,18 @@ Feel free to change the Grafana graphs or add new ones, at this stage.
 
 #### Money laundering detector
 
-Another consumer of the transactions stored in Kafka is the money [laundering detector](laundering-detector/). It is a command line tool that alerts when the aggregate transaction volume from a source to a target account hits a certain (configurable) treshold. 
+Another consumer of the transactions stored in Kafka is the money [laundering detector](laundering-detector/). It is a command line tool that alerts when the aggregate transaction volume from a source to a target account exceeds a configurable treshold. The idea behind this is to highlight potential money laundering attempts to a human operator who then has to verify manually if a fraudulent transaction has been taken place.
 
-Now, in order to highlight potential money laundering attempts to a human operator who then has to verify manually if indeed a fraudulent transaction has been taken place.
-
-In order to see the  money laundering alerts, locate the money laundering detector in the DC/OS UI. Look for a service with an ID of `/fintrans/laundering-detector` and go to the `Logs` tab:
+In order to see the  money laundering alerts, locate the money laundering detector in the DC/OS UI. Look for a service with ID `/fintrans/laundering-detector` and go to the `Logs` tab. You should see something like this:
 
 ![Accessing the money laundering detector in the DC/OS UI](img/laundering-detector.png)
 
-Alternatively, from the command line, you can see the logs as follows: 1. Find out the task ID of the money laundering detector with `dcos task` and then use `dcos task log --follow $TASKID` to view the logs:
+Alternatively, from the command line, you can see the logs as follows:
+
+1. Find out the task ID of the money laundering detector with `dcos task`.
+1. Use `dcos task log --follow $TASKID` to view the logs with the task ID you found in the previous step.
+
+An exemplary session looks like so:
 
 ```bash
 $ dcos task
@@ -238,6 +241,10 @@ POTENTIAL MONEY LAUNDERING: 303 -> 24 totalling 8431 now
 Note that the alert treshold by default is set to $8000 but you can change that at any time by editing the [service definition](service/laundering-detector.json).
 
 ## Development
+
+If you are interested in testing this demo locally or want to extend it, follow the instructions in this section.
+Note that while the generator and consumers can run locally, you will still need a DC/OS cluster with Kafka, InfluxDB and Grafana running
+in order to carry out all the tasks.
 
 ### Tunneling 
 
