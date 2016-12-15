@@ -22,7 +22,7 @@ dcos package install grafana --yes
 echo ==================================================================
 echo =
 echo = OK, I will wait 2 min now to give Kafka some time to get ready ...
-sleep 2m
+sleep 120
 
 # install the generator and the consumers
 echo ==================================================================
