@@ -62,7 +62,7 @@ In this step you deploy the containerized Tweeter app to a public node.
       ],
       "labels": {
         "HAPROXY_GROUP": "external",
-        "HAPROXY_0_VHOST": "<Master-Public-IP>"
+        "HAPROXY_0_VHOST": "<Public-Agent>"
       }
     }
     ```
