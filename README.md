@@ -10,5 +10,5 @@ Got any questions? Please reach out to Jörg Schad on the [DC/OS Community Slack
 
 Currently, the following demos are available:
 
-- [Tweeter](1.8/tweeter/)
+- [Tweeter](1.8/tweeter#tweeter)
 - [Financial Transaction Processing](1.8/fintrans#fast-data-financial-transaction-processing)
