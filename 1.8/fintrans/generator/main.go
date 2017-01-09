@@ -17,18 +17,19 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/Shopify/sarama"
-	log "github.com/Sirupsen/logrus"
 	"math/rand"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/Shopify/sarama"
+	log "github.com/Sirupsen/logrus"
 )
 
 const (
-	VERSION         string = "0.1.0"
-	MAX_ACCOUNT_NUM int    = 1000
-	MAX_AMOUNT      int    = 10000
+	onversion     string = "0.1.0"
+	maxAccountNum int    = 1000
+	maxAmount     int    = 10000
 )
 
 var (
@@ -43,7 +44,7 @@ var (
 )
 
 func about() {
-	fmt.Printf("\nThis is the fintrans generator in version %s\n", VERSION)
+	fmt.Printf("\nThis is the fintrans generator in version %s\n", onversion)
 }
 
 func init() {
@@ -97,9 +98,9 @@ func main() {
 	for {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
 		city := cities[r.Intn(len(cities))]
-		source := r.Intn(MAX_ACCOUNT_NUM)
-		target := r.Intn(MAX_ACCOUNT_NUM)
-		amount := r.Intn(MAX_AMOUNT)
+		source := r.Intn(maxAccountNum)
+		target := r.Intn(maxAccountNum)
+		amount := r.Intn(maxAmount)
 		if source != target {
 			rawmsg := fmt.Sprintf("%d %d %d", source, target, amount)
 			msg := &sarama.ProducerMessage{Topic: string(city), Value: sarama.StringEncoder(rawmsg)}

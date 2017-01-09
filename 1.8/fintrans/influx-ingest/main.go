@@ -17,19 +17,20 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/Shopify/sarama"
-	log "github.com/Sirupsen/logrus"
-	"github.com/influxdata/influxdb/client/v2"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/Shopify/sarama"
+	log "github.com/Sirupsen/logrus"
+	"github.com/influxdata/influxdb/client/v2"
 )
 
 const (
-	VERSION         string = "0.1.0"
-	PROD_INFLUX_API string = "http://influxdb.marathon.l4lb.thisdcos.directory:8086"
+	onversion     string = "0.1.0"
+	prodInfluxAPI string = "http://influxdb.marathon.l4lb.thisdcos.directory:8086"
 )
 
 var (
@@ -48,6 +49,12 @@ var (
 	iqueue chan Transaction
 )
 
+// Transaction defines a single transaction:
+// in which City it originated, the Source
+// account the money came from as well as
+// the Target account the money goes to and
+// last but not least the Amount that was
+// transferred in the transaction.
 type Transaction struct {
 	City   string
 	Source string
@@ -56,7 +63,7 @@ type Transaction struct {
 }
 
 func about() {
-	fmt.Printf("\nThis is the fintrans InfluxDB ingestion consumer in version %s\n", VERSION)
+	fmt.Printf("\nThis is the fintrans InfluxDB ingestion consumer in version %s\n", onversion)
 }
 
 func init() {
@@ -78,7 +85,7 @@ func init() {
 	flag.Parse()
 
 	// the optional environment variables:
-	influxAPI = PROD_INFLUX_API
+	influxAPI = prodInfluxAPI
 	if ia := os.Getenv("INFLUX_API"); ia != "" {
 		influxAPI = ia
 	}

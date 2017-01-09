@@ -17,12 +17,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/Shopify/sarama"
-	log "github.com/Sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/Shopify/sarama"
+	log "github.com/Sirupsen/logrus"
 )
 
 const (
