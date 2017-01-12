@@ -26,7 +26,7 @@ This demo is all about gaining insights from sensor streaming data.
 
 ## Prerequisites
 
-- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 2 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
+- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 4 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
 - The JSON query util [jq](https://github.com/stedolan/jq/wiki/Installation) must be installed.
 - [SSH](https://dcos.io/docs/1.8/administration/access-node/sshcluster/) cluster access must be set up.
@@ -57,7 +57,63 @@ TBD
 
 ### Manual
 
-TBD
+#### Kafka
+
+Install the Apache Kafka package with the following [options](kafka-config.json):
+
+```bash
+$ cd $DEMO_HOME/1.8/sensoranalytics/
+$ dcos package install kafka --options=kafka-config.json
+```
+
+Note that if you are unfamiliar with Kafka and its terminology, you can check out the respective [101 example](https://github.com/dcos/examples/tree/master/1.8/kafka) as well now.
+
+Next, figure out where the broker is:
+
+```bash
+$ dcos kafka connection
+
+{
+  "address": [
+    "10.0.3.178:9398"
+  ],
+  "zookeeper": "master.mesos:2181/dcos-service-kafka",
+  "dns": [
+    "broker-0.kafka.mesos:9398"
+  ],
+  "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
+}
+```
+
+Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
+
+### Spark
+
+Install the Apache Spark package:
+
+```bash
+$ dcos package install spark
+Installing Marathon app for package [spark] version [1.0.6-2.0.2]
+Installing CLI subcommand for package [spark] version [1.0.6-2.0.2]
+New command available: dcos spark
+DC/OS Spark is being installed!
+
+        Documentation: https://docs.mesosphere.com/current/usage/service-guides/spark/
+        Issues: https://docs.mesosphere.com/support/
+```
+
+### Zeppelin
+
+Install the Apache Zeppelin package:
+
+```bash
+$ dcos package install zeppelin
+Installing Marathon app for package [zeppelin] version [0.5.6]
+DC/OS Zeppelin is being installed!
+
+        Documentation: https://docs.mesosphere.com/zeppelin/
+        Issues: https://docs.mesosphere.com/support/
+```
 
 ## Use
 
@@ -79,6 +135,12 @@ $ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources
 ```
 
 Note that it is necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure the are they appear at the top of the list, before any other DNS server entries.
+
+### WIP
+
+- fetcher from HTTP-API into Kafka
+- using [integration](https://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html) to read out from spark
+- using Zeppelin as the front-end
 
 
 ## Discussion
