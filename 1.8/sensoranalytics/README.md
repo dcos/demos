@@ -37,6 +37,16 @@ The DC/OS services and support libraries used in the demo are as follows:
 
 - TBD
 
+We're using the Open Data Aarhus [real-time traffic  data](https://www.odaa.dk/dataset/realtids-trafikdata) kindly provided by the Aarhus Kommune (Denmark, Europe), available via the CC Open Data license. Open Data rocks!
+
+An [exemplary snapshot](example_data.json) is available here in this repo. This snapshot was created using the following command:
+
+```bash
+$ curl -o example_data.json https://www.odaa.dk/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d&limit=5
+```
+
+Note that the data source is updated roughly every 5 min, something to be taken into account when showing the demo.
+
 ## Install
 
 TBD
