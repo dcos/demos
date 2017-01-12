@@ -15,20 +15,20 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/Shopify/sarama"
+	log "github.com/Sirupsen/logrus"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
-
-	"github.com/Shopify/sarama"
-	log "github.com/Sirupsen/logrus"
 )
 
 const (
-	onversion     string = "0.1.0"
-	maxAccountNum int    = 1000
-	maxAmount     int    = 10000
+	onversion string = "0.1.0"
+	dataurl   string = "https://www.odaa.dk/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d&limit=1"
 )
 
 var (
@@ -37,9 +37,41 @@ var (
 	broker string
 	// how many seconds to wait between generating a message (default is 2):
 	genwaitsec time.Duration
+	// the HTTP client used to communicate with the Open Data Aarhus API:
+	httpc http.Client
 	// the Kafka producer:
 	producer sarama.SyncProducer
 )
+
+// TrafficData is the payload from the
+// Open Data Aarhus data API
+type TrafficData struct {
+	Result TrafficDataResult `json:"result"`
+}
+
+// TrafficDataResult holds the query result
+type TrafficDataResult struct {
+	Fields  []Field  `json:"fields"`
+	Records []Record `json:"fields"`
+}
+
+// Field is the schema pair
+type Field struct {
+	Type string `json:"type"`
+	ID   string `json:"id"`
+}
+
+// Record is the actual data record
+type Record struct {
+	Status       string `json:"status"`
+	AvgMTime     int    `json:"avgMeasuredTime"`
+	TimeStamp    string `json:"TIMESTAMP"`
+	MMTime       int    `json:"medianMeasuredTime"`
+	AvgSpeed     int    `json:"avgSpeed"`
+	VehicleCount int    `json:"vehicleCount"`
+	RecordID     int    `json:"_id"`
+	ID           int    `json:"REPORT_ID"`
+}
 
 func about() {
 	fmt.Printf("\nThis is the traffic data fetcher in version %s\n", onversion)
@@ -56,12 +88,24 @@ func init() {
 	}
 	flag.Parse()
 
-	genwaitsec = 2
+	genwaitsec = 10
 	if gw := os.Getenv("GEN_WAIT_SEC"); gw != "" {
 		if gwi, err := strconv.Atoi(gw); err == nil {
 			genwaitsec = time.Duration(gwi)
 		}
 	}
+
+	httpc = http.Client{Timeout: 10 * time.Second}
+}
+
+func pulldata(target interface{}) error {
+	r, err := httpc.Get(dataurl)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	return json.NewDecoder(r.Body).Decode(target)
 }
 
 func main() {
@@ -88,13 +132,16 @@ func main() {
 	}()
 
 	for {
-		rawmsg := time.Now().Format(time.RFC3339)
-		msg := &sarama.ProducerMessage{Topic: "trafficdata", Value: sarama.StringEncoder(rawmsg)}
-		if _, _, err := producer.SendMessage(msg); err != nil {
-			log.Error("Failed to send message ", err)
-		} else {
-			log.Info(fmt.Sprintf("%#v", msg))
-		}
+		d := TrafficData{}
+		pulldata(&d)
+		log.Info(fmt.Sprintf("%#v", d))
+
+		// msg := &sarama.ProducerMessage{Topic: "trafficdata", Value: sarama.StringEncoder(rawmsg)}
+		// if _, _, err := producer.SendMessage(msg); err != nil {
+		// 	log.Error("Failed to send message ", err)
+		// } else {
+		// 	log.Info(fmt.Sprintf("%#v", msg))
+		// }
 		time.Sleep(genwaitsec * time.Second)
 	}
 }
