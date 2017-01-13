@@ -15,6 +15,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -132,16 +133,18 @@ func main() {
 	}()
 
 	for {
+		buf := bytes.NewBufferString("")
+		enc := json.NewEncoder(buf)
 		d := TrafficData{}
 		pulldata(&d)
-		log.Info(fmt.Sprintf("%#v", d))
-
-		// msg := &sarama.ProducerMessage{Topic: "trafficdata", Value: sarama.StringEncoder(rawmsg)}
-		// if _, _, err := producer.SendMessage(msg); err != nil {
-		// 	log.Error("Failed to send message ", err)
-		// } else {
-		// 	log.Info(fmt.Sprintf("%#v", msg))
-		// }
+		enc.Encode(d)
+		log.Debug(fmt.Sprintf("%s", buf.String()))
+		msg := &sarama.ProducerMessage{Topic: "trafficdata", Value: sarama.StringEncoder(buf.String())}
+		if _, _, err := producer.SendMessage(msg); err != nil {
+			log.Error("Failed to send message ", err)
+		} else {
+			log.Info(fmt.Sprintf("%#v", msg))
+		}
 		time.Sleep(genwaitsec * time.Second)
 	}
 }
