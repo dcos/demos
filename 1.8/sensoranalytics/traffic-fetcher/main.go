@@ -109,6 +109,13 @@ func pulldata(target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
+func tomsg(d TrafficData) string {
+	buf := bytes.NewBufferString("")
+	enc := json.NewEncoder(buf)
+	enc.Encode(d)
+	return buf.String()
+}
+
 func main() {
 	if version {
 		about()
@@ -133,13 +140,12 @@ func main() {
 	}()
 
 	for {
-		buf := bytes.NewBufferString("")
-		enc := json.NewEncoder(buf)
+
 		d := TrafficData{}
 		pulldata(&d)
-		enc.Encode(d)
-		log.Debug(fmt.Sprintf("%s", buf.String()))
-		msg := &sarama.ProducerMessage{Topic: "trafficdata", Value: sarama.StringEncoder(buf.String())}
+		rawmsg := tomsg(d)
+		log.Debug(fmt.Sprintf("%s", rawmsg))
+		msg := &sarama.ProducerMessage{Topic: "trafficdata", Value: sarama.StringEncoder(rawmsg)}
 		if _, _, err := producer.SendMessage(msg); err != nil {
 			log.Error("Failed to send message ", err)
 		} else {
