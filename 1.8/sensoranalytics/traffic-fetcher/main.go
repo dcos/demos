@@ -28,7 +28,7 @@ import (
 
 const (
 	onversion string = "0.1.0"
-	dataurl   string = "https://www.odaa.dk/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d&limit=1"
+	dataurl   string = "https://www.odaa.dk/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d&limit=10"
 )
 
 var (
@@ -52,7 +52,7 @@ type TrafficData struct {
 // TrafficDataResult holds the query result
 type TrafficDataResult struct {
 	Fields  []Field  `json:"fields"`
-	Records []Record `json:"fields"`
+	Records []Record `json:"records"`
 }
 
 // Field is the schema pair
