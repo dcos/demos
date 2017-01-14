@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -113,7 +114,7 @@ func tomsg(d TrafficData) string {
 	buf := bytes.NewBufferString("")
 	enc := json.NewEncoder(buf)
 	enc.Encode(d)
-	return buf.String()
+	return strings.TrimSpace(buf.String())
 }
 
 func main() {
