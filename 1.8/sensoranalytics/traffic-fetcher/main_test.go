@@ -70,7 +70,6 @@ func TestCanParseODAData(t *testing.T) {
 		},
 	}
 
-	// expected := "{\"result\":{\"fields\":[{\"type\":\"text\",\"id\":\"status\"},{\"type\":\"int4\",\"id\":\"avgMeasuredTime\"},{\"type\":\"timestamp\",\"id\":\"TIMESTAMP\"},{\"type\":\"int4\",\"id\":\"medianMeasuredTime\"},{\"type\":\"int4\",\"id\":\"avgSpeed\"},{\"type\":\"int4\",\"id\":\"vehicleCount\"},{\"type\":\"int4\",\"id\":\"_id\"},{\"type\":\"int4\",\"id\":\"REPORT_ID\"}],\"records\":[{\"status\":\"OK\",\"avgMeasuredTime\":1,\"TIMESTAMP\":\"2017-01-13T00:00:00\",\"medianMeasuredTime\":1,\"avgSpeed\":1,\"vehicleCount\":1,\"_id\":1,\"REPORT_ID\":1}]}}"
 	expected := `{"result":{"fields":[{"type":"text","id":"status"},{"type":"int4","id":"avgMeasuredTime"},{"type":"timestamp","id":"TIMESTAMP"},{"type":"int4","id":"medianMeasuredTime"},{"type":"int4","id":"avgSpeed"},{"type":"int4","id":"vehicleCount"},{"type":"int4","id":"_id"},{"type":"int4","id":"REPORT_ID"}],"records":[{"status":"OK","avgMeasuredTime":1,"TIMESTAMP":"2017-01-13T00:00:00","medianMeasuredTime":1,"avgSpeed":1,"vehicleCount":1,"_id":1,"REPORT_ID":1}]}}`
 	actual := tomsg(d)
 	if actual != expected {
