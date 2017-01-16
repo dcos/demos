@@ -128,7 +128,13 @@ to use `local[*]`, that is, the build-in Spark engine:
 
 ![Changing Zeppelin's Spark Interpreter to local modem](img/zeppelin-spark-interpreter-localmode.png)
 
+Next, set up [dependencies](https://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html#linking)
+for Spark Streaming + Kafka support:
 
+```bash
+%dep
+z.load("org.apache.spark:spark-streaming-kafka_2.11:1.6.3")
+```
 
 ## Use
 
