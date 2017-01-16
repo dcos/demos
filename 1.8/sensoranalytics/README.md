@@ -89,6 +89,14 @@ Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
 
 ### Spark
 
+Since the current Universe version of Apache Spark (2.0.2) is incompatible with the
+current Universe version of Apache Zeppelin (0.5.6-incubating) you'd need to re-configure
+Zeppelin's [Spark Interpreter](http://zeppelin.apache.org/docs/0.5.6-incubating/interpreter/spark.html)
+as described in the next section.
+
+If you want to use a newer version of Zeppelin that supports Spark 2.x then you
+can proceed here.
+
 Install the Apache Spark package:
 
 ```bash
@@ -114,6 +122,13 @@ DC/OS Zeppelin is being installed!
         Documentation: https://docs.mesosphere.com/zeppelin/
         Issues: https://docs.mesosphere.com/support/
 ```
+
+Change the [Spark Interpreter](http://zeppelin.apache.org/docs/0.5.6-incubating/interpreter/spark.html)
+to use `local[*]`, that is, the build-in Spark engine:
+
+![Changing Zeppelin's Spark Interpreter to local modem](img/zeppelin-spark-interpreter-localmode.png)
+
+
 
 ## Use
 
