@@ -6,6 +6,8 @@ If you want to contribute your own demo, please [fork](https://help.github.com/a
 
 Got any questions? Please reach out to Jörg Schad on the [DC/OS Community Slack](http://chat.dcos.io) (@joerg.mesosphere) or via mail ([joerg@dcos.io](mailto:joerg@dcos.io)).
 
+##<span style="color:red">WARNING: Demos may make use of features only available in certain versions of DC/OS. Please ensure that the demo has been tested with your version of DC/OS.</span>
+
 ## DC/OS 1.8
 
 Currently, the following demos are available:
