@@ -177,11 +177,9 @@ root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 ```
 
 
-### Spark stream processing
+### Consumption
 
-- using [integration](https://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html) to read out from Spark
-- Spark streaming job to pull out data, aggregate it and using Zeppelin as the front-end to visualize it
-
+Custom Kafka consumer + d3.js viz
 
 ## Discussion
 
