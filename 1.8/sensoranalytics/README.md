@@ -179,7 +179,7 @@ root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 
 ### Consumption
 
-Custom Kafka consumer + d3.js viz
+Custom Kafka consumer + [d3.js](https://d3js.org/) or [Smashing](https://github.com/Smashing/smashing) and OSM for viz
 
 ## Discussion
 
