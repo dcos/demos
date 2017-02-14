@@ -100,13 +100,20 @@ In order to use Minio you first need to have Marathon-LB installed.
 $ dcos package install marathon-lb
 ```
 
-Next [find out the public agent IP](https://dcos.io/docs/1.8/administration/locate-public-agent/)
-and store it in an environment variable called `$PUBLIC_AGENT_IP`.
+Next find out the [IP of the public agent](https://dcos.io/docs/1.8/administration/locate-public-agent/)
+and store it in an environment variable called `$PUBLIC_AGENT_IP`, for example:
+
+```bash
+$ export PUBLIC_AGENT_IP=34.250.247.12
+```
 
 Now you can install the Minio package like so:
 
 ```bash
-$ dcos package install minio
+$ cd $DEMO_HOME/1.8/sensoranalytics/
+$ sed -i '.tmp' "s/PUBLIC_AGENT_IP/$PUBLIC_AGENT_IP/" ./minio-config.json
+$ dcos package install minio --options=minio-config.json
+$ mv ./minio-config.json.tmp ./minio-config.json
 ```
 
 ## Use
