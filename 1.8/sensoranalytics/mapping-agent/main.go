@@ -15,7 +15,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -39,10 +38,6 @@ var (
 	// the data point ingestion queue:
 	tqueue chan TrafficData
 )
-
-func about() {
-	fmt.Printf("\nThis is the mapping agent in version %s\n", onversion)
-}
 
 func init() {
 	flag.BoolVar(&version, "version", false, "Display version information")
@@ -70,15 +65,6 @@ func servecontent() {
 	})
 	log.WithFields(log.Fields{"func": "servecontent"}).Info("Starting app server")
 	http.ListenAndServe(":8080", nil)
-}
-
-func frommsg(raw string) TrafficData {
-	td := TrafficData{}
-	buf := bytes.NewBufferString(raw)
-	if err := json.NewDecoder(buf).Decode(&td); err != nil {
-		log.WithFields(log.Fields{"func": "frommsg"}).Error(err)
-	}
-	return td
 }
 
 func consume(topic string) {
