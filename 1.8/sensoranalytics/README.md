@@ -94,7 +94,16 @@ Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
 
 ### Minio
 
-Install the Minio package:
+In order to use Minio you first need to have Marathon-LB installed.
+
+```bash
+$ dcos package install marathon-lb
+```
+
+Next [find out the public agent IP](https://dcos.io/docs/1.8/administration/locate-public-agent/)
+and store it in an environment variable called `$PUBLIC_AGENT_IP`.
+
+Now you can install the Minio package like so:
 
 ```bash
 $ dcos package install minio
