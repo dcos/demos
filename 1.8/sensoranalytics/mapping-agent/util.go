@@ -21,6 +21,7 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/minio/minio-go"
 	"os"
+	"strconv"
 )
 
 func about() {
@@ -66,4 +67,20 @@ func syncstaticdata() MetaTrafficData {
 		}
 	}
 	return mtd
+}
+
+// Lookup joins a record ID from a traffic datapoint with
+// the static route and metrics data set and creates a geo-coded
+// marker for consumption in the OSM overlay from it
+func lookup(id int) GeoMarker {
+	gm := GeoMarker{}
+	for _, record := range rmd.Result.Records {
+		if record.ID == id {
+			gm.Lat, _ = strconv.ParseFloat(record.Lat, 64)
+			gm.Lng, _ = strconv.ParseFloat(record.Lng, 64)
+			gm.Label = record.Name
+			break
+		}
+	}
+	return gm
 }

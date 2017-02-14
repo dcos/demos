@@ -22,7 +22,6 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"net/http"
 	"os"
-	"strconv"
 	"sync"
 )
 
@@ -62,19 +61,9 @@ func servecontent() {
 		log.WithFields(log.Fields{"func": "servecontent"}).Info(fmt.Sprintf("Serving data: %v records", len(t.Result.Records)))
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
-
-		lookup := t.Result.Records[0].ID
-		gm := GeoMarker{}
-		for _, record := range rmd.Result.Records {
-			if record.ID == lookup {
-				gm.Lat, _ = strconv.ParseFloat(record.Lat, 64)
-				gm.Lng, _ = strconv.ParseFloat(record.Lng, 64)
-				gm.Label = record.Name
-				break
-			}
-		}
-		// join with route and metrics data and create geomap overlay data:
-		json.NewEncoder(w).Encode(gm)
+		// join with route and metrics data and create geomap overlay data
+		// TBD: create slice with all the data points
+		json.NewEncoder(w).Encode(lookup(t.Result.Records[0].ID))
 
 	})
 	log.WithFields(log.Fields{"func": "servecontent"}).Info("Starting app server")

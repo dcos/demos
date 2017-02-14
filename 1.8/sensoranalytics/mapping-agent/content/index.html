@@ -3,7 +3,10 @@
   <body>
   <div id="mapdiv"></div>
   <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   <script>
+  var BASE_URL = "http://" + window.location.host;
+  $(document).ready(function() {
     map = new OpenLayers.Map("mapdiv");
     map.addLayer(new OpenLayers.Layer.OSM());
 
@@ -17,17 +20,18 @@
 
     var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
 
-    // Define markers as "features" of the vector layer:
-    var feature = new OpenLayers.Feature.Vector(
-            new OpenLayers.Geometry.Point(10.18616224669654, 56.16929516572502).transform(epsg4326, projectTo),
-            {description:'This is the value of<br>the description attribute'} ,
-            {externalGraphic: 'marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
-        );
-    vectorLayer.addFeatures(feature);
-
+    $.getJSON(BASE_URL + '/data', function(d) {
+      console.log(d.label, d.lng, d.lat)
+      // Define markers as "features" of the vector layer:
+      var feature = new OpenLayers.Feature.Vector(
+              new OpenLayers.Geometry.Point(d.lng, d.lat).transform(epsg4326, projectTo),
+              {description:d.label} ,
+              {externalGraphic: 'marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+          );
+      vectorLayer.addFeatures(feature);
+    });
 
     map.addLayer(vectorLayer);
-
 
     //Add a selector control to the vectorLayer with popup functions
     var controls = {
@@ -54,7 +58,7 @@
 
     map.addControl(controls['selector']);
     controls['selector'].activate();
-
+});
   </script>
 
 </body></html>
