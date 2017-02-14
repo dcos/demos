@@ -24,10 +24,11 @@ This demo is all about gaining insights from sensor streaming data.
 
 ![Sensor analytics demo architecture](img/sensor-analytics-architecture.png)
 
+In this demo, we're using the Open Data Aarhus [real-time traffic  data](https://www.odaa.dk/dataset/realtids-trafikdata) kindly provided by the Aarhus Kommune (Denmark, Europe), available via the CC Open Data license. Open Data rocks!
+
 The traffic fetcher pulls live data from the real-time data source and ingests it into Kafka.
 The mapping agent joins the data with a static dataset (the Route and Metrics data) served via Minio and
 serves both the static content (OSM map) and the actual data points.
-
 
 ## Prerequisites
 
@@ -42,9 +43,7 @@ The DC/OS services and support libraries used in the demo are as follows:
 
 - TBD
 
-We're using the Open Data Aarhus [real-time traffic  data](https://www.odaa.dk/dataset/realtids-trafikdata) kindly provided by the Aarhus Kommune (Denmark, Europe), available via the CC Open Data license. Open Data rocks!
-
-An [exemplary snapshot](example_data.json) is available here in this repo. This snapshot was created using the following command:
+An [exemplary snapshot](example_data.json) of the traffic real-time data is available here in this repo. This snapshot was created using the following command:
 
 ```bash
 $ curl -o example_data.json https://www.odaa.dk/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d&limit=5
@@ -116,6 +115,10 @@ $ dcos package install minio --options=minio-config.json
 $ mv ./minio-config.json.tmp ./minio-config.json
 ```
 
+After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
+in your browser and you should see the UI. Note that you can learn how to obtain the
+`AccessKey` and `SecretKey` via the DC/OS Minio [tutorial](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
+
 ## Use
 
 The following sections describe how to use the demo after having installed it.
@@ -158,6 +161,11 @@ root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 
 
 ### Consumption
+
+- Serve static HTML page with [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html) centered around Aarhus
+- Ingest route and metrics data into Minio
+- Implement join of real-time data and routing data
+- Polling in mapping agent client to update datapoints
 
 
 ## Discussion
