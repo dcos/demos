@@ -45,36 +45,6 @@ var (
 	producer sarama.SyncProducer
 )
 
-// TrafficData is the payload from the
-// Open Data Aarhus data API
-type TrafficData struct {
-	Result TrafficDataResult `json:"result"`
-}
-
-// TrafficDataResult holds the query result
-type TrafficDataResult struct {
-	Fields  []Field  `json:"fields"`
-	Records []Record `json:"records"`
-}
-
-// Field is the schema pair
-type Field struct {
-	Type string `json:"type"`
-	ID   string `json:"id"`
-}
-
-// Record is the actual data record
-type Record struct {
-	Status       string `json:"status"`
-	AvgMTime     int    `json:"avgMeasuredTime"`
-	TimeStamp    string `json:"TIMESTAMP"`
-	MMTime       int    `json:"medianMeasuredTime"`
-	AvgSpeed     int    `json:"avgSpeed"`
-	VehicleCount int    `json:"vehicleCount"`
-	RecordID     int    `json:"_id"`
-	ID           int    `json:"REPORT_ID"`
-}
-
 func about() {
 	fmt.Printf("\nThis is the traffic data fetcher in version %s\n", onversion)
 }
@@ -150,7 +120,7 @@ func main() {
 		if _, _, err := producer.SendMessage(msg); err != nil {
 			log.Error("Failed to send message ", err)
 		} else {
-			log.Info(fmt.Sprintf("%#v", msg))
+			log.Info(fmt.Sprintf("%#v", d))
 		}
 		time.Sleep(genwaitsec * time.Second)
 	}

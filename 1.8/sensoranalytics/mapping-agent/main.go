@@ -15,13 +15,15 @@
 package main
 
 import (
-	// "encoding/json"
+	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/Shopify/sarama"
+	log "github.com/Sirupsen/logrus"
 	"net/http"
 	"os"
-	"strconv"
-	"time"
+	"sync"
 )
 
 const (
@@ -30,10 +32,11 @@ const (
 
 var (
 	version bool
+	wg      sync.WaitGroup
 	// FQDN/IP + port of a Kafka broker:
 	broker string
-	// how many seconds to wait between generating a message (default is 2):
-	pollwaitsec time.Duration
+	// the data point ingestion queue:
+	tqueue chan TrafficData
 )
 
 func about() {
@@ -41,9 +44,8 @@ func about() {
 }
 
 func init() {
-
 	flag.BoolVar(&version, "version", false, "Display version information")
-	// flag.StringVar(&broker, "broker", "", "The FQDN or IP address and port of a Kafka broker. Example: broker-1.kafka.mesos:9382 or 10.0.3.178:9398")
+	flag.StringVar(&broker, "broker", "", "The FQDN or IP address and port of a Kafka broker. Example: broker-1.kafka.mesos:9382 or 10.0.3.178:9398")
 	flag.Usage = func() {
 		fmt.Printf("Usage: %s [args]\n\n", os.Args[0])
 		fmt.Println("Arguments:")
@@ -51,13 +53,65 @@ func init() {
 	}
 	flag.Parse()
 
-	pollwaitsec = 10
-	if pw := os.Getenv("POLL_WAIT_SEC"); pw != "" {
-		if pwi, err := strconv.Atoi(pw); err == nil {
-			pollwaitsec = time.Duration(pwi)
+	// creating the buffered channel holding up to 10 traffic data points:
+	tqueue = make(chan TrafficData, 10)
+}
+
+func servecontent() {
+	fileServer := http.FileServer(http.Dir("content/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	http.HandleFunc("/data", func(w http.ResponseWriter, r *http.Request) {
+		t := <-tqueue
+		log.WithFields(log.Fields{"func": "servecontent"}).Info(fmt.Sprintf("Serving data: %v records", len(t.Result.Records)))
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(t)
+	})
+	http.ListenAndServe(":8080", nil)
+}
+
+func frommsg(raw string) TrafficData {
+	td := TrafficData{}
+	buf := bytes.NewBufferString(raw)
+	if err := json.NewDecoder(buf).Decode(&td); err != nil {
+		log.WithFields(log.Fields{"func": "frommsg"}).Error(err)
+	}
+	return td
+}
+
+func consume(topic string) {
+	var consumer sarama.Consumer
+	var partitionConsumer sarama.PartitionConsumer
+	var err error
+	defer wg.Done()
+	if consumer, err = sarama.NewConsumer([]string{broker}, nil); err != nil {
+		log.WithFields(log.Fields{"func": "consume"}).Error(err)
+		return
+	}
+	defer func() {
+		if err = consumer.Close(); err != nil {
+			log.WithFields(log.Fields{"func": "consume"}).Error(err)
 		}
+	}()
+
+	if partitionConsumer, err = consumer.ConsumePartition(topic, 0, sarama.OffsetNewest); err != nil {
+		log.WithFields(log.Fields{"func": "consume"}).Error(err)
+		return
 	}
 
+	defer func() {
+		if err := partitionConsumer.Close(); err != nil {
+			log.WithFields(log.Fields{"func": "consume"}).Error(err)
+		}
+	}()
+
+	for {
+		msg := <-partitionConsumer.Messages()
+		traw := string(msg.Value)
+		t := frommsg(traw)
+		tqueue <- t
+		log.WithFields(log.Fields{"func": "consume"}).Debug(fmt.Sprintf("Queued %#v", t))
+	}
 }
 
 func main() {
@@ -65,13 +119,16 @@ func main() {
 		about()
 		os.Exit(0)
 	}
-	// if broker == "" {
-	// 	flag.Usage()
-	// 	os.Exit(1)
-	// }
-	fileServer := http.FileServer(http.Dir("content/"))
-	http.Handle("/static/", http.StripPrefix("/static/", fileServer))
+	if broker == "" {
+		flag.Usage()
+		os.Exit(1)
+	}
+	// serve static content (HTML page with OSM overlay) from /static
+	// and traffic data in JSON from /data endpoint
+	go servecontent()
 
-	http.ListenAndServe(":8080", nil)
-
+	// kick of consuming data from Kafka:
+	wg.Add(1)
+	go consume("trafficdata")
+	wg.Wait()
 }
