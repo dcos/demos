@@ -20,9 +20,9 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
-	"github.com/minio/minio-go"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 )
 
@@ -37,6 +37,7 @@ var (
 	broker string
 	// the data point ingestion queue:
 	tqueue chan TrafficData
+	rmd    MetaTrafficData
 )
 
 func init() {
@@ -61,7 +62,20 @@ func servecontent() {
 		log.WithFields(log.Fields{"func": "servecontent"}).Info(fmt.Sprintf("Serving data: %v records", len(t.Result.Records)))
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(t)
+
+		lookup := t.Result.Records[0].ID
+		gm := GeoMarker{}
+		for _, record := range rmd.Result.Records {
+			if record.ID == lookup {
+				gm.Lat, _ = strconv.ParseFloat(record.Lat, 64)
+				gm.Lng, _ = strconv.ParseFloat(record.Lng, 64)
+				gm.Label = record.Name
+				break
+			}
+		}
+		// join with route and metrics data and create geomap overlay data:
+		json.NewEncoder(w).Encode(gm)
+
 	})
 	log.WithFields(log.Fields{"func": "servecontent"}).Info("Starting app server")
 	http.ListenAndServe(":8080", nil)
@@ -103,37 +117,6 @@ func consume(topic string) {
 	}
 }
 
-func syncstaticdata() {
-	endpoint := "34.250.247.12"
-	accessKeyID, secretAccessKey := "F3QE89J9WPSC49CMKCCG", "2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9"
-	useSSL := false
-	bucket := "aarhus"
-	object := "route_metrics_data.json"
-
-	log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("Trying to retrieve %s/%s from Minio", bucket, object))
-	if mc, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL); err != nil {
-		log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s ", err))
-	} else {
-		exists, err := mc.BucketExists(bucket)
-		if err != nil || !exists {
-			log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s", err))
-		} else {
-			if err := mc.FGetObject(bucket, object, "./rmd.json"); err != nil {
-				log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s", err))
-			} else {
-				log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("Retrieved route and metrics from Minio"))
-				mtd := MetaTrafficData{}
-				f, _ := os.Open("./rmd.json")
-				defer os.Remove("./rmd.json")
-				if err := json.NewDecoder(f).Decode(&mtd); err != nil {
-					log.WithFields(log.Fields{"func": "frommsg"}).Fatal(err)
-				}
-				log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("%+v", mtd))
-			}
-		}
-	}
-}
-
 func main() {
 	if version {
 		about()
@@ -145,7 +128,7 @@ func main() {
 	}
 
 	// pull static route and metrics data from Minio:
-	syncstaticdata()
+	rmd = syncstaticdata()
 
 	// serve static content (HTML page with OSM overlay) from /static
 	// and traffic data in JSON from /data endpoint

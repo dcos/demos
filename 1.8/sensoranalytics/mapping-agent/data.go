@@ -64,3 +64,10 @@ type MetaRecord struct {
 	RecordID int    `json:"_id"`
 	ID       int    `json:"REPORT_ID"`
 }
+
+// GeoMarker carries the data for an OSM overlay marker
+type GeoMarker struct {
+	Lat   float64 `json:"lat"`
+	Lng   float64 `json:"lng"`
+	Label string  `json:"label"`
+}
