@@ -18,11 +18,16 @@ This demo is all about gaining insights from sensor streaming data.
  - [Single command](#single-command)
  - [Manual](#manual)
 - [Use](#use) the demo
- - [Generating transactions](#generating-transactions)
- - [Consuming transactions](#consuming-transactions)
 - [Development and testing](#development)
 
 ## Architecture
+
+![Sensor analytics demo architecture](img/sensor-analytics-architecture.png)
+
+The traffic fetcher pulls live data from the real-time data source and ingests it into Kafka.
+The mapping agent joins the data with a static dataset (the Route and Metrics data) served via Minio and
+serves both the static content (OSM map) and the actual data points.
+
 
 ## Prerequisites
 
@@ -87,53 +92,12 @@ $ dcos kafka connection
 
 Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
 
-### Spark
+### Minio
 
-Since the current Universe version of Apache Spark (2.0.2) is incompatible with the
-current Universe version of Apache Zeppelin (0.5.6-incubating) you'd need to re-configure
-Zeppelin's [Spark Interpreter](http://zeppelin.apache.org/docs/0.5.6-incubating/interpreter/spark.html)
-as described in the next section.
-
-If you want to use a newer version of Zeppelin that supports Spark 2.x then you
-can proceed here.
-
-Install the Apache Spark package:
+Install the Minio package:
 
 ```bash
-$ dcos package install spark
-Installing Marathon app for package [spark] version [1.0.6-2.0.2]
-Installing CLI subcommand for package [spark] version [1.0.6-2.0.2]
-New command available: dcos spark
-DC/OS Spark is being installed!
-
-        Documentation: https://docs.mesosphere.com/current/usage/service-guides/spark/
-        Issues: https://docs.mesosphere.com/support/
-```
-
-### Zeppelin
-
-Install the Apache Zeppelin package:
-
-```bash
-$ dcos package install zeppelin
-Installing Marathon app for package [zeppelin] version [0.5.6]
-DC/OS Zeppelin is being installed!
-
-        Documentation: https://docs.mesosphere.com/zeppelin/
-        Issues: https://docs.mesosphere.com/support/
-```
-
-Change the [Spark Interpreter](http://zeppelin.apache.org/docs/0.5.6-incubating/interpreter/spark.html)
-to use `local[*]`, that is, the build-in Spark engine:
-
-![Changing Zeppelin's Spark Interpreter to local modem](img/zeppelin-spark-interpreter-localmode.png)
-
-Next, set up [dependencies](https://spark.apache.org/docs/latest/streaming-kafka-0-10-integration.html#linking)
-for Spark Streaming + Kafka support:
-
-```bash
-%dep
-z.load("org.apache.spark:spark-streaming-kafka_2.11:1.6.3")
+$ dcos package install minio
 ```
 
 ## Use
@@ -179,7 +143,6 @@ root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 
 ### Consumption
 
-Custom Kafka consumer + [d3.js](https://d3js.org/) or [Smashing](https://github.com/Smashing/smashing) and OSM for viz
 
 ## Discussion
 
