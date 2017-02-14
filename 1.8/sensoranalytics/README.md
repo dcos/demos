@@ -93,7 +93,9 @@ Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
 
 ### Minio
 
-In order to use Minio you first need to have Marathon-LB installed.
+To serve some static data we use Minio in this demo, just as you would use, say S3 in AWS.
+
+In order to use Minio you first need to have Marathon-LB installed:
 
 ```bash
 $ dcos package install marathon-lb
@@ -118,6 +120,12 @@ $ mv ./minio-config.json.tmp ./minio-config.json
 After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
 in your browser and you should see the UI. Note that you can learn how to obtain the
 `AccessKey` and `SecretKey` via the DC/OS Minio [tutorial](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
+
+Next, you upload the static route and metrics data set into Minio: create a bucket called `aarhus` and upload [route_metrics_data.json](route_metrics_data.json) there, resulting in something like the following:
+
+![The route and metrics data set in a Minio bucket](img/static-data-minio.png)
+
+Now we're all set and can use the demo.
 
 ## Use
 
@@ -163,7 +171,6 @@ root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 ### Consumption
 
 - Serve static HTML page with [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html) centered around Aarhus
-- Ingest route and metrics data into Minio
 - Implement join of real-time data and routing data
 - Polling in mapping agent client to update datapoints
 
