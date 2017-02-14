@@ -43,3 +43,24 @@ type Record struct {
 	RecordID     int    `json:"_id"`
 	ID           int    `json:"REPORT_ID"`
 }
+
+// MetaTrafficData is the payload from the
+// Open Data Aarhus data API static route and metrics dataset
+type MetaTrafficData struct {
+	Result MetaTrafficDataResult `json:"result"`
+}
+
+// MetaTrafficDataResult holds the result
+type MetaTrafficDataResult struct {
+	Fields  []Field      `json:"fields"`
+	Records []MetaRecord `json:"records"`
+}
+
+// MetaRecord is the actual data record
+type MetaRecord struct {
+	Lat      string `json:"POINT_1_LAT"`
+	Lng      string `json:"POINT_1_LNG"`
+	Name     string `json:"REPORT_NAME"`
+	RecordID int    `json:"_id"`
+	ID       int    `json:"REPORT_ID"`
+}

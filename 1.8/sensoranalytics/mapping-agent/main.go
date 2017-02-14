@@ -132,10 +132,17 @@ func syncstaticdata() {
 		if err != nil || !exists {
 			log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s", err))
 		} else {
-			if raw, err := mc.GetObject(bucket, object); err != nil {
+			if err := mc.FGetObject(bucket, object, "./rmd.json"); err != nil {
 				log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s", err))
 			} else {
-				log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("Retrieved %+v from Minio", raw))
+				log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("Retrieved route and metrics from Minio"))
+				mtd := MetaTrafficData{}
+				f, _ := os.Open("./rmd.json")
+				defer os.Remove("./rmd.json")
+				if err := json.NewDecoder(f).Decode(&mtd); err != nil {
+					log.WithFields(log.Fields{"func": "frommsg"}).Fatal(err)
+				}
+				log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("%+v", mtd))
 			}
 		}
 	}
