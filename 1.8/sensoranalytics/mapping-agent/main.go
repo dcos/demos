@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	log "github.com/Sirupsen/logrus"
+	"github.com/minio/minio-go"
 	"net/http"
 	"os"
 	"sync"
@@ -67,6 +68,7 @@ func servecontent() {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(t)
 	})
+	log.WithFields(log.Fields{"func": "servecontent"}).Info("Starting app server")
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -110,7 +112,32 @@ func consume(topic string) {
 		traw := string(msg.Value)
 		t := frommsg(traw)
 		tqueue <- t
-		log.WithFields(log.Fields{"func": "consume"}).Debug(fmt.Sprintf("Queued %#v", t))
+		log.WithFields(log.Fields{"func": "consume"}).Debug(fmt.Sprintf("%#v", t))
+		log.WithFields(log.Fields{"func": "servecontent"}).Info("Received data from Kafka and queued it")
+	}
+}
+
+func syncstaticdata() {
+	endpoint := "34.250.247.12"
+	accessKeyID, secretAccessKey := "F3QE89J9WPSC49CMKCCG", "2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9"
+	useSSL := false
+	bucket := "aarhus"
+	object := "route_metrics_data.json"
+
+	log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("Trying to retrieve %s/%s from Minio", bucket, object))
+	if mc, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL); err != nil {
+		log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s ", err))
+	} else {
+		exists, err := mc.BucketExists(bucket)
+		if err != nil || !exists {
+			log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s", err))
+		} else {
+			if raw, err := mc.GetObject(bucket, object); err != nil {
+				log.WithFields(log.Fields{"func": "syncstaticdata"}).Fatal(fmt.Sprintf("%s", err))
+			} else {
+				log.WithFields(log.Fields{"func": "syncstaticdata"}).Info(fmt.Sprintf("Retrieved %+v from Minio", raw))
+			}
+		}
 	}
 }
 
@@ -123,6 +150,10 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
+
+	// pull static route and metrics data from Minio:
+	syncstaticdata()
+
 	// serve static content (HTML page with OSM overlay) from /static
 	// and traffic data in JSON from /data endpoint
 	go servecontent()
