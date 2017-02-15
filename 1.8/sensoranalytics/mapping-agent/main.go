@@ -62,8 +62,15 @@ func servecontent() {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Content-Type", "application/json")
 		// join with route and metrics data and create geomap overlay data
-		// TBD: create slice with all the data points
-		json.NewEncoder(w).Encode(lookup(t.Result.Records[0].ID))
+		gmlist := []GeoMarker{}
+		for _, record := range t.Result.Records {
+			gm := lookup(record.ID)
+			gm.TimeStamp = record.TimeStamp
+			gm.VehicleCount = record.VehicleCount
+			gmlist = append(gmlist, gm)
+			log.WithFields(log.Fields{"func": "servecontent"}).Info(fmt.Sprintf("%v", gm))
+		}
+		json.NewEncoder(w).Encode(gmlist)
 
 	})
 	log.WithFields(log.Fields{"func": "servecontent"}).Info("Starting app server")

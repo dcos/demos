@@ -21,17 +21,21 @@
     var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
 
     $.getJSON(BASE_URL + '/data', function(d) {
-      console.log(d.label, d.lng, d.lat)
-      // Define markers as "features" of the vector layer:
-      var feature = new OpenLayers.Feature.Vector(
-              new OpenLayers.Geometry.Point(d.lng, d.lat).transform(epsg4326, projectTo),
-              {description:d.label} ,
-              {externalGraphic: 'marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
-          );
-      vectorLayer.addFeatures(feature);
-    });
+      for (var i = 0; i < d.length; i++) {
+        var gm = d[i]
+        console.log(gm.label, gm.lng, gm.lat)
+        if (gm.lng > 0 && gm.lat > 0) {
+          var feature = new OpenLayers.Feature.Vector(
+                  new OpenLayers.Geometry.Point(gm.lng, gm.lat).transform(epsg4326, projectTo),
+                  {description: 'At <b>' + gm.timestamp + '</b><br/>there were <b>' +  gm.numvehicles + '</b> vehicles<br/>in <b>' + gm.label + '</b>' } ,
+                  {externalGraphic: 'marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+              );
+          vectorLayer.addFeatures(feature);
+        }
+      }
 
-    map.addLayer(vectorLayer);
+      map.addLayer(vectorLayer);
+    });
 
     //Add a selector control to the vectorLayer with popup functions
     var controls = {

@@ -131,7 +131,9 @@ Now we're all set and can use the demo.
 
 The following sections describe how to use the demo after having installed it.
 
-TBD
+As a result, this is what you should see in the mapping agent Web interface:
+
+![OSM overlay with Markers](img/osm-overlay-marker.png)
 
 ## Development
 

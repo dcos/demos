@@ -67,7 +67,9 @@ type MetaRecord struct {
 
 // GeoMarker carries the data for an OSM overlay marker
 type GeoMarker struct {
-	Lat   float64 `json:"lat"`
-	Lng   float64 `json:"lng"`
-	Label string  `json:"label"`
+	Lat          float64 `json:"lat"`
+	Lng          float64 `json:"lng"`
+	Label        string  `json:"label"`
+	TimeStamp    string  `json:"timestamp"`
+	VehicleCount int     `json:"numvehicles"`
 }
