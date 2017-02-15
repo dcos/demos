@@ -127,6 +127,10 @@ Next, you upload the static route and metrics data set into Minio: create a buck
 
 Now we're all set and can use the demo.
 
+### Services
+
+install:
+
 ## Use
 
 The following sections describe how to use the demo after having installed it.
@@ -172,9 +176,15 @@ root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:218
 
 ### Consumption
 
-- Serve static HTML page with [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html) centered around Aarhus
-- Implement join of real-time data and routing data
-- Polling in mapping agent client to update datapoints
+The mapping agent uses [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html).
+
+To launch the mapping agent:
+
+```bash
+$ cd $DEMO_HOME/1.8/sensoranalytics/mapping-agent
+$ go build
+$ PUBLIC_AGENT_IP=34.250.247.12 ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9 ./mapping-agent -broker broker-0.kafka.mesos:9517
+```
 
 
 ## Discussion

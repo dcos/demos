@@ -1,0 +1,24 @@
+{
+  "id": "/sensor-analytics/mapping-agent",
+  "instances": 1,
+  "cpus": 0.5,
+  "mem": 200,
+  "cmd": "curl -s -L https://github.com/dcos/demos/releases/download/0.2/mapping-agent -o mapping-agent && chmod u+x mapping-agent && ./mapping-agent --broker BROKER",
+  "env": {
+    "PUBLIC_AGENT_IP": "_PUBLIC_AGENT_IP",
+    "ACCESS_KEY_ID": "_ACCESS_KEY_ID",
+    "SECRET_ACCESS_KEY": "_SECRET_ACCESS_KEY"
+  },
+  "uris": [
+    "https://github.com/dcos/demos/releases/download/0.2/content.zip"
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "external",
+    "HAPROXY_0_VHOST": "_PUBLIC_AGENT_IP"
+  },
+  "portDefinitions": [
+    {
+      "port": 10008
+    }
+  ]
+}

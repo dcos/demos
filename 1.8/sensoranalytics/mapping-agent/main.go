@@ -73,8 +73,15 @@ func servecontent() {
 		json.NewEncoder(w).Encode(gmlist)
 
 	})
-	log.WithFields(log.Fields{"func": "servecontent"}).Info("Starting app server")
-	http.ListenAndServe(":8080", nil)
+
+	// when running in the cluster, use dynamically assigned port,
+	// otherwise, when running locally, use port 8080:
+	appserverport := ":8080"
+	if asp := os.Getenv("PORT0"); asp != "" {
+		appserverport = ":" + asp
+	}
+	log.WithFields(log.Fields{"func": "servecontent"}).Info(fmt.Sprintf("Starting app server, serving on port %v", appserverport))
+	http.ListenAndServe(appserverport, nil)
 }
 
 func consume(topic string) {

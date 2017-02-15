@@ -38,8 +38,32 @@ func frommsg(raw string) TrafficData {
 }
 
 func syncstaticdata() MetaTrafficData {
-	endpoint := "34.250.247.12"
-	accessKeyID, secretAccessKey := "F3QE89J9WPSC49CMKCCG", "2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9"
+
+	endpoint := ""
+	accessKeyID := ""
+	secretAccessKey := ""
+
+	if ep := os.Getenv("PUBLIC_AGENT_IP"); ep != "" {
+		endpoint = ep
+	} else {
+		log.WithFields(log.Fields{"func": "syncstaticdata"}).Error("Need $PUBLIC_AGENT_IP environment variable set")
+		os.Exit(1)
+	}
+
+	if ak := os.Getenv("ACCESS_KEY_ID"); ak != "" {
+		accessKeyID = ak
+	} else {
+		log.WithFields(log.Fields{"func": "syncstaticdata"}).Error("Need $ACCESS_KEY_ID environment variable set")
+		os.Exit(1)
+	}
+
+	if sk := os.Getenv("SECRET_ACCESS_KEY"); sk != "" {
+		secretAccessKey = sk
+	} else {
+		log.WithFields(log.Fields{"func": "syncstaticdata"}).Error("Need $SECRET_ACCESS_KEY environment variable set")
+		os.Exit(1)
+	}
+
 	useSSL := false
 	bucket := "aarhus"
 	object := "route_metrics_data.json"
