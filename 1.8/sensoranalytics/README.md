@@ -53,15 +53,7 @@ Note that the data source is updated roughly every 5 min, something to be taken 
 
 ## Install
 
-TBD
-
-### Single command
-
-TBD
-
-### Manual
-
-#### Kafka
+### Kafka
 
 Install the Apache Kafka package with the following [options](kafka-config.json):
 
@@ -93,7 +85,7 @@ Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
 
 ### Minio
 
-To serve some static data we use Minio in this demo, just as you would use, say S3 in AWS.
+To serve some static data we use Minio in this demo, just as you would use, say, S3 in AWS.
 
 In order to use Minio you first need to have Marathon-LB installed:
 
@@ -127,15 +119,26 @@ Next, you upload the static route and metrics data set into Minio: create a buck
 
 Now we're all set and can use the demo.
 
-### Services
+### Custom services
 
-install:
+Last but not least it's time to launch the traffic fetcher and mapping agent custom services:
+
+```bash
+$ cd $DEMO_HOME/1.8/sensoranalytics/
+$ ./install-services.sh
+deploying the traffic fetcher ...
+Created deployment 8b6c0e9c-f6cb-4bf6-8102-1c376377deb6
+==========================================================================
+deploying the mapping agent ...
+Created deployment f43d8948-7d13-4793-ac26-f2c7b0dfdcda
+DONE ====================================================================
+```
 
 ## Use
 
 The following sections describe how to use the demo after having installed it.
 
-As a result, this is what you should see in the mapping agent Web interface:
+Simply go to `http://$PUBLIC_AGENT_IP:10008/static/` and as a result you should see the mapping agent Web interface:
 
 ![OSM overlay with Markers](img/osm-overlay-marker.png)
 
@@ -162,23 +165,17 @@ For a local dev/test setup, and with [DC/OS VPN tunnel](#tunneling) enabled, we 
 $ cd $DEMO_HOME/1.8/sensoranalytics/traffic-fetcher/
 $ go build
 $ ./traffic-fetcher -broker broker-0.kafka.mesos:9233
-INFO[0002] &sarama.ProducerMessage{Topic:"trafficdata", Key:sarama.Encoder(nil), Value:"{\"result\":{\"fields\":[{\"type\":\"int4\",\"id\":\"_id\"},{\"type\":\"int4\",\"id\":\"REPORT_ID\"},{\"type\":\"timestamp\",\"id\":\"TIMESTAMP\"},{\"type\":\"text\",\"id\":\"status\"},{\"type\":\"int4\",\"id\":\"avgMeasuredTime\"},{\"type\":\"int4\",\"id\":\"medianMeasuredTime\"},{\"type\":\"int4\",\"id\":\"vehicleCount\"},{\"type\":\"int4\",\"id\":\"avgSpeed\"}],\"records\":[{\"status\":\"OK\",\"avgMeasuredTime\":104,\"TIMESTAMP\":\"2017-01-13T11:50:00\",\"medianMeasuredTime\":104,\"avgSpeed\":19,\"vehicleCount\":9,\"_id\":418,\"REPORT_ID\":204273},{\"status\":\"OK\",\"avgMeasuredTime\":59,\"TIMESTAMP\":\"2017-01-13T11:50:00\",\"medianMeasuredTime\":59,\"avgSpeed\":35,\"vehicleCount\":6,\"_id\":53,\"REPORT_ID\":187748},{\"status\":\"OK\",\"avgMeasuredTime\":138,\"TIMESTAMP\":\"2017-01-13T11:50:00\",\"medianMeasuredTime\":138,\"avgSpeed\":30,\"vehicleCount\":11,\"_id\":228,\"REPORT_ID\":183091},{\"status\":\"OK\",\"avgMeasuredTime\":69,\"TIMESTAMP\":\"2017-01-13T11:54:00\",\"medianMeasuredTime\":69,\"avgSpeed\":48,\"vehicleCount\":8,\"_id\":330,\"REPORT_ID\":181331},{\"status\":\"OK\",\"avgMeasuredTime\":120,\"TIMESTAMP\":\"2017-01-13T11:55:00\",\"medianMeasuredTime\":120,\"avgSpeed\":61,\"vehicleCount\":5,\"_id\":338,\"REPORT_ID\":197951},{\"status\":\"OK\",\"avgMeasuredTime\":145,\"TIMESTAMP\":\"2017-01-13T11:55:00\",\"medianMeasuredTime\":145,\"avgSpeed\":51,\"vehicleCount\":3,\"_id\":345,\"REPORT_ID\":158505},{\"status\":\"OK\",\"avgMeasuredTime\":57,\"TIMESTAMP\":\"2017-01-13T11:55:00\",\"medianMeasuredTime\":57,\"avgSpeed\":70,\"vehicleCount\":6,\"_id\":395,\"REPORT_ID\":197463},{\"status\":\"OK\",\"avgMeasuredTime\":78,\"TIMESTAMP\":\"2016-10-05T09:29:00\",\"medianMeasuredTime\":78,\"avgSpeed\":67,\"vehicleCount\":17,\"_id\":450,\"REPORT_ID\":1164},{\"status\":\"OK\",\"avgMeasuredTime\":44,\"TIMESTAMP\":\"2017-01-13T11:50:00\",\"medianMeasuredTime\":44,\"avgSpeed\":39,\"vehicleCount\":20,\"_id\":381,\"REPORT_ID\":183009},{\"status\":\"OK\",\"avgMeasuredTime\":188,\"TIMESTAMP\":\"2017-01-13T11:50:00\",\"medianMeasuredTime\":188,\"avgSpeed\":15,\"vehicleCount\":2,\"_id\":49,\"REPORT_ID\":187509}]}}\n", Metadata:interface {}(nil), Offset:8, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
 ```
 
-To check if the messages arrive in the `trafficdata` topic in Kafka, you can, for example, ssh into the Master and then do the following there (see also the [DC/OS Kafka example](https://github.com/dcos/examples/tree/master/1.8/kafka#consume-a-message) if you're unsure about what's happening here):
+### Mapping agent
 
-```bash
-core@ip-10-0-5-169 ~ $ docker run -it mesosphere/kafka-client
-root@a773778c0962:/bin# ./kafka-console-consumer.sh --zookeeper leader.mesos:2181/dcos-service-kafka --topic trafficdata --from-beginning
-{"result":{"fields":[{"type":"int4","id":"_id"},{"type":"int4","id":"REPORT_ID"},{"type":"timestamp","id":"TIMESTAMP"},{"type":"text","id":"status"},{"type":"int4","id":"avgMeasuredTime"},{"type":"int4","id":"medianMeasuredTime"},{"type":"int4","id":"vehicleCount"},{"type":"int4","id":"avgSpeed"}],"records":[{"status":"OK","avgMeasuredTime":104,"TIMESTAMP":"2017-01-13T11:50:00","medianMeasuredTime":104,"avgSpeed":19,"vehicleCount":9,"_id":418,"REPORT_ID":204273},{"status":"OK","avgMeasuredTime":59,"TIMESTAMP":"2017-01-13T11:50:00","medianMeasuredTime":59,"avgSpeed":35,"vehicleCount":6,"_id":53,"REPORT_ID":187748},{"status":"OK","avgMeasuredTime":138,"TIMESTAMP":"2017-01-13T11:50:00","medianMeasuredTime":138,"avgSpeed":30,"vehicleCount":11,"_id":228,"REPORT_ID":183091},{"status":"OK","avgMeasuredTime":69,"TIMESTAMP":"2017-01-13T11:54:00","medianMeasuredTime":69,"avgSpeed":48,"vehicleCount":8,"_id":330,"REPORT_ID":181331},{"status":"OK","avgMeasuredTime":120,"TIMESTAMP":"2017-01-13T11:55:00","medianMeasuredTime":120,"avgSpeed":61,"vehicleCount":5,"_id":338,"REPORT_ID":197951},{"status":"OK","avgMeasuredTime":145,"TIMESTAMP":"2017-01-13T11:55:00","medianMeasuredTime":145,"avgSpeed":51,"vehicleCount":3,"_id":345,"REPORT_ID":158505},{"status":"OK","avgMeasuredTime":57,"TIMESTAMP":"2017-01-13T11:55:00","medianMeasuredTime":57,"avgSpeed":70,"vehicleCount":6,"_id":395,"REPORT_ID":197463},{"status":"OK","avgMeasuredTime":78,"TIMESTAMP":"2016-10-05T09:29:00","medianMeasuredTime":78,"avgSpeed":67,"vehicleCount":17,"_id":450,"REPORT_ID":1164},{"status":"OK","avgMeasuredTime":44,"TIMESTAMP":"2017-01-13T11:50:00","medianMeasuredTime":44,"avgSpeed":39,"vehicleCount":20,"_id":381,"REPORT_ID":183009},{"status":"OK","avgMeasuredTime":188,"TIMESTAMP":"2017-01-13T11:50:00","medianMeasuredTime":188,"avgSpeed":15,"vehicleCount":2,"_id":49,"REPORT_ID":187509}]}}
-```
+The mapping agent:
 
+- on startup consumes the route and metrics data from Minio
+- serves the marker data as JSON via the `/data` endpoint
+- uses [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html) to visualize traffic data via the `/static` enpoint
 
-### Consumption
-
-The mapping agent uses [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html).
-
-To launch the mapping agent:
+To launch the mapping agent (note that you need to expose the env variables):
 
 ```bash
 $ cd $DEMO_HOME/1.8/sensoranalytics/mapping-agent
@@ -186,7 +183,8 @@ $ go build
 $ PUBLIC_AGENT_IP=34.250.247.12 ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9 ./mapping-agent -broker broker-0.kafka.mesos:9517
 ```
 
-
 ## Discussion
+
+TBD.
 
 Should you have any questions or suggestions concerning the demo, please raise an [issue](https://dcosjira.atlassian.net/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
