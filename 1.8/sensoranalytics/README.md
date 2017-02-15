@@ -106,7 +106,9 @@ $ mv ./minio-config.json.tmp ./minio-config.json
 
 After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
 in your browser and you should see the UI. Note that you can learn how to obtain the
-`AccessKey` and `SecretKey` via the DC/OS Minio [tutorial](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
+`AccessKey` and `SecretKey` via the DC/OS Minio [tutorial](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console):
+
+![Obtaining Minio credentials](img/minio-creds.png)
 
 Next, you upload the static route and metrics data set into Minio: create a bucket called `aarhus` and upload [route_metrics_data.json](route_metrics_data.json) there, resulting in something like the following:
 
