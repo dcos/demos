@@ -1,22 +1,17 @@
 # Fast Data: Sensor Analytics
 
-This demo is all about gaining insights from sensor streaming data.
-
-
+This demo is all about gaining insights from sensor streaming data in the context of traffic data.
 
 - Estimated time for completion:
- - Single command: 10min
- - Manual: 25min
+ - Install: 20min
  - Development: unbounded
-- Target audience: Anyone interested stream data processing and analytics with Apache Spark.
+- Target audience: Anyone interested in stream data processing.
 
 **Table of Contents**:
 
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
-- Install the demo:
- - [Single command](#single-command)
- - [Manual](#manual)
+- [Install](#install) the demo
 - [Use](#use) the demo
 - [Development and testing](#development)
 
