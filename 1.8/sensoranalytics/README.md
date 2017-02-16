@@ -1,6 +1,11 @@
 # Fast Data: Sensor Analytics
 
 This demo is all about gaining insights from sensor streaming data in the context of traffic data.
+As a real-time data source we're using the Open Data Aarhus [traffic  data](https://www.odaa.dk/dataset/realtids-trafikdata),
+kindly provided by the Aarhus Kommune (Denmark, Europe), which is available via the CC Open Data license. Open Data rocks!
+
+The demo shows how to ingest the real-time data, join it with a static dataset containing metadata
+about the sensors and finally shows the rendering of the tracked vehicles on a map.
 
 - Estimated time for completion:
  - Install: 20min
@@ -19,8 +24,6 @@ This demo is all about gaining insights from sensor streaming data in the contex
 
 ![Sensor analytics demo architecture](img/sensor-analytics-architecture.png)
 
-In this demo, we're using the Open Data Aarhus [real-time traffic  data](https://www.odaa.dk/dataset/realtids-trafikdata) kindly provided by the Aarhus Kommune (Denmark, Europe), available via the CC Open Data license. Open Data rocks!
-
 The traffic fetcher pulls live data from the real-time data source and ingests it into Kafka.
 The mapping agent joins the data with a static dataset (the Route and Metrics data) served via Minio and
 serves both the static content (OSM map) and the actual data points.
@@ -36,7 +39,8 @@ Going forward we'll call the directory you cloned the `dcos/demo` Git repo into 
 
 The DC/OS services and support libraries used in the demo are as follows:
 
-- TBD
+- Apache Kafka 0.10.0 with Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) package, client-side.
+- Minio with the [Minio Go Library for Amazon S3 compatible cloud storage](github.com/minio/minio-go) package, client-side.
 
 An [exemplary snapshot](example_data.json) of the traffic real-time data is available here in this repo. This snapshot was created using the following command:
 
@@ -44,7 +48,7 @@ An [exemplary snapshot](example_data.json) of the traffic real-time data is avai
 $ curl -o example_data.json https://www.odaa.dk/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d&limit=5
 ```
 
-Note that the data source is updated roughly every 5 min, something to be taken into account when showing the demo.
+Note that the data source is updated roughly every 5 min, something to be taken into account when using the demo.
 
 ## Install
 
