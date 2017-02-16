@@ -25,7 +25,7 @@ about the sensors and finally shows the rendering of the tracked vehicles on a m
 ![Sensor analytics demo architecture](img/sensor-analytics-architecture.png)
 
 The traffic fetcher pulls live data from the real-time data source and ingests it into Kafka.
-The mapping agent joins the data with a static dataset (the Route and Metrics data) served via Minio and
+The mapping agent joins the data with a static dataset (the route and metrics data) served via Minio and
 serves both the static content (OSM map) and the actual data points.
 
 ## Prerequisites
@@ -109,20 +109,46 @@ $ mv ./minio-config.json.tmp ./minio-config.json
 ```
 
 After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
-in your browser and you should see the UI. Note that you can learn how to obtain the
-`AccessKey` and `SecretKey` via the DC/OS Minio [tutorial](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console):
+in your browser and you should see the UI.
+
+Next, we will need to get the Minio credentials in order to access the Web UI (and later on the HTTP API).
+The credentials used by Minio are akin to the ones you might know from Amazon S3, called `$ACCESS_KEY_ID`
+and `$SECRET_ACCESS_KEY`. In order to obtain these credentials, go to the `Services` tab of the DC/OS UI and
+select the running Minio service; click on the `Logs` tab and you should see:
 
 ![Obtaining Minio credentials](img/minio-creds.png)
 
-Next, you upload the static route and metrics data set into Minio: create a bucket called `aarhus` and upload [route_metrics_data.json](route_metrics_data.json) there, resulting in something like the following:
+Note that you can learn more about Minio and the credentials in the respective [example](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
+
+Next, you upload the static route and metrics data set into Minio:
+
+1. create a bucket called `aarhus`
+1. upload the JSON file [route_metrics_data.json](route_metrics_data.json) into this bucket
+
+The result should look something like the following:
 
 ![The route and metrics data set in a Minio bucket](img/static-data-minio.png)
 
-Now we're all set and can use the demo.
+Now that we've set up the data services we can move on to the state-less custom services that
+interact with the stream data source and take care of the play-out, respectively.
 
 ### Custom services
 
-Last but not least it's time to launch the traffic fetcher and mapping agent custom services:
+The two state-less custom services, written in Go, are the traffic fetcher and the
+mapping agent, deployed as Marathon services.
+
+A prerequisite for the install script to work is that three environment variables
+are defined: `$PUBLIC_AGENT_IP` (the public agent IP address), as well as `$ACCESS_KEY_ID`
+and `$SECRET_ACCESS_KEY` (Minio credentials); all of which are explained in the
+previous section. I've been using the following (specific for my setup):
+
+```bash
+$ export PUBLIC_AGENT_IP=34.250.247.12
+$ export ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG
+$ export SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9
+```
+
+Now you can install the custom services like so:
 
 ```bash
 $ cd $DEMO_HOME/1.8/sensoranalytics/
@@ -147,7 +173,6 @@ Simply go to `http://$PUBLIC_AGENT_IP:10008/static/` and as a result you should 
 
 If you are interested in testing this demo locally or want to extend it, follow the instructions in this section.
 
-
 ### Tunneling
 
 For local development and testing we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine. The following instructions are only an example (using Tunnelblick on macOS) and the concrete steps necessary depend on your platform as well as on what VPN client you're using.
@@ -170,19 +195,21 @@ $ ./traffic-fetcher -broker broker-0.kafka.mesos:9233
 
 ### Mapping agent
 
-The mapping agent:
+The mapping agent consumes data from Kafka and takes care of the play-out, that is, the rendering of the markers (representing vehicle tracking stations equipped with sensors) on an OpenStreetMap overlay map:
 
-- on startup consumes the route and metrics data from Minio
-- serves the marker data as JSON via the `/data` endpoint
-- uses [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html) to visualize traffic data via the `/static` enpoint
+- on startup the mapping agent consumes the route and metrics data from Minio
+- it serves the marker data as JSON via the `/data` endpoint
+- it uses [OSM map overlay](http://harrywood.co.uk/maps/examples/openlayers/marker-popups.view.html) to visualize traffic data via the `/static` endpoint
 
-To launch the mapping agent (note that you need to expose the env variables):
+To launch the mapping agent locally, with [DC/OS VPN tunnel](#tunneling) enabled, do the following (note that you need to expose the env variables):
 
 ```bash
 $ cd $DEMO_HOME/1.8/sensoranalytics/mapping-agent
 $ go build
 $ PUBLIC_AGENT_IP=34.250.247.12 ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9 ./mapping-agent -broker broker-0.kafka.mesos:9517
 ```
+
+Now you can open `http://localhost:8080` in your browser and you should see the OSM map with the markers. Allow a few seconds until you see data arriving from Kafka before the markers are properly rendering.
 
 ## Discussion
 
