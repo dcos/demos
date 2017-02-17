@@ -129,12 +129,12 @@ The result should look something like the following:
 
 ![The route and metrics data set in a Minio bucket](img/static-data-minio.png)
 
-Now that we've set up the data services we can move on to the state-less custom services that
+Now that we've set up the data services we can move on to the stateless custom services that
 interact with the stream data source and take care of the play-out, respectively.
 
 ### Custom services
 
-The two state-less custom services, written in Go, are the traffic fetcher and the
+The two stateless custom services, written in Go, are the traffic fetcher and the
 mapping agent, deployed as Marathon services.
 
 A prerequisite for the install script to work is that three environment variables
@@ -213,6 +213,14 @@ Now you can open `http://localhost:8080` in your browser and you should see the 
 
 ## Discussion
 
-TBD.
+In this demo we ingested real-time traffic data into Kafka, joined it with a static dataset from Minio and
+displayed the resulting car tracking on a map.
+
+- One can argue that the static (metadata) can be simply packaged along with the mapping agent rather than going via Minio.
+While this is technically correct, the point of the exercise was to show how streaming data and static data can be joined
+in a loosely coupled and flexible manner. In general, for anything you'd use in a public cloud setup S3, Azure Storage and the like,
+you can use Minio on DC/OS.
+- Besides monitoring, this architecture and setup is production-ready. Kafka takes care of the scaling issues around data capturing and ingestion and via the System Marathon (`Services` tab in the DC/OS UI) the traffic fetcher and the mapping agent can be scaled. Further, the System Marathon makes sure that should any of the stateless services fail it will be re-started, acting as a distributed supervisor for these long-running tasks.
+- The mapping agent only implements a simple interface, effectively rendering the markers that represent traffic capturing stations.  Interesting extensions of the mapping agent would be to allow for a more interactivity, alerts based on traffic volume, as well as different visualizations and/or summaries.
 
 Should you have any questions or suggestions concerning the demo, please raise an [issue](https://dcosjira.atlassian.net/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
