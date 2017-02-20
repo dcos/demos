@@ -3,7 +3,7 @@
   "instances": 1,
   "cpus": 1,
   "mem": 1000,
-  "cmd": "export JAVA_HOME=\"`pwd`/jre1.8.0_45\" && export PATH=\"$JAVA_HOME/bin:$PATH\" && sed \"s/localhost:2181/master.mesos:2181/\" apache-drill-1.9.0/conf/drill-override.conf && apache-drill-1.9.0/bin/drillbit.sh start",
+  "cmd": "export JAVA_HOME=\"`pwd`/jre1.8.0_45\" && export PATH=\"$JAVA_HOME/bin:$PATH\" && export DRILL_HOME=\"apache-drill-1.9.0/\" && sed -i 's/localhost:2181/master.mesos:2181/' apache-drill-1.9.0/conf/drill-override.conf && apache-drill-1.9.0/bin/drillbit.sh run",
   "fetch": [
     {
       "uri": "https://downloads.mesosphere.io/java/jre-8u45-linux-x64.tar.gz"
