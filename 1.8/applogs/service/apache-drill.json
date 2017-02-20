@@ -2,15 +2,24 @@
   "id": "/applogs/drill",
   "instances": 1,
   "cpus": 1,
-  "mem": 300,
-  "cmd": "curl -s -L https://downloads.mesosphere.io/java/jre-8u45-linux-x64.tar.gz -o jre1.8.0_45.tar.gz && tar -xvzf jre1.8.0_45.tar.gz && curl -s -L http://apache.mirrors.hoobly.com/drill/drill-1.9.0/apache-drill-1.9.0.tar.gz -o apache-drill-1.9.0.tar.gz && tar -xvzf apache-drill-1.9.0.tar.gz && export JAVA_HOME=\"`pwd`/jre1.8.0_45\" && export PATH=\"$JAVA_HOME/bin:$PATH\" && apache-drill-1.9.0/bin/drill-embedded",
-  "labels": {
-    "HAPROXY_GROUP": "external",
-    "HAPROXY_0_VHOST": "34.251.46.84"
-  },
+  "mem": 1000,
+  "cmd": "export JAVA_HOME=\"`pwd`/jre1.8.0_45\" && export PATH=\"$JAVA_HOME/bin:$PATH\" && sed \"s/localhost:2181/master.mesos:2181/\" apache-drill-1.9.0/conf/drill-override.conf && apache-drill-1.9.0/bin/drillbit.sh start",
+  "fetch": [
+    {
+      "uri": "https://downloads.mesosphere.io/java/jre-8u45-linux-x64.tar.gz"
+    },
+    {
+      "uri": "http://mirrors.ocf.berkeley.edu/apache/drill/drill-1.9.0/apache-drill-1.9.0.tar.gz"
+    }
+  ],
   "portDefinitions": [
     {
-      "port": 10008
+      "port": 10008,
+      "labels": {
+        "HAPROXY_GROUP": "external",
+        "HAPROXY_0_VHOST": "35.164.10.198"
+      },
+      "VIP_0": "/applogs/drill:8047"
     }
   ]
 }
