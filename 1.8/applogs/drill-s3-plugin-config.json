@@ -1,0 +1,66 @@
+{
+  "type": "file",
+  "enabled": true,
+  "connection": "s3a://anotherb",
+  "config": {
+    "fs.s3a.access.key": "M4OR7B7LNCB9IFGANM1L",
+    "fs.s3a.secret.key": "uLGPaFnK++zfTbQAULnnooDsqrdAaL338ED9/Vfx"
+  },
+  "workspaces": {
+    "root": {
+      "location": "/",
+      "writable": false,
+      "defaultInputFormat": null
+    }
+  },
+  "formats": {
+    "psv": {
+      "type": "text",
+      "extensions": [
+        "tbl"
+      ],
+      "delimiter": "|"
+    },
+    "csv": {
+      "type": "text",
+      "extensions": [
+        "csv"
+      ],
+      "delimiter": ","
+    },
+    "tsv": {
+      "type": "text",
+      "extensions": [
+        "tsv",
+        "log"
+      ],
+      "delimiter": "\t"
+    },
+    "parquet": {
+      "type": "parquet"
+    },
+    "json": {
+      "type": "json",
+      "extensions": [
+        "json"
+      ]
+    },
+    "avro": {
+      "type": "avro"
+    },
+    "sequencefile": {
+      "type": "sequencefile",
+      "extensions": [
+        "seq"
+      ]
+    },
+    "csvh": {
+      "type": "text",
+      "extensions": [
+        "csvh"
+      ],
+      "extractHeader": true,
+      "delimiter": ","
+    }
+  }
+}
