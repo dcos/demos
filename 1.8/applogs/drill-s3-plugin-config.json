@@ -34,6 +34,8 @@
         "tsv",
         "log"
       ],
+      "skipFirstLine": false,
+      "extractHeader": true,
       "delimiter": "\t"
     },
     "parquet": {
