@@ -126,7 +126,10 @@ Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy
 
 The following sections describe how to use the demo after having installed it.
 
-Plan: load tester, run sync job, use Drill to understand usage.
+- run `dcos task log --follow wordpress > session.log`
+- interact with WP
+- add header and upload `session.log` into `test` bucket
+- use Drill to understand usage.
 
 ## Discussion
 
