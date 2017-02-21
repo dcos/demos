@@ -127,14 +127,16 @@ Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy
 
 The following sections describe how to use the demo after having installed it.
 
-- run `dcos task log --follow wordpress > session.log`
 - interact with WP
+- run `echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +5 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log`
 - add header `remote ignore0 ignore1 timestamp request status size origin agent` and upload `session.log` into `test` bucket
 
 Use Drill to understand usage, for example:
 
 ```sql
 select remote, request from s3.`session.log` where size > 1000
+
+select remote, request, status from s3.`session.log` where size > 1000 AND status = 200
 ```
 
 Result:
@@ -144,7 +146,6 @@ Result:
 To do:
 
 - parameterize `drill-s3-plugin-config.json` for access credentials
-- write sed to replace space in Apache logs
 
 ## Discussion
 
