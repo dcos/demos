@@ -127,9 +127,15 @@ Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy
 
 The following sections describe how to use the demo after having installed it.
 
-- interact with WP
-- run `echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +5 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log`
-- add header `remote ignore0 ignore1 timestamp request status size origin agent` and upload `session.log` into `test` bucket
+First interact with WP, create posts and surf around.
+
+Then, execute the following locally:
+
+```bash
+$ echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +5 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log
+```
+
+Now upload `session.log` into `test` bucket.
 
 Use Drill to understand usage, for example:
 
