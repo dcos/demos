@@ -72,8 +72,6 @@ select the running Minio service; click on the `Logs` tab and you should see:
 
 Note that you can learn more about Minio and the credentials in the respective [example](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
 
-Create `test` bucket and upload test data `drill/apache.log`.
-
 ### Apache Drill
 
 A prerequisite for the Drill install to work is that three environment variables
@@ -93,17 +91,24 @@ Now do the following to install Drill:
 $ cd $DEMO_HOME/1.8/applogs/
 $ sed -i '.tmp' "s,_PUBLIC_AGENT_IP,$PUBLIC_AGENT_IP,g; s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," ./drill/apache-drill.json
 $ dcos package marathon app add ./drill/apache-drill.json
-$ mv ./drill/apache-drill.json.tmp ./drill/apache-drill.json
 ```
 
-Got to `http://$PUBLIC_AGENT_IP:8047/` to access the Drill Web UI:
+Go to `http://$PUBLIC_AGENT_IP:8047/` to access the Drill Web UI:
 
 ![Apache Drill Web UI](img/drill-ui.png)
 
-Use `drill/drill-s3-plugin-config.json` to configure the S3 storage plugin and
-upload
+Next we need to configure the S3 storage plugin in order to access data on Minio:
 
-Execute the following query to check if all is working:
+```bash
+$ cd $DEMO_HOME/1.8/applogs/drill/
+$ sed -i '.tmp' "s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," drill-s3-plugin-config.json
+```
+
+Go to the `Storage` tab in Drill, enable the `s3` plugin, click on the `Update` button and paste the content of your `drill-s3-plugin-config.json` into the field, overwriting everything which was there in the first place. After another
+click on the `Update` button the data is stored in ZooKeeper and persists even if you restart Drill.
+
+To check if everything is working fine, create a `test` bucket and upload `drill/apache.log` into it
+Execute the following query to verify your setup:
 
 ```sql
 select * from s3.`apache.log`
@@ -135,7 +140,7 @@ Then, execute the following locally:
 $ echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +5 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log
 ```
 
-Now upload `session.log` into `test` bucket.
+Now upload `session.log` into the `test` bucket.
 
 Use Drill to understand usage, for example:
 

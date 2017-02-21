@@ -3,8 +3,8 @@
   "enabled": true,
   "connection": "s3a://test",
   "config": {
-    "fs.s3a.access.key": "M4OR7B7LNCB9IFGANM1L",
-    "fs.s3a.secret.key": "uLGPaFnK++zfTbQAULnnooDsqrdAaL338ED9/Vfx"
+    "fs.s3a.access.key": "_ACCESS_KEY_ID",
+    "fs.s3a.secret.key": "_SECRET_ACCESS_KEY"
   },
   "workspaces": {
     "root": {
