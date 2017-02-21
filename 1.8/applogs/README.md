@@ -129,13 +129,17 @@ The following sections describe how to use the demo after having installed it.
 
 - run `dcos task log --follow wordpress > session.log`
 - interact with WP
-- add header and upload `session.log` into `test` bucket
+- add header `remote ignore0 ignore1 timestamp request status size origin agent` and upload `session.log` into `test` bucket
 
 Use Drill to understand usage, for example:
 
 ```sql
-select remote, request from s3.`apache.log` where size > 1000
+select remote, request from s3.`session.log` where size > 1000
 ```
+
+Result:
+
+![Apache Drill query result](img/query-result.png)
 
 To do:
 
