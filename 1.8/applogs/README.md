@@ -72,7 +72,7 @@ select the running Minio service; click on the `Logs` tab and you should see:
 
 Note that you can learn more about Minio and the credentials in the respective [example](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
 
-TBD: create test bucket and upload test data `apache.log`.
+Create `test` bucket and upload test data `drill/apache.log`.
 
 ### Apache Drill
 
@@ -100,7 +100,8 @@ Got to `http://$PUBLIC_AGENT_IP:8047/` to access the Drill Web UI:
 
 ![Apache Drill Web UI](img/drill-ui.png)
 
-Use `drill/drill-s3-plugin-config.json` to configure the S3 storage plugin.
+Use `drill/drill-s3-plugin-config.json` to configure the S3 storage plugin and
+upload
 
 Execute the following query to check if all is working:
 
@@ -129,7 +130,17 @@ The following sections describe how to use the demo after having installed it.
 - run `dcos task log --follow wordpress > session.log`
 - interact with WP
 - add header and upload `session.log` into `test` bucket
-- use Drill to understand usage.
+
+Use Drill to understand usage, for example:
+
+```sql
+select remote, request from s3.`apache.log` where size > 1000
+```
+
+To do:
+
+- parameterize `drill-s3-plugin-config.json` for access credentials
+- write sed to replace space in Apache logs
 
 ## Discussion
 
