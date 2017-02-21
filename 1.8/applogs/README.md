@@ -32,17 +32,19 @@ Going forward we'll call the directory you cloned the `dcos/demo` Git repo into 
 
 ## Install
 
-### Minio
+### Marathon-LB
 
-To serve some static data we use Minio in this demo, just as you would use, say, S3 in AWS.
-
-In order to use Minio you first need to have Marathon-LB installed:
+For Minio and Apache Drill we need to have Marathon-LB installed:
 
 ```bash
 $ dcos package install marathon-lb
 ```
 
-Next find out the [IP of the public agent](https://dcos.io/docs/1.8/administration/locate-public-agent/)
+### Minio
+
+To serve the log data for analysis in Drill we use Minio in this demo, just as you would use, say, S3 in AWS.
+
+To set up Minio find out the [IP of the public agent](https://dcos.io/docs/1.8/administration/locate-public-agent/)
 and store it in an environment variable called `$PUBLIC_AGENT_IP`, for example:
 
 ```bash
