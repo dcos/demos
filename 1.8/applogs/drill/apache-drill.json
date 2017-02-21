@@ -1,5 +1,5 @@
 {
-  "id": "/applogs/drill",
+  "id": "drill",
   "instances": 1,
   "cpus": 1,
   "mem": 1000,
