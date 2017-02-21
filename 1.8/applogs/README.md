@@ -17,6 +17,10 @@ TBD
 
 ## Architecture
 
+TBD
+
+
+
 ## Prerequisites
 
 - A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 3 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
@@ -113,6 +117,8 @@ $ sed -i '.tmp' "s/_PUBLIC_AGENT_IP/$PUBLIC_AGENT_IP/" wp-config.json
 $ dcos package install wordpress --options=wp-config.json
 $ mv wp-config.json.tmp wp-config.json
 ```
+
+Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy?stats`:
 
 ## Use
 
