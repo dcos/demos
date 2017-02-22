@@ -74,6 +74,9 @@ Note that you can learn more about Minio and the credentials in the respective [
 
 ### Apache Drill
 
+Apache [Drill](http://drill.apache.org/docs/) is a distributed SQL query engine, allowing
+you to interactively explore heterogenous datasets across data sources (CSV, JSON, HDFS, HBase, MongoDB, S3).
+
 A prerequisite for the Drill install to work is that three environment variables
 are defined: `$PUBLIC_AGENT_IP` (the public agent IP address), as well as `$ACCESS_KEY_ID`
 and `$SECRET_ACCESS_KEY` (Minio credentials); all of which are explained in the
