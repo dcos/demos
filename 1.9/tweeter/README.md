@@ -125,18 +125,18 @@ Next, you'll perform real-time analytics on the stream of tweets coming in from 
 
 ![Top Tweeters][16]
 
- [1]: https://docs.mesosphere.com/1.8/usage/service-guides/cassandra/
- [2]: https://docs.mesosphere.com/1.8/usage/service-guides/kafka
- [3]: https://docs.mesosphere.com/1.8/usage/service-guides/spark/
- [4]: https://docs.mesosphere.com/1.8/usage/service-guides/zeppelin/
+ [1]: https://github.com/dcos/examples/tree/master/1.8/cassandra
+ [2]: https://github.com/dcos/examples/tree/master/1.8/kafka
+ [3]: https://github.com/dcos/examples/tree/master/1.8/spark
+ [4]: https://github.com/dcos/examples/tree/master/1.8/zeppelin
  [5]: https://github.com/mesosphere/marathon-lb
- [6]: /docs/1.8/overview/concepts/
- [7]: /docs/1.8/administration/installing/cloud/
- [8]: /docs/1.8/administration/installing/custom/
- [9]: /docs/1.8/administration/locate-public-agent/
+ [6]: https://dcos.io/docs/1.9/overview/concepts/
+ [7]: https://dcos.io/docs/1.9/administration/installing/cloud/
+ [8]: https://dcos.io/docs/1.9/administration/installing/custom/
+ [9]: https://dcos.io/docs/1.9/administration/locate-public-agent/
  [10]: ./img/webui-universe-install.png
- [11]: /docs/1.8/usage/cli/command-reference/
- [12]: /docs/1.8/usage/service-discovery/marathon-lb/
+ [11]: https://dcos.io/docs/1.9/usage/cli/command-reference/
+ [12]: https://dcos.io/docs/1.9/usage/service-discovery/marathon-lb/
  [13]: https://github.com/mesosphere/tweeter
  [14]: ./img/tweeter.png
  [16]: ./img/top-tweeters.png
