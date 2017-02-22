@@ -22,8 +22,8 @@ This tutorial demonstrates how you can build a complete IoT pipeline on DC/OS in
 
 **Prerequisites:**
 
-*  [DC/OS](/docs/1.8/administration/installing/) installed with at least 5 [private agents][6] and 1 [public agent][6].
-*  [DC/OS CLI](/docs/1.8/usage/cli/install/) installed.
+*  [DC/OS](https://dcos.io/docs/1.8/administration/installing/) installed with at least 5 [private agents][6] and 1 [public agent][6].
+*  [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed.
 *  The public IP address of your public agent node. After you have installed DC/OS with a public agent node declared, you can [navigate to the public IP address][9] of your public agent node.
 
 # Install services
