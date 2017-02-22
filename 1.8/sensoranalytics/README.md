@@ -63,25 +63,6 @@ $ dcos package install kafka --options=kafka-config.json
 
 Note that if you are unfamiliar with Kafka and its terminology, you can check out the respective [101 example](https://github.com/dcos/examples/tree/master/1.8/kafka) as well now.
 
-Next, figure out where the broker is:
-
-```bash
-$ dcos kafka connection
-
-{
-  "address": [
-    "10.0.3.178:9398"
-  ],
-  "zookeeper": "master.mesos:2181/dcos-service-kafka",
-  "dns": [
-    "broker-0.kafka.mesos:9398"
-  ],
-  "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
-}
-```
-
-Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
-
 ### Minio
 
 To serve some static data we use Minio in this demo, just as you would use, say, S3 in AWS.
@@ -102,10 +83,8 @@ $ export PUBLIC_AGENT_IP=34.250.247.12
 Now you can install the Minio package like so:
 
 ```bash
-$ cd $DEMO_HOME/1.8/sensoranalytics/
-$ sed -i '.tmp' "s/PUBLIC_AGENT_IP/$PUBLIC_AGENT_IP/" ./minio-config.json
-$ dcos package install minio --options=minio-config.json
-$ mv ./minio-config.json.tmp ./minio-config.json
+$ cd $DEMO_HOME/1.9/sensoranalytics/
+$ ./install-minio.sh
 ```
 
 After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
@@ -182,6 +161,28 @@ $ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources
 ```
 
 Note that it is necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure the are they appear at the top of the list, before any other DNS server entries.
+
+### Kafka connection
+
+Both the traffic data fetcher and the mapping agent need to know how to connect to Kafka.
+For that, figure out where the broker is:
+
+```bash
+$ dcos kafka connection
+
+{
+  "address": [
+    "10.0.0.135:9531"
+  ],
+  "zookeeper": "master.mesos:2181/dcos-service-kafka",
+  "dns": [
+    "broker-0.kafka.mesos:9531"
+  ],
+  "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
+}
+```
+
+Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`, you'll need it for the following sections.
 
 ### Traffic data fetcher
 
