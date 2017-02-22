@@ -84,9 +84,7 @@ Now you can install the Minio package like so:
 
 ```bash
 $ cd $DEMO_HOME/1.9/sensoranalytics/
-$ sed -i '.tmp' "s/PUBLIC_AGENT_IP/$PUBLIC_AGENT_IP/" ./minio-config.json
-$ dcos package install minio --options=minio-config.json
-$ mv ./minio-config.json.tmp ./minio-config.json
+$ ./install-minio.sh
 ```
 
 After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
