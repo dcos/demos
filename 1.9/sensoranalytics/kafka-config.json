@@ -1,0 +1,10 @@
+{
+  "brokers": {
+    "count": 1,
+    "mem": 512,
+    "disk": 1000
+  },
+  "kafka": {
+    "delete_topic_enable": true
+  }
+}

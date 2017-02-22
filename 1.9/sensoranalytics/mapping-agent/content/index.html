@@ -1,0 +1,68 @@
+<html>
+  <head><title>OpenLayers Marker Popups</title></head>
+  <body>
+  <div id="mapdiv"></div>
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+  <script>
+  var BASE_URL = "http://" + window.location.host;
+  $(document).ready(function() {
+    map = new OpenLayers.Map("mapdiv");
+    map.addLayer(new OpenLayers.Layer.OSM());
+
+    epsg4326 =  new OpenLayers.Projection("EPSG:4326"); //WGS 1984 projection
+    projectTo = map.getProjectionObject(); //The map projection (Spherical Mercator)
+
+    var lonLat = new OpenLayers.LonLat(10.1117589,56.1781797).transform(epsg4326, projectTo);
+
+    var zoom=11;
+    map.setCenter (lonLat, zoom);
+
+    var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
+
+    $.getJSON(BASE_URL + '/data', function(d) {
+      for (var i = 0; i < d.length; i++) {
+        var gm = d[i]
+        console.log(gm.label, gm.lng, gm.lat)
+        if (gm.lng > 0 && gm.lat > 0) {
+          var feature = new OpenLayers.Feature.Vector(
+                  new OpenLayers.Geometry.Point(gm.lng, gm.lat).transform(epsg4326, projectTo),
+                  {description: 'At <b>' + gm.timestamp + '</b><br/>there were <b>' +  gm.numvehicles + '</b> vehicles<br/>in <b>' + gm.label + '</b>' } ,
+                  {externalGraphic: 'marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+              );
+          vectorLayer.addFeatures(feature);
+        }
+      }
+
+      map.addLayer(vectorLayer);
+    });
+
+    //Add a selector control to the vectorLayer with popup functions
+    var controls = {
+      selector: new OpenLayers.Control.SelectFeature(vectorLayer, { onSelect: createPopup, onUnselect: destroyPopup })
+    };
+
+    function createPopup(feature) {
+      feature.popup = new OpenLayers.Popup.FramedCloud("pop",
+          feature.geometry.getBounds().getCenterLonLat(),
+          null,
+          '<div class="markerContent">'+feature.attributes.description+'</div>',
+          null,
+          true,
+          function() { controls['selector'].unselectAll(); }
+      );
+      //feature.popup.closeOnMove = true;
+      map.addPopup(feature.popup);
+    }
+
+    function destroyPopup(feature) {
+      feature.popup.destroy();
+      feature.popup = null;
+    }
+
+    map.addControl(controls['selector']);
+    controls['selector'].activate();
+});
+  </script>
+
+</body></html>

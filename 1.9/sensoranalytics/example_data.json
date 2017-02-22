@@ -1,0 +1,1048 @@
+{
+  "help": "https://www.odaa.dk/api/3/action/help_show?name=datastore_search",
+  "success": true,
+  "result": {
+    "resource_id": "b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d",
+    "fields": [
+      {
+        "type": "int4",
+        "id": "_id"
+      },
+      {
+        "type": "int4",
+        "id": "REPORT_ID"
+      },
+      {
+        "type": "timestamp",
+        "id": "TIMESTAMP"
+      },
+      {
+        "type": "text",
+        "id": "status"
+      },
+      {
+        "type": "int4",
+        "id": "avgMeasuredTime"
+      },
+      {
+        "type": "int4",
+        "id": "medianMeasuredTime"
+      },
+      {
+        "type": "int4",
+        "id": "vehicleCount"
+      },
+      {
+        "type": "int4",
+        "id": "avgSpeed"
+      }
+    ],
+    "records": [
+      {
+        "status": "OK",
+        "avgMeasuredTime": 101,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 101,
+        "avgSpeed": 73,
+        "vehicleCount": 11,
+        "_id": 338,
+        "REPORT_ID": 197951
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 138,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 138,
+        "avgSpeed": 53,
+        "vehicleCount": 7,
+        "_id": 345,
+        "REPORT_ID": 158505
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 78,
+        "TIMESTAMP": "2016-10-05T09:29:00",
+        "medianMeasuredTime": 78,
+        "avgSpeed": 67,
+        "vehicleCount": 17,
+        "_id": 450,
+        "REPORT_ID": 1164
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 49,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 49,
+        "avgSpeed": 81,
+        "vehicleCount": 16,
+        "_id": 395,
+        "REPORT_ID": 197463
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 55,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 55,
+        "avgSpeed": 37,
+        "vehicleCount": 4,
+        "_id": 418,
+        "REPORT_ID": 204273
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 59,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 59,
+        "avgSpeed": 35,
+        "vehicleCount": 1,
+        "_id": 53,
+        "REPORT_ID": 187748
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 123,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 123,
+        "avgSpeed": 33,
+        "vehicleCount": 10,
+        "_id": 228,
+        "REPORT_ID": 183091
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 65,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 65,
+        "avgSpeed": 51,
+        "vehicleCount": 4,
+        "_id": 330,
+        "REPORT_ID": 181331
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 37,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 37,
+        "avgSpeed": 46,
+        "vehicleCount": 18,
+        "_id": 381,
+        "REPORT_ID": 183009
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 188,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 188,
+        "avgSpeed": 15,
+        "vehicleCount": 0,
+        "_id": 49,
+        "REPORT_ID": 187509
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 127,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 127,
+        "avgSpeed": 17,
+        "vehicleCount": 10,
+        "_id": 100,
+        "REPORT_ID": 195631
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 77,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 77,
+        "avgSpeed": 23,
+        "vehicleCount": 4,
+        "_id": 237,
+        "REPORT_ID": 190206
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 55,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 55,
+        "avgSpeed": 43,
+        "vehicleCount": 10,
+        "_id": 366,
+        "REPORT_ID": 184703
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 28,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 28,
+        "avgSpeed": 46,
+        "vehicleCount": 21,
+        "_id": 414,
+        "REPORT_ID": 179064
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 63,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 63,
+        "avgSpeed": 58,
+        "vehicleCount": 8,
+        "_id": 379,
+        "REPORT_ID": 158324
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 64,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 64,
+        "avgSpeed": 45,
+        "vehicleCount": 11,
+        "_id": 446,
+        "REPORT_ID": 190770
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 81,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 81,
+        "avgSpeed": 24,
+        "vehicleCount": 0,
+        "_id": 378,
+        "REPORT_ID": 188092
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 41,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 41,
+        "avgSpeed": 61,
+        "vehicleCount": 12,
+        "_id": 417,
+        "REPORT_ID": 182901
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 67,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 67,
+        "avgSpeed": 42,
+        "vehicleCount": 1,
+        "_id": 17,
+        "REPORT_ID": 197302
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 61,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 61,
+        "avgSpeed": 46,
+        "vehicleCount": 1,
+        "_id": 336,
+        "REPORT_ID": 195339
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 84,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 84,
+        "avgSpeed": 27,
+        "vehicleCount": 5,
+        "_id": 358,
+        "REPORT_ID": 187218
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 142,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 142,
+        "avgSpeed": 27,
+        "vehicleCount": 2,
+        "_id": 396,
+        "REPORT_ID": 195552
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 100,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 100,
+        "avgSpeed": 52,
+        "vehicleCount": 13,
+        "_id": 392,
+        "REPORT_ID": 180627
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 86,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 86,
+        "avgSpeed": 27,
+        "vehicleCount": 8,
+        "_id": 64,
+        "REPORT_ID": 201535
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 67,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 67,
+        "avgSpeed": 48,
+        "vehicleCount": 1,
+        "_id": 99,
+        "REPORT_ID": 204140
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 147,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 147,
+        "avgSpeed": 19,
+        "vehicleCount": 0,
+        "_id": 226,
+        "REPORT_ID": 193106
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 127,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 127,
+        "avgSpeed": 78,
+        "vehicleCount": 1,
+        "_id": 151,
+        "REPORT_ID": 209933
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 132,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 132,
+        "avgSpeed": 40,
+        "vehicleCount": 2,
+        "_id": 262,
+        "REPORT_ID": 198113
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 73,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 73,
+        "avgSpeed": 50,
+        "vehicleCount": 6,
+        "_id": 365,
+        "REPORT_ID": 195150
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 206,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 206,
+        "avgSpeed": 25,
+        "vehicleCount": 2,
+        "_id": 362,
+        "REPORT_ID": 201802
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 63,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 63,
+        "avgSpeed": 42,
+        "vehicleCount": 5,
+        "_id": 388,
+        "REPORT_ID": 190259
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 91,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 91,
+        "avgSpeed": 39,
+        "vehicleCount": 5,
+        "_id": 437,
+        "REPORT_ID": 187112
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 61,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 61,
+        "avgSpeed": 59,
+        "vehicleCount": 2,
+        "_id": 284,
+        "REPORT_ID": 206422
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 76,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 76,
+        "avgSpeed": 39,
+        "vehicleCount": 2,
+        "_id": 303,
+        "REPORT_ID": 189967
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 68,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 68,
+        "avgSpeed": 48,
+        "vehicleCount": 2,
+        "_id": 189,
+        "REPORT_ID": 158776
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 74,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 74,
+        "avgSpeed": 23,
+        "vehicleCount": 0,
+        "_id": 328,
+        "REPORT_ID": 206263
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 128,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 128,
+        "avgSpeed": 44,
+        "vehicleCount": 3,
+        "_id": 32,
+        "REPORT_ID": 209880
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 62,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 62,
+        "avgSpeed": 38,
+        "vehicleCount": 3,
+        "_id": 146,
+        "REPORT_ID": 187907
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 174,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 174,
+        "avgSpeed": 14,
+        "vehicleCount": 2,
+        "_id": 201,
+        "REPORT_ID": 187668
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 105,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 105,
+        "avgSpeed": 50,
+        "vehicleCount": 4,
+        "_id": 343,
+        "REPORT_ID": 198139
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 545,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 545,
+        "avgSpeed": 15,
+        "vehicleCount": 1,
+        "_id": 375,
+        "REPORT_ID": 210040
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 149,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 149,
+        "avgSpeed": 20,
+        "vehicleCount": 0,
+        "_id": 411,
+        "REPORT_ID": 187483
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 90,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 90,
+        "avgSpeed": 33,
+        "vehicleCount": 9,
+        "_id": 423,
+        "REPORT_ID": 195178
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 33,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 33,
+        "avgSpeed": 76,
+        "vehicleCount": 15,
+        "_id": 112,
+        "REPORT_ID": 159014
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 0,
+        "TIMESTAMP": "2017-01-12T12:07:00",
+        "medianMeasuredTime": 0,
+        "avgSpeed": 0,
+        "vehicleCount": 0,
+        "_id": 105,
+        "REPORT_ID": 194878
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 66,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 66,
+        "avgSpeed": 27,
+        "vehicleCount": 7,
+        "_id": 354,
+        "REPORT_ID": 180844
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 117,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 117,
+        "avgSpeed": 25,
+        "vehicleCount": 2,
+        "_id": 385,
+        "REPORT_ID": 186979
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 44,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 44,
+        "avgSpeed": 45,
+        "vehicleCount": 5,
+        "_id": 380,
+        "REPORT_ID": 192787
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 86,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 86,
+        "avgSpeed": 45,
+        "vehicleCount": 8,
+        "_id": 2,
+        "REPORT_ID": 201507
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 83,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 83,
+        "avgSpeed": 21,
+        "vehicleCount": 2,
+        "_id": 407,
+        "REPORT_ID": 206131
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 104,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 104,
+        "avgSpeed": 26,
+        "vehicleCount": 1,
+        "_id": 129,
+        "REPORT_ID": 190179
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 121,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 121,
+        "avgSpeed": 20,
+        "vehicleCount": 4,
+        "_id": 408,
+        "REPORT_ID": 187721
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 73,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 73,
+        "avgSpeed": 50,
+        "vehicleCount": 16,
+        "_id": 77,
+        "REPORT_ID": 180547
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 181,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 181,
+        "avgSpeed": 58,
+        "vehicleCount": 3,
+        "_id": 398,
+        "REPORT_ID": 201669
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 115,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 115,
+        "avgSpeed": 27,
+        "vehicleCount": 3,
+        "_id": 397,
+        "REPORT_ID": 185263
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 86,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 86,
+        "avgSpeed": 21,
+        "vehicleCount": 7,
+        "_id": 65,
+        "REPORT_ID": 179228
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 36,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 36,
+        "avgSpeed": 55,
+        "vehicleCount": 13,
+        "_id": 149,
+        "REPORT_ID": 182955
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 63,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 63,
+        "avgSpeed": 46,
+        "vehicleCount": 8,
+        "_id": 227,
+        "REPORT_ID": 180926
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 217,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 217,
+        "avgSpeed": 55,
+        "vehicleCount": 0,
+        "_id": 50,
+        "REPORT_ID": 197518
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 80,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 80,
+        "avgSpeed": 24,
+        "vehicleCount": 5,
+        "_id": 102,
+        "REPORT_ID": 201881
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 264,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 264,
+        "avgSpeed": 39,
+        "vehicleCount": 1,
+        "_id": 192,
+        "REPORT_ID": 158386
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 76,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 76,
+        "avgSpeed": 40,
+        "vehicleCount": 8,
+        "_id": 445,
+        "REPORT_ID": 182657
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 168,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 168,
+        "avgSpeed": 13,
+        "vehicleCount": 1,
+        "_id": 255,
+        "REPORT_ID": 204034
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 198,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 198,
+        "avgSpeed": 11,
+        "vehicleCount": 0,
+        "_id": 139,
+        "REPORT_ID": 187774
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 292,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 292,
+        "avgSpeed": 14,
+        "vehicleCount": 2,
+        "_id": 319,
+        "REPORT_ID": 173011
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 43,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 43,
+        "avgSpeed": 54,
+        "vehicleCount": 16,
+        "_id": 95,
+        "REPORT_ID": 179364
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 156,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 156,
+        "avgSpeed": 84,
+        "vehicleCount": 13,
+        "_id": 230,
+        "REPORT_ID": 171969
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 80,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 80,
+        "avgSpeed": 45,
+        "vehicleCount": 8,
+        "_id": 6,
+        "REPORT_ID": 195015
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 82,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 82,
+        "avgSpeed": 36,
+        "vehicleCount": 2,
+        "_id": 435,
+        "REPORT_ID": 192438
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 66,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 66,
+        "avgSpeed": 65,
+        "vehicleCount": 10,
+        "_id": 265,
+        "REPORT_ID": 158836
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 102,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 102,
+        "avgSpeed": 42,
+        "vehicleCount": 7,
+        "_id": 59,
+        "REPORT_ID": 197679
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 66,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 66,
+        "avgSpeed": 38,
+        "vehicleCount": 1,
+        "_id": 16,
+        "REPORT_ID": 187986
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 134,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 134,
+        "avgSpeed": 60,
+        "vehicleCount": 3,
+        "_id": 45,
+        "REPORT_ID": 192466
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 83,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 83,
+        "avgSpeed": 54,
+        "vehicleCount": 10,
+        "_id": 114,
+        "REPORT_ID": 197868
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 210,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 210,
+        "avgSpeed": 25,
+        "vehicleCount": 1,
+        "_id": 223,
+        "REPORT_ID": 173118
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 149,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 149,
+        "avgSpeed": 54,
+        "vehicleCount": 2,
+        "_id": 296,
+        "REPORT_ID": 192546
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 102,
+        "TIMESTAMP": "2017-01-12T12:06:00",
+        "medianMeasuredTime": 102,
+        "avgSpeed": 18,
+        "vehicleCount": 6,
+        "_id": 438,
+        "REPORT_ID": 185104
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 166,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 166,
+        "avgSpeed": 18,
+        "vehicleCount": 2,
+        "_id": 62,
+        "REPORT_ID": 187880
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 43,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 43,
+        "avgSpeed": 86,
+        "vehicleCount": 12,
+        "_id": 37,
+        "REPORT_ID": 158983
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 206,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 206,
+        "avgSpeed": 33,
+        "vehicleCount": 0,
+        "_id": 154,
+        "REPORT_ID": 187403
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 67,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 67,
+        "avgSpeed": 59,
+        "vehicleCount": 9,
+        "_id": 261,
+        "REPORT_ID": 197408
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 48,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 48,
+        "avgSpeed": 66,
+        "vehicleCount": 15,
+        "_id": 131,
+        "REPORT_ID": 190691
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 118,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 118,
+        "avgSpeed": 31,
+        "vehicleCount": 4,
+        "_id": 204,
+        "REPORT_ID": 206396
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 110,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 110,
+        "avgSpeed": 25,
+        "vehicleCount": 5,
+        "_id": 433,
+        "REPORT_ID": 184595
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 130,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 130,
+        "avgSpeed": 20,
+        "vehicleCount": 3,
+        "_id": 29,
+        "REPORT_ID": 190285
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 63,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 63,
+        "avgSpeed": 41,
+        "vehicleCount": 3,
+        "_id": 40,
+        "REPORT_ID": 185396
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 134,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 134,
+        "avgSpeed": 14,
+        "vehicleCount": 3,
+        "_id": 158,
+        "REPORT_ID": 193079
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 18,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 18,
+        "avgSpeed": 90,
+        "vehicleCount": 2,
+        "_id": 199,
+        "REPORT_ID": 190338
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 68,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 68,
+        "avgSpeed": 57,
+        "vehicleCount": 7,
+        "_id": 309,
+        "REPORT_ID": 197434
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 84,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 84,
+        "avgSpeed": 40,
+        "vehicleCount": 1,
+        "_id": 412,
+        "REPORT_ID": 198167
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 36,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 36,
+        "avgSpeed": 54,
+        "vehicleCount": 1,
+        "_id": 10,
+        "REPORT_ID": 201345
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 129,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 129,
+        "avgSpeed": 32,
+        "vehicleCount": 6,
+        "_id": 15,
+        "REPORT_ID": 183037
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 61,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 61,
+        "avgSpeed": 45,
+        "vehicleCount": 0,
+        "_id": 78,
+        "REPORT_ID": 203954
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 158,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 158,
+        "avgSpeed": 30,
+        "vehicleCount": 1,
+        "_id": 84,
+        "REPORT_ID": 209721
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 98,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 98,
+        "avgSpeed": 48,
+        "vehicleCount": 3,
+        "_id": 173,
+        "REPORT_ID": 201237
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 44,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 44,
+        "avgSpeed": 57,
+        "vehicleCount": 6,
+        "_id": 317,
+        "REPORT_ID": 182875
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 43,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 43,
+        "avgSpeed": 46,
+        "vehicleCount": 3,
+        "_id": 373,
+        "REPORT_ID": 178901
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 33,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 33,
+        "avgSpeed": 57,
+        "vehicleCount": 22,
+        "_id": 7,
+        "REPORT_ID": 190529
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 48,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 48,
+        "avgSpeed": 43,
+        "vehicleCount": 6,
+        "_id": 128,
+        "REPORT_ID": 179119
+      },
+      {
+        "status": "OK",
+        "avgMeasuredTime": 75,
+        "TIMESTAMP": "2017-01-12T12:05:00",
+        "medianMeasuredTime": 75,
+        "avgSpeed": 50,
+        "vehicleCount": 6,
+        "_id": 232,
+        "REPORT_ID": 178847
+      }
+    ],
+    "_links": {
+      "start": "/api/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d",
+      "next": "/api/action/datastore_search?offset=100&resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d"
+    },
+    "total": 450
+  }
+}
