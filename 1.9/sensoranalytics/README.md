@@ -63,25 +63,6 @@ $ dcos package install kafka --options=kafka-config.json
 
 Note that if you are unfamiliar with Kafka and its terminology, you can check out the respective [101 example](https://github.com/dcos/examples/tree/master/1.8/kafka) as well now.
 
-Next, figure out where the broker is:
-
-```bash
-$ dcos kafka connection
-
-{
-  "address": [
-    "10.0.3.178:9398"
-  ],
-  "zookeeper": "master.mesos:2181/dcos-service-kafka",
-  "dns": [
-    "broker-0.kafka.mesos:9398"
-  ],
-  "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
-}
-```
-
-Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`.
-
 ### Minio
 
 To serve some static data we use Minio in this demo, just as you would use, say, S3 in AWS.
@@ -96,7 +77,7 @@ Next find out the [IP of the public agent](https://dcos.io/docs/1.9/administrati
 and store it in an environment variable called `$PUBLIC_AGENT_IP`, for example:
 
 ```bash
-$ export PUBLIC_AGENT_IP=34.250.247.12
+$ export PUBLIC_AGENT_IP=50.112.160.85
 ```
 
 Now you can install the Minio package like so:
@@ -148,9 +129,9 @@ and `$SECRET_ACCESS_KEY` (Minio credentials); all of which are explained in the
 previous section. I've been using the following (specific for my setup):
 
 ```bash
-$ export PUBLIC_AGENT_IP=34.250.247.12
-$ export ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG
-$ export SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9
+$ export PUBLIC_AGENT_IP=50.112.160.85
+$ export ACCESS_KEY_ID=N2PRUI6R2JR54YB8DGOB
+$ export SECRET_ACCESS_KEY=PAO4UgwfccHXyJhJ98GTi7IgIzSR4sLWRTJ4k+N9
 ```
 
 Now you can install the custom services like so:
@@ -187,6 +168,28 @@ $ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources
 ```
 
 Note that it is necessary to [add the announced DNS servers]( https://support.apple.com/kb/PH18499?locale=en_US) as told by Tunnelblick, and make sure the are they appear at the top of the list, before any other DNS server entries.
+
+### Kafka connection
+
+Both the traffic data fetcher and the mapping agent need to know how to connect to Kafka.
+For that, figure out where the broker is:
+
+```bash
+$ dcos kafka connection
+
+{
+  "address": [
+    "10.0.0.135:9531"
+  ],
+  "zookeeper": "master.mesos:2181/dcos-service-kafka",
+  "dns": [
+    "broker-0.kafka.mesos:9531"
+  ],
+  "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
+}
+```
+
+Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`, you'll need it for the following sections.
 
 ### Traffic data fetcher
 
