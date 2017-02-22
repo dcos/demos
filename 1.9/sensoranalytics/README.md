@@ -140,12 +140,14 @@ Now you can install the custom services like so:
 $ cd $DEMO_HOME/1.9/sensoranalytics/
 $ ./install-services.sh
 deploying the traffic fetcher ...
-Created deployment 8b6c0e9c-f6cb-4bf6-8102-1c376377deb6
+Created deployment ad47233d-ce8a-4f5f-a596-1b1d93398bf4
 ==========================================================================
 deploying the mapping agent ...
-Created deployment f43d8948-7d13-4793-ac26-f2c7b0dfdcda
+Created deployment 90d4fa7c-8045-43da-97ad-6162dcdc6a03
 DONE ====================================================================
 ```
+
+Now you're done setting up the demo and can move on to the fun part: using it.
 
 ## Use
 
