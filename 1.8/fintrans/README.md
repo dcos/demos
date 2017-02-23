@@ -333,4 +333,4 @@ how those could be consumed. A few notes concerning the setup and applicability 
 
 ![Financial transaction processing demo overall utilization](img/dcos-dashboard.png)
 
-Should you have any questions or suggestions concerning the demo, please raise an [issue](https://dcosjira.atlassian.net/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
+Should you have any questions or suggestions concerning the demo, please raise an [issue](https://jira.mesosphere.com/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
