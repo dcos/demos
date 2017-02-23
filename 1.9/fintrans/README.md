@@ -91,9 +91,12 @@ $ dcos package install grafana
 <a name="grafana-influxdb"></a>
 The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't know `$PUBLIC_AGENT_IP` yet, [find it out first](https://dcos.io/docs/1.9/administration/locate-public-agent/). Log in with: `admin`/`admin`.
 
-Next, we set up InfluxDB as a data source in Grafana, effectively connecting Grafana to InfluxDB. Use the following values:
+Next, we set up InfluxDB as a data source in Grafana, effectively connecting Grafana to InfluxDB. Use the following values after selecting Add a data source:
 
-- In the `Http settings` section:
+- In the top of the config use the following:
+  - Name: influx
+  - Type: InfluxDB
+- In the `Http settings` section, select `Basic Auth` and `With Credentials` and use:
  - Url value: `http://influxdb.marathon.l4lb.thisdcos.directory:8086`
  - User value: `root`
  - Password value: `root` 
@@ -193,7 +196,7 @@ The core piece of this demo is consuming the financial transactions in some mean
 One consumer of the transactions we stored in Kafka is a combination of InfluxDB and Grafana, called the [influx-ingest](influx-ingest/) consumer.
 This consumer uses Grafana as the visual frontend, showing a breakdown of average and total transaction volume per city for the past hour. 
 
-Now, to see the recent financial transaction streaming in, locate the Grafana dashboard at `$PUBLIC_AGENT_IP:13000` (note: you might need to [find out the IP of the public agent](https://dcos.io/docs/1.9/administration/locate-public-agent/ first) and log in with: `admin`/`admin`. Next, load the prepared [Grafana dashboard](influx-ingest/grafana-dashboard.json) and you should see something like this:
+Now, to see the recent financial transaction streaming in, locate the Grafana dashboard at `$PUBLIC_AGENT_IP:13000` (note: you might need to [find out the IP of the public agent](https://dcos.io/docs/1.9/administration/locate-public-agent/ first) and log in with: `admin`/`admin`. Once logged in, create a new Grafana dashboard by loading the prepared [Grafana dashboard json file](influx-ingest/grafana-dashboard.json) and you should see something like this:
 
 ![Transactions in Grafana](img/grafana-dashboard.png)
 
