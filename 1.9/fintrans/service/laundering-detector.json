@@ -1,0 +1,10 @@
+{
+  "id": "/fintrans/laundering-detector",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 100,
+  "cmd": "curl -s -L https://github.com/dcos/demos/releases/download/0.1/laundering-detector -o laundering-detector && chmod u+x laundering-detector && ./laundering-detector --broker BROKER",
+  "env": {
+    "ALERT_THRESHOLD": "8000"
+  }
+}

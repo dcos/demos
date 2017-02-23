@@ -1,0 +1,7 @@
+{
+  "id": "/fintrans/generator",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 32,
+  "cmd": "curl -s -L https://github.com/dcos/demos/releases/download/0.1/generator -o generator && chmod u+x generator && ./generator --broker BROKER"
+}
