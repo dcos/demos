@@ -203,7 +203,7 @@ Feel free to change the Grafana graphs or add new ones, at this stage.
 
 Another consumer of the transactions stored in Kafka is the money [laundering detector](laundering-detector/). It is a command line tool that alerts when the aggregate transaction volume from a source to a target account exceeds a configurable treshold. The idea behind this is to highlight potential money laundering attempts to a human operator who then has to verify manually if a fraudulent transaction has been taken place.
 
-In order to see the  money laundering alerts, locate the money laundering detector in the DC/OS UI. Look for a service with ID `/fintrans/laundering-detector` and go to the `Logs` tab. You should see something like this:
+In order to see the money laundering alerts, locate the money laundering detector service in the DC/OS UI. Look for and click on the service with name `laundering-detector` under `fintrans/` and then click on the task ID that looks something like `fintrans_laundering-detector.xxxx`. From there, go to the `Files` tab and hover over the `stdout` file, a magnifying glass will appear which you can click on to view the log file in the browser:. You should see something like this:
 
 ![Accessing the money laundering detector in the DC/OS UI](img/laundering-detector.png)
 
