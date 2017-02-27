@@ -196,7 +196,7 @@ Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`, you'll ne
 For a local dev/test setup, and with [DC/OS VPN tunnel](#tunneling) enabled, we can run the traffic data fetcher as follows:
 
 ```bash
-$ cd $DEMO_HOME/1.8/sensoranalytics/traffic-fetcher/
+$ cd $DEMO_HOME/1.9/sensoranalytics/traffic-fetcher/
 $ go build
 $ ./traffic-fetcher -broker broker-0.kafka.mesos:9233
 ```
