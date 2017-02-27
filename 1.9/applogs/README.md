@@ -65,7 +65,7 @@ in your browser and you should see the UI.
 Next, we will need to get the Minio credentials in order to access the Web UI (and later on the HTTP API).
 The credentials used by Minio are akin to the ones you might know from Amazon S3, called `$ACCESS_KEY_ID`
 and `$SECRET_ACCESS_KEY`. In order to obtain these credentials, first go to the `Services` tab of the DC/OS UI and
-select the running Minio service. Select the running instance (`minio.75be9be3-f94e-11e6-8051-36a4f2bcaa4f` in my case),
+select the running Minio service. Select the running instance (`minio.535447b6-fcf8-11e6-aa90-8267007bfafa` in my case),
 click on the `Files` tab, and select the `stdout` file to view it (by clicking on the magnifying glass icon):
 
 ![Minio stdout](img/minio-stdout.png)
