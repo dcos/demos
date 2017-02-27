@@ -49,7 +49,7 @@ To set up Minio find out the [IP of the public agent](https://dcos.io/docs/1.8/a
 and store it in an environment variable called `$PUBLIC_AGENT_IP`, for example:
 
 ```bash
-$ export PUBLIC_AGENT_IP=34.250.247.12
+$ export PUBLIC_AGENT_IP=52.24.255.200
 ```
 
 Now you can install the Minio package like so:
@@ -82,9 +82,9 @@ and `$SECRET_ACCESS_KEY` (Minio credentials); all of which are explained in the
 previous section. I've been using the following (specific for my setup):
 
 ```bash
-$ export PUBLIC_AGENT_IP=34.250.247.12
-$ export ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG
-$ export SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9
+$ export PUBLIC_AGENT_IP=52.24.255.200
+$ export ACCESS_KEY_ID=MRQZLLB72IJRPUGY30MJ
+$ export SECRET_ACCESS_KEY=f5nGdq3lxlvpJF1nMOFAgk8h71ZMlM0h4fzUwakj
 ```
 
 Now do the following to install Drill:
@@ -99,21 +99,26 @@ Go to `http://$PUBLIC_AGENT_IP:8047/` to access the Drill Web UI:
 ![Apache Drill Web UI](img/drill-ui.png)
 
 Next we need to configure the S3 storage plugin in order to access data on Minio.
-For this, go to the `Storage` tab in Drill, enable the `s3` plugin, click on the `Update` button and paste the content of your [drill-s3-plugin-config.json](drill/drill-s3-plugin-config.json) into the field, overwriting everything which was there in the first place:
+For this, go to the `Storage` tab in Drill, enable the `s3` plugin, click on the `Update` button and paste the content of your (local) [drill-s3-plugin-config.json](drill/drill-s3-plugin-config.json) into the field, overwriting everything which was there in the first place:
 
 ![Apache Drill storage plugin config](img/drill-storage-plugin.png)
 
 After another click on the `Update` button the data is stored in ZooKeeper and persists even if you restart Drill.
 
-To check if everything is working fine, create a `test` bucket and upload `drill/apache.log` into it
-Execute the following query to verify your setup:
+To check if everything is working fine, go to Minio and create a `test` bucket and upload `drill/apache.log` into it.
+Now, go to the Drill UI, change to the `Query` tab and execute the following query to verify your setup:
 
 ```sql
 select * from s3.`apache.log`
 ```
 
+You should see something like the following:
+
+![Apache Drill test query result](img/drill-test.png)
+
 ### Wordpress
 
+Next we install WordPress, acting as the data source for the logs.
 Note that the environment variable called `$PUBLIC_AGENT_IP` must be exported.
 
 ```bash
@@ -121,9 +126,14 @@ $ cd $DEMO_HOME/1.8/applogs/
 $ ./install-wp.sh
 ```
 
-Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy?stats`:
+Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy?stats`
+(look for the `wordpress_XXXXX` frontend):
 
 ![WP on Marathon-LB](img/wp-mlb.png)
+
+In my case, WP is available via port `10102` on the public agent, that is via `http://$PUBLIC_AGENT_IP:10102/`:
+
+![WP setup](img/wp.png)
 
 Finally, complete the WP install so that it can be used.
 
@@ -131,26 +141,38 @@ Finally, complete the WP install so that it can be used.
 
 The following sections describe how to use the demo after having installed it.
 
-First interact with WP, create posts and surf around. Then, to capture the logs,
+First interact with WP, that is, create some posts and surf around. Then, to capture the logs,
 execute the following locally (on your machine):
 
 ```bash
-$ echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +5 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log
+$ cd $DEMO_HOME/1.8/applogs/
+$ echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +30 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log
 ```
 
 Next upload `session.log` into the `test` bucket in Minio.
 
 Now you can use Drill to understand the usage patterns, for example:
 
+List HTTP requests with more than 1000 bytes payload:
+
 ```sql
 select remote, request from s3.`session.log` where size > 1000
-
-select remote, request, status from s3.`session.log` where size > 1000 AND status = 200
 ```
 
-Result:
+Above query results in something like:
 
-![Apache Drill query result](img/query-result.png)
+![Apache Drill query result 1](img/query-result1.png)
+
+
+List HTTP requests that succeeded (HTTP status code 200):
+
+```sql
+select remote, request, status from s3.`session.log` where status = 200
+```
+
+Above query results in something like:
+
+![Apache Drill query result 2](img/query-result2.png)
 
 ## Discussion
 

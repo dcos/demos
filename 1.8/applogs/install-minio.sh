@@ -18,7 +18,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 fi
 
 # deploy service:
-dcos package install minio --options=minio-config.json
+dcos package install minio --options=minio-config.json --yes
 # restore template:
 mv ./minio-config.json.tmp ./minio-config.json
 
