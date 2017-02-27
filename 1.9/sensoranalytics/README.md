@@ -40,7 +40,7 @@ Going forward we'll call the directory you cloned the `dcos/demo` Git repo into 
 The DC/OS services and support libraries used in the demo are as follows:
 
 - Apache Kafka 0.10.0 with Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) package, client-side.
-- Minio with the [Minio Go Library for Amazon S3 compatible cloud storage](github.com/minio/minio-go) package, client-side.
+- Minio with the [Minio Go Library for Amazon S3 compatible cloud storage](https://github.com/minio/minio-go) package, client-side.
 
 An [exemplary snapshot](example_data.json) of the traffic real-time data is available here in this repo. This snapshot was created using the following command:
 
