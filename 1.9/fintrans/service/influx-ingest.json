@@ -1,0 +1,10 @@
+{
+  "id": "/fintrans/influx-ingest",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 60,
+  "cmd": "curl -s -L https://github.com/dcos/demos/releases/download/0.1/influx-ingest -o influx-ingest && chmod u+x influx-ingest && ./influx-ingest --broker BROKER",
+  "env": {
+    "INGEST_WAIT_SEC": "2"
+  }
+}

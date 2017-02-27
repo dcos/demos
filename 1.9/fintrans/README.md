@@ -35,10 +35,10 @@ money laundering activities.
 
 ## Prerequisites
 
-- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 3 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
+- A running [DC/OS 1.9.0](https://dcos.io/releases/1.9.0/) or higher cluster with at least 3 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.9/usage/cli/install/) installed in version 0.14 or higher.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
 - The JSON query util [jq](https://github.com/stedolan/jq/wiki/Installation) must be installed.
-- [SSH](https://dcos.io/docs/1.8/administration/access-node/sshcluster/) cluster access must be set up.
+- [SSH](https://dcos.io/docs/1.9/administration/access-node/sshcluster/) cluster access must be set up.
 
 Going forward we'll call the directory you cloned the `dcos/demo` Git repo into `$DEMO_HOME`.
 
@@ -59,7 +59,7 @@ After either single command install or manual install method your DC/OS UI shoul
 If you want to install the demo with a single command, use:
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans
+$ cd $DEMO_HOME/1.9/fintrans
 $ ./install-all.sh
 ```
 
@@ -74,7 +74,7 @@ If you want to install the demo manually here are the required services that you
 Install InfluxDB with the following [options](influx-ingest/influx-config.json):
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
+$ cd $DEMO_HOME/1.9/fintrans/influx-ingest/
 $ dcos package install --options=influx-config.json influxdb
 ```
 
@@ -89,7 +89,7 @@ $ dcos package install grafana
 ```
 
 <a name="grafana-influxdb"></a>
-The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't know `$PUBLIC_AGENT_IP` yet, [find it out first](https://dcos.io/docs/1.8/administration/locate-public-agent/). Log in with: `admin`/`admin`.
+The Grafana dashboard is available on `$PUBLIC_AGENT_IP:13000`, and if you don't know `$PUBLIC_AGENT_IP` yet, [find it out first](https://dcos.io/docs/1.9/administration/locate-public-agent/). Log in with: `admin`/`admin`.
 
 Next, we set up InfluxDB as a data source in Grafana, effectively connecting Grafana to InfluxDB. Use the following values after selecting Add a data source:
 
@@ -115,7 +115,7 @@ Note that if you came here from the single command install then you're done: you
 Install the Apache Kafka package with the following [options](kafka-config.json):
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans/
+$ cd $DEMO_HOME/1.9/fintrans/
 $ dcos package install kafka --options=kafka-config.json
 ```
 
@@ -145,7 +145,7 @@ Note the FQDN for the broker, in our case `broker-0.kafka.mesos:9398`, you will 
 Last but not least it's time to launch the financial transaction generator and the consumers:
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans/
+$ cd $DEMO_HOME/1.9/fintrans/
 $ ./install-services.sh
 deploying the fintrans generator ...
 Created deployment 56d3e77d-08e6-4a43-87cd-bcc6a107e8c3
@@ -206,7 +206,7 @@ Feel free to change the Grafana graphs or add new ones, at this stage.
 
 Another consumer of the transactions stored in Kafka is the money [laundering detector](laundering-detector/). It is a command line tool that alerts when the aggregate transaction volume from a source to a target account exceeds a configurable treshold. The idea behind this is to highlight potential money laundering attempts to a human operator who then has to verify manually if a fraudulent transaction has been taken place.
 
-In order to see the  money laundering alerts, locate the money laundering detector in the DC/OS UI. Look for a service with ID `/fintrans/laundering-detector` and go to the `Logs` tab. You should see something like this:
+In order to see the money laundering alerts, locate the money laundering detector service in the DC/OS UI. Look for and click on the service with name `laundering-detector` under `fintrans/` and then click on the task ID that looks something like `fintrans_laundering-detector.xxxx`. From there, go to the `Files` tab and hover over the `stdout` file, a magnifying glass will appear which you can click on to view the log file in the browser:. You should see something like this:
 
 ![Accessing the money laundering detector in the DC/OS UI](img/laundering-detector.png)
 
@@ -251,7 +251,7 @@ in order to carry out all the tasks.
 
 ### Tunneling 
 
-For local development and testing we use [DC/OS tunneling](https://dcos.io/docs/1.8/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine. The following instructions are only an example (using Tunnelblick on macOS) and the concrete steps necessary depend on your platform as well as on what VPN client you're using.
+For local development and testing we use [DC/OS tunneling](https://dcos.io/docs/1.9/administration/access-node/tunnel/) to make the nodes directly accessible on the development machine. The following instructions are only an example (using Tunnelblick on macOS) and the concrete steps necessary depend on your platform as well as on what VPN client you're using.
 
 ```bash
 $ sudo dcos tunnel vpn --client=/Applications/Tunnelblick.app/Contents/Resources/openvpn/openvpn-2.3.12/openvpn
@@ -276,7 +276,7 @@ Note that it is necessary to [add the announced DNS servers]( https://support.ap
 For a local dev/test setup, and with [DC/OS VPN tunnel](#tunneling) enabled, we can run the fintrans generator as follows:
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans/generator/
+$ cd $DEMO_HOME/1.9/fintrans/generator/
 $ go build
 $ ./generator --broker broker-0.kafka.mesos:9398
 INFO[0001] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Value:"678 816 2957", Metadata:interface {}(nil), Offset:10, Partition:0, Timestamp:time.Time{sec:0, nsec:0, loc:(*time.Location)(nil)}, retries:0, flags:0}
@@ -288,7 +288,7 @@ INFO[0005] &sarama.ProducerMessage{Topic:"London", Key:sarama.Encoder(nil), Valu
 Again, assuming [DC/OS VPN tunnel](#tunneling) is enabled, you can run the recent transactions dashboard (feeding InfluxDB/Grafana) from your local development machine as follows. First, you need to find out the InfluxDB API URL and provide it via the environment variable `INFLUX_API` (in our case, looking up where the InfluxDB instance runs, using the higher of the two ports, the URL is `http://10.0.3.178:11973`):
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans/influx-ingest/
+$ cd $DEMO_HOME/1.9/fintrans/influx-ingest/
 $ go build
 $ INFLUX_API=http://10.0.3.178:11973 ./influx-ingest --broker broker-0.kafka.mesos:9398
 INFO[0003] Got main.Transaction{City:"Tokyo", Source:"836", Target:"378", Amount:1211}  func=consume
@@ -302,7 +302,7 @@ INFO[0003] Ingested &client.batchpoints{points:[]*client.Point{(*client.Point)(0
 You can launch the money laundering detector as follows from your local development machine (note: [DC/OS VPN tunnel](#tunneling) must be enabled):
 
 ```bash
-$ cd $DEMO_HOME/1.8/fintrans/laundering-detector/
+$ cd $DEMO_HOME/1.9/fintrans/laundering-detector/
 $ go build
 $ ALERT_THRESHOLD=6000 PROD_OUTPUT=false ./laundering-detector --broker broker-0.kafka.mesos:9398
 INFO[0002] Queued main.Transaction{City:"SF", Source:"970", Target:"477", Amount:1102}  func=consume
