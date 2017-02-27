@@ -17,9 +17,10 @@ TBD
 
 ## Architecture
 
-TBD
+![Application Logs demo architecture](img/applogs-architecture.png)
 
-
+Log data is generated in WordPress (WP) by an end-user interacting with it, this
+data gets loaded into Minio and Apache Drill is then used to interactively query it.
 
 ## Prerequisites
 
@@ -54,10 +55,8 @@ $ export PUBLIC_AGENT_IP=34.250.247.12
 Now you can install the Minio package like so:
 
 ```bash
-$ cd $DEMO_HOME/1.8/sensoranalytics/
-$ sed -i '.tmp' "s/PUBLIC_AGENT_IP/$PUBLIC_AGENT_IP/" ./minio-config.json
-$ dcos package install minio --options=minio-config.json
-$ mv ./minio-config.json.tmp ./minio-config.json
+$ cd $DEMO_HOME/1.8/applogs/
+$ ./install-minio.sh
 ```
 
 After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
@@ -92,23 +91,19 @@ Now do the following to install Drill:
 
 ```bash
 $ cd $DEMO_HOME/1.8/applogs/
-$ sed -i '.tmp' "s,_PUBLIC_AGENT_IP,$PUBLIC_AGENT_IP,g; s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," ./drill/apache-drill.json
-$ dcos package marathon app add ./drill/apache-drill.json
+$ ./install-drill.sh
 ```
 
 Go to `http://$PUBLIC_AGENT_IP:8047/` to access the Drill Web UI:
 
 ![Apache Drill Web UI](img/drill-ui.png)
 
-Next we need to configure the S3 storage plugin in order to access data on Minio:
+Next we need to configure the S3 storage plugin in order to access data on Minio.
+For this, go to the `Storage` tab in Drill, enable the `s3` plugin, click on the `Update` button and paste the content of your [drill-s3-plugin-config.json](drill/drill-s3-plugin-config.json) into the field, overwriting everything which was there in the first place:
 
-```bash
-$ cd $DEMO_HOME/1.8/applogs/drill/
-$ sed -i '.tmp' "s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," drill-s3-plugin-config.json
-```
+![Apache Drill storage plugin config](img/drill-storage-plugin.png)
 
-Go to the `Storage` tab in Drill, enable the `s3` plugin, click on the `Update` button and paste the content of your `drill-s3-plugin-config.json` into the field, overwriting everything which was there in the first place. After another
-click on the `Update` button the data is stored in ZooKeeper and persists even if you restart Drill.
+After another click on the `Update` button the data is stored in ZooKeeper and persists even if you restart Drill.
 
 To check if everything is working fine, create a `test` bucket and upload `drill/apache.log` into it
 Execute the following query to verify your setup:
@@ -123,29 +118,29 @@ Note that the environment variable called `$PUBLIC_AGENT_IP` must be exported.
 
 ```bash
 $ cd $DEMO_HOME/1.8/applogs/
-$ dcos package install mysql --options=mysql-config.json
-$ sed -i '.tmp' "s/_PUBLIC_AGENT_IP/$PUBLIC_AGENT_IP/" wp-config.json
-$ dcos package install wordpress --options=wp-config.json
-$ mv wp-config.json.tmp wp-config.json
+$ ./install-wp.sh
 ```
 
 Discover where WP is available via HAProxy `http://$PUBLIC_AGENT_IP:9090/haproxy?stats`:
+
+![WP on Marathon-LB](img/wp-mlb.png)
+
+Finally, complete the WP install so that it can be used.
 
 ## Use
 
 The following sections describe how to use the demo after having installed it.
 
-First interact with WP, create posts and surf around.
-
-Then, execute the following locally:
+First interact with WP, create posts and surf around. Then, to capture the logs,
+execute the following locally (on your machine):
 
 ```bash
 $ echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +5 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log
 ```
 
-Now upload `session.log` into the `test` bucket.
+Next upload `session.log` into the `test` bucket in Minio.
 
-Use Drill to understand usage, for example:
+Now you can use Drill to understand the usage patterns, for example:
 
 ```sql
 select remote, request from s3.`session.log` where size > 1000
@@ -157,10 +152,8 @@ Result:
 
 ![Apache Drill query result](img/query-result.png)
 
-To do:
-
-- parameterize `drill-s3-plugin-config.json` for access credentials
-
 ## Discussion
+
+TBD.
 
 Should you have any questions or suggestions concerning the demo, please raise an [issue](https://dcosjira.atlassian.net/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
