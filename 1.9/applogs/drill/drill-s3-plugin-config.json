@@ -1,0 +1,28 @@
+{
+  "type": "file",
+  "enabled": true,
+  "connection": "s3a://test",
+  "config": {
+    "fs.s3a.access.key": "MRQZLLB72IJRPUGY30MJ",
+    "fs.s3a.secret.key": "f5nGdq3lxlvpJF1nMOFAgk8h71ZMlM0h4fzUwakj"
+  },
+  "workspaces": {
+    "root": {
+      "location": "/",
+      "writable": false,
+      "defaultInputFormat": null
+    }
+  },
+  "formats": {
+    "tsv": {
+      "type": "text",
+      "extensions": [
+        "tsv",
+        "log"
+      ],
+      "extractHeader": true,
+      "delimiter": "\u0020",
+      "quote": "\u0022"
+    }
+  }
+}
