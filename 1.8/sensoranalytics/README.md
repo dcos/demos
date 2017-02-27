@@ -39,8 +39,8 @@ Going forward we'll call the directory you cloned the `dcos/demo` Git repo into 
 
 The DC/OS services and support libraries used in the demo are as follows:
 
-- Apache Kafka 0.10.0 with Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) package, client-side.
-- Minio with the [Minio Go Library for Amazon S3 compatible cloud storage](https://github.com/minio/minio-go) package, client-side.
+- Apache Kafka 0.10.0 with [Logrus](https://godoc.org/github.com/Sirupsen/logrus) and Shopify's [sarama](https://godoc.org/github.com/Shopify/sarama) packages, client-side.
+- Minio with the [Minio Go Library for Amazon S3 compatible cloud storage](https://godoc.org/github.com/minio/minio-go) package, client-side.
 
 An [exemplary snapshot](example_data.json) of the traffic real-time data is available here in this repo. This snapshot was created using the following command:
 
@@ -210,7 +210,7 @@ $ go build
 $ PUBLIC_AGENT_IP=34.250.247.12 ACCESS_KEY_ID=F3QE89J9WPSC49CMKCCG SECRET_ACCESS_KEY=2/parG/rllluCLMgHeJggJfY9Pje4Go8VqOWEqI9 ./mapping-agent -broker broker-0.kafka.mesos:9517
 ```
 
-Now you can open `http://localhost:8080` in your browser and you should see the OSM map with the markers. Allow a few seconds until you see data arriving from Kafka before the markers are properly rendering.
+Now you can open `http://localhost:8080/static/` in your browser and you should see the OSM map with the markers. Allow a few seconds until you see data arriving from Kafka before the markers are properly rendering.
 
 ## Discussion
 
