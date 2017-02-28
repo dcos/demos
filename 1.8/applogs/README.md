@@ -180,6 +180,18 @@ Above query results in something like:
 
 ## Discussion
 
-TBD.
+In this demo we ingested application log data from WordPress into Minio and queried
+it using Apache Drill.
+
+- An area of improvement is the ingestion process which is currently implemented
+locally, that is, via manually using the DC/OS CLI on your machine. A more advanced
+scenario would, for example, use a DC/OS [Job](https://dcos.io/docs/1.8/usage/jobs/)
+to periodically ingest the logs in a timestamped manner into Minio.
+- While Drill is set up in [distributed mode](http://drill.apache.org/docs/installing-drill-in-distributed-mode/)
+currently only a single drillbit is used; by scaling the Drill service, one can
+query more data, faster.
+- The current result is of tabular form (as a result of the SQL queries issued).
+A more insightful way to render the query results would be to use BI tools such as
+Tableau or Datameer, connecting them via the [JDBC interface](http://drill.apache.org/docs/interfaces-introduction/).
 
 Should you have any questions or suggestions concerning the demo, please raise an [issue](https://jira.mesosphere.com/) in Jira or let us know via the [users@dcos.io](mailto:users@dcos.io) mailing list.
