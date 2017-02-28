@@ -1,11 +1,16 @@
 # Fast Data: Application Logs
 
-TBD
+In this demo we have a look into interactively analyzing application logs.
+As a source for the application logs we're using [WordPress](https://wordpress.org/),
+a popular blogging engine.
+
+The demo shows how to ingest the application logs into [Minio](https://minio.io/),
+an object store akin to Amazon S3 and demonstrates how to query those logs with SQL,
+using [Apache Drill](http://drill.apache.org/), a distributed schema-free query engine.
 
 - Estimated time for completion:
  - Install: 20min
- - Development: unbounded
-- Target audience: Anyone interested in online log analysis.
+- Target audience: Anyone interested in interactive application log analysis.
 
 **Table of Contents**:
 
@@ -13,7 +18,6 @@ TBD
 - [Prerequisites](#prerequisites)
 - [Install](#install) the demo
 - [Use](#use) the demo
-- [Development and testing](#development)
 
 ## Architecture
 
