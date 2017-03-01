@@ -12,6 +12,7 @@ Got any questions? Please reach out to Jörg Schad on the [DC/OS Community Slack
 
 Currently, the following demos are available:
 
+- [Application Logs](1.8/applogs#fast-data-application-logs)
 - [Financial Transaction Processing](1.8/fintrans#fast-data-financial-transaction-processing)
 - [Sensor Analytics](1.8/sensoranalytics#fast-data-sensor-analytics)
 - [Tweeter](1.8/tweeter#tweeter)
