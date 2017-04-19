@@ -91,6 +91,10 @@ This will start a job, which initializes the configured cassandra.
 
 Install version **1.1.9-0.10.0.0** of Apache Kafka, no extra requirements needed for Kafka. 
 
+```bash
+dcos package install kafka
+```
+
 ### Ingestion
 
 Now that the basic SMACK infrastructure is available, let's start with the ingestion part of the setup. 
