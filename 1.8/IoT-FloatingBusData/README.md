@@ -57,6 +57,12 @@ Install version **1.0.16-3.0.8** of Apache Cassandra, or better from the univers
 dcos package install cassandra
 ```
 
+Make sure the cassandra is fully functional check it with the dcos cassandra command: 
+
+```bash
+dcos cassandra connection
+```
+
 The setup of the required cassandra schema is done via an [Jobs](https://docs.mesosphere.com/1.8/usage/jobs/getting-started/) job. 
 With the jobs frontend you're able to use the following configuration. 
 
