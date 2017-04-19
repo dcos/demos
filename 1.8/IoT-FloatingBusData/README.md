@@ -137,7 +137,26 @@ Using the frontend
 }
 ```
 
-with the dcos cli use the [akka-ingest.json](configuration/akka-ingest.json) file.  
+First make sure the port and host are correct. To check for the correct host and ports issue: 
+
+```bash
+dcos kafka connection
+```
+
+you'll receive a list of hosts and ports, at this point make sure to use the **vip** connection string. 
+For example: 
+
+```
+"vip": "broker.kafka.l4lb.thisdcos.directory:9092"
+```
+take the host and port from this connection. 
+The same applies for the connection of the cassandra. 
+
+```bash
+dcos cassandra connection
+```
+
+For the client command use the dcos cli use the [akka-ingest.json](configuration/akka-ingest.json) file.  
 And issue the following commands: 
 
 ```bash
