@@ -196,7 +196,11 @@ Either install it via the DC/OS UI by creating a new marathon app:
     }
   ],
   "cpus": 0.1,
-  "mem": 2048.0
+  "mem": 2048.0,
+  "ports": [
+    8000, 8001
+  ],
+  "requirePorts" : true
 }
 ```
 
