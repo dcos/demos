@@ -133,9 +133,6 @@ Using the frontend
     "CASSANDRA_PORT": "9042",
     "KAFKA_HOST": "broker-0.kafka.mesos",
     "KAFKA_PORT": "9092"
-  },
-  "upgradeStrategy": {
-    "minimumHealthCapacity": 0
   }
 }
 ```
