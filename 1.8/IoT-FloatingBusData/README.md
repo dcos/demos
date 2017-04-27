@@ -121,7 +121,7 @@ Using the frontend
     "type": "DOCKER",
     "volumes": [],
     "docker": {
-      "image": "anierbeck/akka-ingest:0.2.0-SNAPSHOT",
+      "image": "anierbeck/akka-ingest:0.2.1-SNAPSHOT",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
@@ -129,10 +129,8 @@ Using the frontend
     }
   },
   "env": {
-    "CASSANDRA_HOST": "node-0.cassandra.mesos",
-    "CASSANDRA_PORT": "9042",
-    "KAFKA_HOST": "broker-0.kafka.mesos",
-    "KAFKA_PORT": "9092"
+    "CASSANDRA_CONNECT": "node-0.cassandra.mesos:9042",
+    "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
   }
 }
 ```
@@ -149,7 +147,7 @@ For example:
 ```
 "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
 ```
-take the host and port from this connection. 
+Use this connection string to connect to the kafka broker.
 The same applies for the connection of the cassandra. 
 
 ```bash
@@ -169,7 +167,19 @@ The digestional part of the application is done via Spark jobs. To run those job
 dcos cli.   
 
 ```bash
-dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-executor-cores 4 --class de.nierbeck.floating.data.stream.spark.KafkaToCassandraSparkApp https://oss.sonatype.org/content/repositories/snapshots/de/nierbeck/floating/data/spark-digest_2.11/0.2.0-SNAPSHOT/spark-digest_2.11-0.2.0-SNAPSHOT-assembly.jar METRO-Vehicles node-0.cassandra.mesos 9042 broker-0.kafka.mesos 9092'
+dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-executor-cores 4 --class de.nierbeck.floating.data.stream.spark.KafkaToCassandraSparkApp https://oss.sonatype.org/content/repositories/snapshots/de/nierbeck/floating/data/spark-digest_2.11/0.2.1-SNAPSHOT/spark-digest_2.11-0.2.1-SNAPSHOT-assembly.jar METRO-Vehicles node-0.cassandra.mesos:9042 broker-0.kafka.mesos:9092'
+```
+
+again here make sure you have the proper connection string for Kafka and Cassandra. 
+
+```bash
+dcos kafka connection | jq .vip | sed -r 's/[\"]+//g'
+```
+will produce a connection with host and port like the following: _broker.kafka.l4lb.thisdcos.directory:9092_
+
+The same has to be applied for cassandra: 
+```bash
+dcos cassandra connection | jq .vip | sed -r 's/[\"]+//g'
 ```
 
 ### Dashboard Application
@@ -184,7 +194,7 @@ Either install it via the DC/OS UI by creating a new marathon app:
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "anierbeck/akka-server:0.2.0-SNAPSHOT",
+      "image": "anierbeck/akka-server:0.2.1-SNAPSHOT",
       "network": "HOST",
       "forcePullImage": true
     }
@@ -193,10 +203,8 @@ Either install it via the DC/OS UI by creating a new marathon app:
     "slave_public"
   ],
   "env": {
-    "CASSANDRA_HOST": "node-0.cassandra.mesos",
-    "CASSANDRA_PORT": "9042",
-    "KAFKA_HOST": "broker-0.kafka.mesos",
-    "KAFKA_PORT": "9092"
+      "CASSANDRA_CONNECT": "node-0.cassandra.mesos:9042",
+      "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
   },
   "upgradeStrategy": {
     "minimumHealthCapacity": 0
