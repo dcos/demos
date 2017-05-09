@@ -1,4 +1,4 @@
-#Iot Fast Data analytics
+# Iot Fast Data analytics
 
 or how to run the SMACK stack on DC/OS with a stream of data.  
 Details about this showcase can be found in the following blog posts: 
