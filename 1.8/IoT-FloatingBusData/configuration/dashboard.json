@@ -1,0 +1,38 @@
+{
+  "id": "/bus-demo/dashboard",
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "anierbeck/akka-server:0.2.0-SNAPSHOT",
+      "network": "HOST",
+      "forcePullImage": true
+    }
+  },
+  "acceptedResourceRoles": [
+    "slave_public"
+  ],
+  "env": {
+    "CASSANDRA_HOST": "node-0.cassandra.mesos",
+    "CASSANDRA_PORT": "9042",
+    "KAFKA_HOST": "broker-0.kafka.mesos",
+    "KAFKA_PORT": "9092"
+  },
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 0
+  },
+  "dependencies": ["/bus-demo/ingest"],
+  "healthChecks": [
+    {
+      "path": "/",
+      "protocol": "HTTP",
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false,
+      "port": 8000
+    }
+  ],
+  "cpus": 0.1,
+  "mem": 2048.0
+}
