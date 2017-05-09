@@ -8,6 +8,8 @@ Details about this showcase can be found in the following blog posts:
 
 In short, with this showcase you'll receive live data from the Los Angeles METRO API. 
 The data is streamed to Apache Kafka and consumed by Apache Spark and an Akka application. 
+
+NOTE: As we are using live data from Los Angeles, there might be very few buses on the map during night in the PDT timezone.
  
 **Table of Contents**
 
@@ -141,7 +143,7 @@ First make sure the port and host are correct. To check for the correct host and
 dcos kafka connection
 ```
 
-you'll receive a list of hosts and ports, at this point make sure to use the **vip** connection string. 
+You'll receive a list of hosts and ports, at this point make sure to use the **vip** connection string. 
 For example: 
 
 ```
@@ -170,7 +172,7 @@ dcos cli.
 dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-executor-cores 4 --class de.nierbeck.floating.data.stream.spark.KafkaToCassandraSparkApp https://oss.sonatype.org/content/repositories/snapshots/de/nierbeck/floating/data/spark-digest_2.11/0.2.1-SNAPSHOT/spark-digest_2.11-0.2.1-SNAPSHOT-assembly.jar METRO-Vehicles node-0.cassandra.mesos:9042 broker-0.kafka.mesos:9092'
 ```
 
-again here make sure you have the proper connection string for Kafka and Cassandra. 
+Again here make sure you have the proper connection string for Kafka and Cassandra. 
 
 ```bash
 dcos kafka connection | jq .vip | sed -r 's/[\"]+//g'
