@@ -1,0 +1,5 @@
+{
+  "networking": {
+    "public-agent": "_PUBLIC_AGENT_IP"
+  }
+}

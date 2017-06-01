@@ -1,1 +1,1 @@
-Iot Fast Data Analytics demo has moved to https://github.com/dcos/demos/tree/master/fastdata-iot/1.9
+Iot Fast Data Analytics demo has moved to https://github.com/dcos/demos/tree/master/geospatial-iot/1.9
