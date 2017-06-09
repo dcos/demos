@@ -1,0 +1,11 @@
+{
+  "database": {
+    "host": "mysql.marathon.mesos:3306",
+    "name": "wordpress",
+    "user": "wordpress",
+    "password": "password"
+  },
+  "networking": {
+    "virtual-host": "_PUBLIC_AGENT_IP"
+  }
+}
