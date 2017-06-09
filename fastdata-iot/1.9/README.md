@@ -69,7 +69,7 @@ Make sure the cassandra is fully functional check it with the dcos cassandra com
 dcos cassandra connection
 ```
 
-The setup of the required cassandra schema is done via an [Jobs](https://dcos.io/docs/1.9/deploying-jobs/quickstart/) job. 
+The setup of the required cassandra schema is done via an [Jobs](https://dcos.io/docs/1.9/deploying-jobs/quickstart/) job.
 
 With the jobs frontend you're able to use the following configuration which will pull down a simple Docker Hub image with code from the [BusFloatingData](https://github.com/ANierbeck/BusFloatingData) repository and the [import_data.sh](bus-demo/import_data.sh) script.
 
