@@ -16,12 +16,7 @@
     }
   },
   "env": {
-    "CASSANDRA_HOST": "node-0.cassandra.mesos",
-    "CASSANDRA_PORT": "9042",
-    "KAFKA_HOST": "broker-0.kafka.mesos",
-    "KAFKA_PORT": "9092"
-  },
-  "upgradeStrategy": {
-    "minimumHealthCapacity": 0
+    "CASSANDRA_CONNECT": "node.cassandra.l4lb.thisdcos.directory:9042",
+    "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
   }
 }

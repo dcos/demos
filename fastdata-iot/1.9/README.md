@@ -1,10 +1,14 @@
 # Iot Fast Data analytics
 
-or how to run the SMACK stack on DC/OS with a stream of data.  
+Or how to run the SMACK stack on DC/OS with a stream of data.
 Details about this showcase can be found in the following blog posts: 
  
  - [Iot Analytics Platform](https://blog.codecentric.de/en/2016/07/iot-analytics-platform/)
  - [SMACK Stack - DC/OS Style](https://blog.codecentric.de/en/2016/08/smack-stack-dcos-style/)
+
+Code used in this demo can be found in the following code repository:
+
+ - [github.com/ANierbeck/BusFloatingData](https://github.com/ANierbeck/BusFloatingData)
 
 In short, with this showcase you'll receive live data from the Los Angeles METRO API. 
 The data is streamed to Apache Kafka and consumed by Apache Spark and an Akka application. 
@@ -36,9 +40,9 @@ or Kafka via the Akka backendsystem.
 
 ## Prerequisites
 
-- A running [DC/OS 1.8.8](https://dcos.io/releases/1.8.8/) or higher cluster with at least 4 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
+- A running [DC/OS 1.9](https://dcos.io/releases/1.9.0/) or higher cluster with at least 4 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.9/usage/cli/install/) installed in version 0.14 or higher.
 - The JSON query util [jq](https://github.com/stedolan/jq/wiki/Installation) must be installed.
-- [SSH](https://dcos.io/docs/1.8/administration/access-node/sshcluster/) cluster access must be set up.
+- [SSH](https://dcos.io/docs/1.9/administration/access-node/sshcluster/) cluster access must be set up.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
 
 ## Install
@@ -65,8 +69,9 @@ Make sure the cassandra is fully functional check it with the dcos cassandra com
 dcos cassandra connection
 ```
 
-The setup of the required cassandra schema is done via an [Jobs](https://docs.mesosphere.com/1.8/usage/jobs/getting-started/) job. 
-With the jobs frontend you're able to use the following configuration. 
+The setup of the required cassandra schema is done via an [Jobs](https://dcos.io/docs/1.9/deploying-jobs/quickstart/) job. 
+
+With the jobs frontend you're able to use the following configuration which will pull down a simple Docker Hub image with code from the [BusFloatingData](https://github.com/ANierbeck/BusFloatingData) repository and the [import_data.sh](bus-demo/import_data.sh) script.
 
 ```json
 {
@@ -131,7 +136,7 @@ Using the frontend
     }
   },
   "env": {
-    "CASSANDRA_CONNECT": "node-0.cassandra.mesos:9042",
+    "CASSANDRA_CONNECT": "node.cassandra.l4lb.thisdcos.directory:9042",
     "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
   }
 }
@@ -169,7 +174,7 @@ The digestional part of the application is done via Spark jobs. To run those job
 dcos cli.   
 
 ```bash
-dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-executor-cores 4 --class de.nierbeck.floating.data.stream.spark.KafkaToCassandraSparkApp https://oss.sonatype.org/content/repositories/snapshots/de/nierbeck/floating/data/spark-digest_2.11/0.2.1-SNAPSHOT/spark-digest_2.11-0.2.1-SNAPSHOT-assembly.jar METRO-Vehicles node-0.cassandra.mesos:9042 broker-0.kafka.mesos:9092'
+dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-executor-cores 4 --class de.nierbeck.floating.data.stream.spark.KafkaToCassandraSparkApp https://oss.sonatype.org/content/repositories/snapshots/de/nierbeck/floating/data/spark-digest_2.11/0.2.1-SNAPSHOT/spark-digest_2.11-0.2.1-SNAPSHOT-assembly.jar METRO-Vehicles node.cassandra.l4lb.thisdcos.directory:9042 broker.kafka.l4lb.thisdcos.directory:9092'
 ```
 
 Again here make sure you have the proper connection string for Kafka and Cassandra. 
@@ -205,11 +210,8 @@ Either install it via the DC/OS UI by creating a new marathon app:
     "slave_public"
   ],
   "env": {
-      "CASSANDRA_CONNECT": "node-0.cassandra.mesos:9042",
+      "CASSANDRA_CONNECT": "node.cassandra.l4lb.thisdcos.directory:9042",
       "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
-  },
-  "upgradeStrategy": {
-    "minimumHealthCapacity": 0
   },
   "dependencies": ["/bus-demo/ingest"],
   "healthChecks": [
