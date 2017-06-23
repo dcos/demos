@@ -3,7 +3,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "anierbeck/akka-server:0.2.0-SNAPSHOT",
+      "image": "anierbeck/akka-server:0.2.2-SNAPSHOT",
       "network": "HOST",
       "forcePullImage": true
     }
