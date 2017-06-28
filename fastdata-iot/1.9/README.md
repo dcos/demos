@@ -1,8 +1,8 @@
 # Iot Fast Data analytics
 
 Or how to run the SMACK stack on DC/OS with a stream of data.
-Details about this showcase can be found in the following blog posts: 
- 
+Details about this showcase can be found in the following blog posts:
+
  - [Iot Analytics Platform](https://blog.codecentric.de/en/2016/07/iot-analytics-platform/)
  - [SMACK Stack - DC/OS Style](https://blog.codecentric.de/en/2016/08/smack-stack-dcos-style/)
 
@@ -10,21 +10,21 @@ Code used in this demo can be found in the following code repository:
 
  - [github.com/ANierbeck/BusFloatingData](https://github.com/ANierbeck/BusFloatingData)
 
-In short, with this showcase you'll receive live data from the Los Angeles METRO API. 
-The data is streamed to Apache Kafka and consumed by Apache Spark and an Akka application. 
+In short, with this showcase you'll receive live data from the Los Angeles METRO API.
+The data is streamed to Apache Kafka and consumed by Apache Spark and an Akka application.
 
 NOTE: As we are using live data from Los Angeles, there might be very few buses on the map during night in the PDT timezone.
- 
+
 **Table of Contents**
 
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Install](#install) the demo
 - [Use](#use) the demo
- 
+
 ## Architecture
 This is just an excerpt of details to be found in the following blog [Iot Analytics Platform](https://blog.codecentric.de/en/2016/07/iot-analytics-platform/)
-The architecture splits into the following parts: 
+The architecture splits into the following parts:
 - Ingest – Akka
 - Digest – Spark
 - Backend – Akka
@@ -33,10 +33,10 @@ The architecture splits into the following parts:
 ![Iot Analytic Platform Architecture](img/ImageArchitecture.png)
 
 The **ingestion** retrieves the data from an REST endpoint at the Los Angeles METRO API, and streams this
-data into the Kafka. From there the data is **digested** by a Spark streaming job, and stored in a Cassandra NoSQL database. 
+data into the Kafka. From there the data is **digested** by a Spark streaming job, and stored in a Cassandra NoSQL database.
 This data which has been transformed for Cassandra (see blog post for the why), is now send back again to Kafka
 and consumed by an Akka backendsystem. The UI Uses either REST or Websockets to retrieve the data from Cassandra
-or Kafka via the Akka backendsystem. 
+or Kafka via the Akka backendsystem.
 
 ## Prerequisites
 
@@ -49,7 +49,7 @@ or Kafka via the Akka backendsystem.
 
 ### Spark
 
-Install the Apache Spark package at least with version **1.0.2-2.0.0**, it needs to be a Spark 2.0 version though. 
+Install the Apache Spark package at least with version **1.0.2-2.0.0**, it needs to be a Spark 2.0 version though.
 
 ```bash
 dcos package install spark
@@ -63,7 +63,7 @@ Install version **1.0.16-3.0.8** of Apache Cassandra, or better from the univers
 dcos package install cassandra
 ```
 
-Make sure the cassandra is fully functional check it with the dcos cassandra command: 
+Make sure the cassandra is fully functional check it with the dcos cassandra command:
 
 ```bash
 dcos cassandra connection
@@ -89,20 +89,20 @@ With the jobs frontend you're able to use the following configuration which will
 }
 ```
 
-Another way of installing is by using the dcos cli. 
+Another way of installing is by using the dcos cli.
 For this use the [cassandra-schema.json](configuration/cassandra-schema.json) file.
- 
-Issue the following command line: 
+
+Issue the following command line:
 ```bash
 dcos job add configuration/cassandra-schema.json
 dcos job run init-cassandra-schema-job
 ```
 
-This will start a job, which initializes the configured cassandra. 
+This will start a job, which initializes the configured cassandra.
 
 ### Kafka
 
-Install version **1.1.9-0.10.0.0** of Apache Kafka, no extra requirements needed for Kafka. 
+Install version **1.1.9-0.10.0.0** of Apache Kafka, no extra requirements needed for Kafka.
 
 ```bash
 dcos package install kafka
@@ -110,10 +110,10 @@ dcos package install kafka
 
 ### Ingestion
 
-Now that the basic SMACK infrastructure is available, let's start with the ingestion part of the setup. 
+Now that the basic SMACK infrastructure is available, let's start with the ingestion part of the setup.
 Again there are two ways of installing this application. Either with the front end, or by using the dcos cli. 
 
-Using the frontend 
+Using the frontend
 
 ![](img/image01-1.png)
 
@@ -128,7 +128,7 @@ Using the frontend
     "type": "DOCKER",
     "volumes": [],
     "docker": {
-      "image": "anierbeck/akka-ingest:0.2.1-SNAPSHOT",
+      "image": "anierbeck/akka-ingest:0.2.2-SNAPSHOT",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
@@ -142,27 +142,27 @@ Using the frontend
 }
 ```
 
-First make sure the port and host are correct. To check for the correct host and ports issue: 
+First make sure the port and host are correct. To check for the correct host and ports issue:
 
 ```bash
 dcos kafka connection
 ```
 
-You'll receive a list of hosts and ports, at this point make sure to use the **vip** connection string. 
-For example: 
+You'll receive a list of hosts and ports, at this point make sure to use the **vip** connection string.
+For example:
 
 ```
 "vip": "broker.kafka.l4lb.thisdcos.directory:9092"
 ```
 Use this connection string to connect to the kafka broker.
-The same applies for the connection of the cassandra. 
+The same applies for the connection of the cassandra.
 
 ```bash
 dcos cassandra connection
 ```
 
 For the client command use the dcos cli use the [akka-ingest.json](configuration/akka-ingest.json) file.  
-And issue the following commands: 
+And issue the following commands:
 
 ```bash
 dcos marathon app add configuration/akka-ingest.json
@@ -177,23 +177,23 @@ dcos cli.
 dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-executor-cores 4 --class de.nierbeck.floating.data.stream.spark.KafkaToCassandraSparkApp https://oss.sonatype.org/content/repositories/snapshots/de/nierbeck/floating/data/spark-digest_2.11/0.2.1-SNAPSHOT/spark-digest_2.11-0.2.1-SNAPSHOT-assembly.jar METRO-Vehicles node.cassandra.l4lb.thisdcos.directory:9042 broker.kafka.l4lb.thisdcos.directory:9092'
 ```
 
-Again here make sure you have the proper connection string for Kafka and Cassandra. 
+Again here make sure you have the proper connection string for Kafka and Cassandra.
 
 ```bash
 dcos kafka connection | jq .vip | sed -r 's/[\"]+//g'
 ```
 will produce a connection with host and port like the following: _broker.kafka.l4lb.thisdcos.directory:9092_
 
-The same has to be applied for cassandra: 
+The same has to be applied for cassandra:
 ```bash
 dcos cassandra connection | jq .vip | sed -r 's/[\"]+//g'
 ```
 
 ### Dashboard Application
 
-The dasboard application will take care of the front end and the communication with Cassandra and Kafka. 
+The dasboard application will take care of the front end and the communication with Cassandra and Kafka.
 
-Either install it via the DC/OS UI by creating a new marathon app: 
+Either install it via the DC/OS UI by creating a new marathon app:
 
 ```json
 {
@@ -201,7 +201,7 @@ Either install it via the DC/OS UI by creating a new marathon app:
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "anierbeck/akka-server:0.2.1-SNAPSHOT",
+      "image": "anierbeck/akka-server:0.2.2-SNAPSHOT",
       "network": "HOST",
       "forcePullImage": true
     }
@@ -235,13 +235,13 @@ Either install it via the DC/OS UI by creating a new marathon app:
 }
 ```
 
-or by using the dcos cli and the [dashboard.json](configuration/dashboard.json) file. 
+or by using the dcos cli and the [dashboard.json](configuration/dashboard.json) file.
 
 ```bash
 dcos marathon app add configuration/dashboard.json
 ```
 
-so after that you should have a nice list of applications: 
+so after that you should have a nice list of applications:
 
 ![](img/image02-1.png)
 
@@ -251,18 +251,17 @@ Now that we successfully installed the application, let's take a look at the das
 For this we just need to navigate to the `http://$PUBLIC_AGENT_IP:8000/`.
 Details about finding out how to find your public agent's ip can be found in the [documentation](https://dcos.io/docs/1.9/administration/locate-public-agent/).  
 The application will give you a
-map where with every poll of the bus-data, that data is streamed into the map via a websocket connection. 
+map where with every poll of the bus-data, that data is streamed into the map via a websocket connection.
 
 ![](img/mapview.png)
 
-Besides the real-time data streamed into the map, it's possible to request the data from the last 15 Minutes, 
-taken from the cassandra. 
- 
+Besides the real-time data streamed into the map, it's possible to request the data from the last 15 Minutes,
+taken from the cassandra.
+
 At this point may I point you again to the full blog about what can be done with this use-case at
- [Iot Analytics Platform](https://blog.codecentric.de/en/2016/07/iot-analytics-platform/). It will give you 
- much better details about why the incoming x,y position data is combined to be in a quadkey. 
- 
-You also can find some more details about the second use-case on with this showcase. How to use a 
+ [Iot Analytics Platform](https://blog.codecentric.de/en/2016/07/iot-analytics-platform/). It will give you
+ much better details about why the incoming x,y position data is combined to be in a quadkey.
+
+You also can find some more details about the second use-case on with this showcase. How to use a
 “Density-Based Clustering in Spatial Databases” (DBSCAN) grouping algorithm to find clusters of Busses, and
- to actually compute where there are major bus-stops. 
- 
+ to actually compute where there are major bus-stops.
