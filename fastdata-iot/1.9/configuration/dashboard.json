@@ -3,7 +3,7 @@
   "container": {
     "type": "DOCKER",
     "docker": {
-      "image": "anierbeck/akka-server:0.2.0-SNAPSHOT",
+      "image": "anierbeck/akka-server:0.2.1-SNAPSHOT",
       "network": "HOST",
       "forcePullImage": true
     }
@@ -29,7 +29,7 @@
     }
   ],
   "cpus": 0.1,
-  "mem": 2048.0
+  "mem": 2048.0,
   "ports": [
     8000, 8001
   ],
