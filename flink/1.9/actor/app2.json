@@ -1,0 +1,49 @@
+{
+  "id": "/api-server",
+  "cmd": "chmod u+x app2 && ./app2",
+  "args": null,
+  "user": null,
+  "env": null,
+  "instances": 1,
+  "cpus": 1,
+  "mem": 128,
+  "disk": 0,
+  "gpus": 0,
+  "executor": null,
+  "constraints": null,
+  "fetch": [
+    {
+      "uri": "https://raw.githubusercontent.com/joerg84/dcos-101/master/app2/app2"
+    }
+  ],
+  "storeUrls": null,
+  "backoffSeconds": 1,
+  "backoffFactor": 1.15,
+  "maxLaunchDelaySeconds": 3600,
+  "container": null,
+  "healthChecks": null,
+  "readinessChecks": null,
+  "dependencies": null,
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 1,
+    "maximumOverCapacity": 1
+  },
+  "acceptedResourceRoles": null,
+  "ipAddress": null,
+  "residency": null,
+  "secrets": null,
+  "taskKillGracePeriodSeconds": null,
+  "portDefinitions": [
+    {
+      "protocol": "tcp",
+      "port": 10000,
+      "labels": {
+        "VIP_0": "/dcos-101/app2:10000"
+      }
+    }
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "external"
+  },
+  "requirePorts": false
+}
