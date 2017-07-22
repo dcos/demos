@@ -1,3 +1,8 @@
+Overview of demos in 1.10:
+
+* [Spring Boot Deployments](springboot/1.10/README.md#springboot-demo)
+
+
 Overview of demos in 1.9:
 
 * [Application Logs](applogs/1.9#fast-data-application-logs)
