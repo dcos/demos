@@ -1,7 +1,7 @@
 # Iot Fast Data analytics
 
 Or how to run the SMACK stack on DC/OS with a stream of data.
-Details about this showcase can be found in the following blog posts: 
+This showcase is contributed by [Achim Nierbeck from codecentric](https://blog.codecentric.de/en/author/achim-nierbeck/), details can be found in the following blog posts: 
  
  - [Iot Analytics Platform](https://blog.codecentric.de/en/2016/07/iot-analytics-platform/)
  - [SMACK Stack - DC/OS Style](https://blog.codecentric.de/en/2016/08/smack-stack-dcos-style/)
