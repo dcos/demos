@@ -39,12 +39,12 @@ __Tip:__ You can also install DC/OS packages from the DC/OS CLI with the [`dcos 
 Now we want to install **Zeppelin** with a specific version from the CLI to work around a temporary package issue in the latest version, use the [zeppelin-config.json](zeppelin-config.json) in this repository in the following command:
 
     ```bash
-    $dcos package install zeppelin --package-version=0.5.6 --options=zeppelin-config.json
+    $ dcos package install zeppelin --package-version=0.5.6 --options=zeppelin-config.json
     ```
 
-    **Tip:** It can take up to 10 minutes for Cassandra to initialize with DC/OS because of race conditions.
+**Tip:** It can take up to 10 minutes for Cassandra to initialize with DC/OS because of race conditions.
 
-    ![Deployed services](./img/tweeter-deployed-services.png)
+![Deployed services](./img/tweeter-deployed-services.png)
 
 # Deploy the containerized app
 
