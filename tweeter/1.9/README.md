@@ -36,15 +36,15 @@ __Tip:__ You can also install DC/OS packages from the DC/OS CLI with the [`dcos 
 1.  Find the **marathon-lb** package and click the **Install Package** button and accept the default installation.
 1.  Monitor the **Services** tab to watch as your microservices are deployed on DC/OS. You will see the Health status go from Idle to Unhealthy, and finally to Healthy as the nodes come online. This may take several minutes.
 
-Now we want to install **Zeppelin** with a specific version from the CLI to work around a temporary package issue in the latest version, use the [zeppelin-config.json](zeppelin-config.json) in this repository in the following command:
+Now we want to install **Zeppelin** with a specific version from the CLI to work around a temporary package issue in the latest version, use the [zeppelin-config.json](zeppelin-config.json) in this repository.
 
     ```bash
     $ dcos package install zeppelin --package-version=0.5.6 --options=zeppelin-config.json
     ```
 
-**Tip:** It can take up to 10 minutes for Cassandra to initialize with DC/OS because of race conditions.
+    **Tip:** It can take up to 10 minutes for Cassandra to initialize with DC/OS because of race conditions.
 
-![Deployed services](./img/tweeter-deployed-services.png)
+    ![Deployed services](./img/tweeter-deployed-services.png)
 
 # Deploy the containerized app
 
