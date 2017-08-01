@@ -103,7 +103,7 @@ Use the `post-tweets.json` app a large number of Shakespeare tweets from a file:
         $ dcos marathon app add post-tweets.json
 
 
-The app will post more than 100k tweets one by one, so you'll see them coming in steadily when you refresh the page. Click the **Network** tab in the DC/OS web interface to see the load balancing in action.
+The app will post more than 100k tweets one by one, so you'll see them coming in steadily when you refresh the page.
 
 The post-tweets app works by streaming to the VIP `1.1.1.1:30000`. This address is declared in the `cmd` parameter of the `post-tweets.json` app definition. The app uses the service discovery and load balancer service that is installed on every DC/OS node. You can see the Tweeter app defined with this VIP in the json definition under `VIP_0`.
 
