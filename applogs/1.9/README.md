@@ -64,13 +64,7 @@ $ ./install-minio.sh
 ```
 
 After this, Minio is available on port 9000 of the public agent, so open `$PUBLIC_AGENT_IP` on port 9000 in your browser and you should see the UI.
-
-Next, we will need to get the Minio credentials in order to access the Web UI (and later on the HTTP API).
-The credentials used by Minio are akin to the ones you might know from Amazon S3, called `$ACCESS_KEY_ID`
-and `$SECRET_ACCESS_KEY`. In order to obtain these credentials, go to the `Services` tab of the DC/OS UI and
-select the running Minio service; click on the `Logs` tab and you should see:
-
-![Obtaining Minio credentials](img/minio-creds.png)
+The default login is "minio/minio123".
 
 Note that you can learn more about Minio and the credentials in the respective [example](https://github.com/dcos/examples/tree/master/minio/1.9#access-minio-browser).
 
@@ -79,16 +73,7 @@ Note that you can learn more about Minio and the credentials in the respective [
 Apache [Drill](http://drill.apache.org/docs/) is a distributed SQL query engine, allowing
 you to interactively explore heterogenous datasets across data sources (CSV, JSON, HDFS, HBase, MongoDB, S3).
 
-A prerequisite for the Drill install to work is that three environment variables
-are defined: `$PUBLIC_AGENT_IP` (the [public agent IP address](https://dcos.io/docs/1.9/administering-clusters/locate-public-agent/)), as well as `$ACCESS_KEY_ID`
-and `$SECRET_ACCESS_KEY` (Minio credentials); all of which are explained in the
-previous section. I've been using the following (specific for my setup):
-
-```bash
-$ export PUBLIC_AGENT_IP=52.24.255.200
-$ export ACCESS_KEY_ID=MRQZLLB72IJRPUGY30MJ
-$ export SECRET_ACCESS_KEY=f5nGdq3lxlvpJF1nMOFAgk8h71ZMlM0h4fzUwakj
-```
+A prerequisite for the Drill install that the `$PUBLIC_AGENT_IP` environment variable is set, which should have done in the previous step.
 
 Now do the following to install Drill:
 
