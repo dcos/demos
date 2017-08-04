@@ -28,10 +28,10 @@ data gets loaded into Minio and Apache Drill is then used to interactively query
 
 ## Prerequisites
 
-- A running [DC/OS 1.8.7](https://dcos.io/releases/1.8.7/) or higher cluster with at least 3 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.8/usage/cli/install/) installed in version 0.14 or higher.
+- A running [DC/OS 1.9.0](https://dcos.io/releases/1.9.0/) or higher cluster with at least 3 private agents and 1 public agent each with 2 CPUs and 5 GB of RAM available as well as the [DC/OS CLI](https://dcos.io/docs/1.9/usage/cli/install/) installed in version 0.14 or higher.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos.git` if you haven't done so, yet.
 - The JSON query util [jq](https://github.com/stedolan/jq/wiki/Installation) must be installed.
-- [SSH](https://dcos.io/docs/1.8/administration/access-node/sshcluster/) cluster access must be set up.
+- [SSH](https://dcos.io/docs/1.9/administration/access-node/sshcluster/) cluster access must be set up.
 
 Going forward we'll call the directory you cloned the `dcos/demo` Git repo into `$DEMO_HOME`.
 
@@ -49,7 +49,7 @@ $ dcos package install marathon-lb
 
 To serve the log data for analysis in Drill we use Minio in this demo, just as you would use, say, S3 in AWS.
 
-To set up Minio find out the [IP of the public agent](https://dcos.io/docs/1.8/administration/locate-public-agent/)
+To set up Minio find out the [IP of the public agent](https://dcos.io/docs/1.9/administration/locate-public-agent/)
 and store it in an environment variable called `$PUBLIC_AGENT_IP`, for example:
 
 ```bash
@@ -59,12 +59,11 @@ $ export PUBLIC_AGENT_IP=52.24.255.200
 Now you can install the Minio package like so:
 
 ```bash
-$ cd $DEMO_HOME/1.8/applogs/
+$ cd $DEMO_HOME/applogs/1.9/
 $ ./install-minio.sh
 ```
 
-After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
-in your browser and you should see the UI.
+After this, Minio is available on port 9000 of the public agent, so open `$PUBLIC_AGENT_IP` on port 9000 in your browser and you should see the UI.
 
 Next, we will need to get the Minio credentials in order to access the Web UI (and later on the HTTP API).
 The credentials used by Minio are akin to the ones you might know from Amazon S3, called `$ACCESS_KEY_ID`
@@ -73,7 +72,7 @@ select the running Minio service; click on the `Logs` tab and you should see:
 
 ![Obtaining Minio credentials](img/minio-creds.png)
 
-Note that you can learn more about Minio and the credentials in the respective [example](https://github.com/dcos/examples/tree/master/1.8/minio#using-browser-console).
+Note that you can learn more about Minio and the credentials in the respective [example](https://github.com/dcos/examples/tree/master/minio/1.9#access-minio-browser).
 
 ### Apache Drill
 
@@ -94,7 +93,7 @@ $ export SECRET_ACCESS_KEY=f5nGdq3lxlvpJF1nMOFAgk8h71ZMlM0h4fzUwakj
 Now do the following to install Drill:
 
 ```bash
-$ cd $DEMO_HOME/1.8/applogs/
+$ cd $DEMO_HOME/applogs/1.9/
 $ ./install-drill.sh
 ```
 
@@ -126,7 +125,7 @@ Next we install WordPress, acting as the data source for the logs.
 Note that the environment variable called `$PUBLIC_AGENT_IP` must be exported.
 
 ```bash
-$ cd $DEMO_HOME/1.8/applogs/
+$ cd $DEMO_HOME/applogs/1.9/
 $ ./install-wp.sh
 ```
 
@@ -149,7 +148,7 @@ First interact with WP, that is, create some posts and surf around. Then, to cap
 execute the following locally (on your machine):
 
 ```bash
-$ cd $DEMO_HOME/1.8/applogs/
+$ cd $DEMO_HOME/applogs/1.9/
 $ echo remote ignore0 ignore1 timestamp request status size origin agent > session.log && dcos task log --lines 1000 wordpress | tail -n +30 | sed 's, \[\(.*\)\] , \"\1\" ,' >> session.log
 ```
 
@@ -185,7 +184,7 @@ it using Apache Drill.
 
 - An area of improvement is the ingestion process which is currently implemented
 locally, that is, via manually using the DC/OS CLI on your machine. A more advanced
-scenario would, for example, use a DC/OS [Job](https://dcos.io/docs/1.8/usage/jobs/)
+scenario would, for example, use a DC/OS [Job](https://dcos.io/docs/1.9/usage/jobs/)
 to periodically ingest the logs in a timestamped manner into Minio.
 - While Drill is set up in [distributed mode](http://drill.apache.org/docs/installing-drill-in-distributed-mode/)
 currently only a single drillbit is used; by scaling the Drill service, one can
