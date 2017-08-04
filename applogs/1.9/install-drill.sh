@@ -15,11 +15,9 @@ echo deploying Apache Drill ...
 if [ "$(uname)" == "Darwin" ]; then
   # replace the template with the actual value of the broker:
   sed -i '.tmp' "s,_PUBLIC_AGENT_IP,$PUBLIC_AGENT_IP,g; s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," ./drill/apache-drill.json
-  sed -i '.original' "s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," ./drill/drill-s3-plugin-config.json
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
   # replace the template with the actual value of the broker:
   sed -i'.tmp' "s,_PUBLIC_AGENT_IP,$PUBLIC_AGENT_IP,g; s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," ./drill/apache-drill.json
-  sed -i'.original' "s,_ACCESS_KEY_ID,$ACCESS_KEY_ID,; s,_SECRET_ACCESS_KEY,$SECRET_ACCESS_KEY," ./drill/drill-s3-plugin-config.json
 fi
 # deploy service:
 dcos marathon app add ./drill/apache-drill.json
