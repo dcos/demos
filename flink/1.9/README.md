@@ -96,7 +96,9 @@ and
 
 After the Kafka queues are created, we can now deploy the [data generator](https://github.com/dcos/demos/blob/master/flink/1.9/generator/generator.go) with this [marathon app definition](https://github.com/dcos/demos/blob/master/flink/1.9/generator/generator.json). As the GoLang generator contains all its dependencies, the app defintion doesn't require a container image and is running without Docker.
 
-`dcos marathon app add https://raw.githubusercontent.com/dcos/demos/master/flink/1.9/generator/generator.json`
+`cd flink/1.9`
+
+`dcos marathon app add generator/generator.json`
 
 
 ### Flink
@@ -135,7 +137,7 @@ Once we hit Submit, we should see the job begin to run in the Flink web UI.
 Now once the Flink job is running, we only need a way to visualize the results. We do that with another [simple GoLang program](https://github.com/dcos/demos/blob/master/flink/1.9/actor/actor_viewer.go).
 
 `
-dcos marathon app add https://raw.githubusercontent.com/dcos/demos/master/flink/1.9/actor/fraudDisplay.json
+dcos marathon app add actor/fraudDisplay.json
 `
 
 We can easily check the output by checking the task output from the UI.
