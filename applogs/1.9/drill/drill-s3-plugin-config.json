@@ -3,8 +3,8 @@
   "enabled": true,
   "connection": "s3a://test",
   "config": {
-    "fs.s3a.access.key": "_ACCESS_KEY_ID",
-    "fs.s3a.secret.key": "_SECRET_ACCESS_KEY"
+    "fs.s3a.access.key": "minio",
+    "fs.s3a.secret.key": "minio123"
   },
   "workspaces": {
     "root": {
