@@ -1,0 +1,11 @@
+{
+  "service": {
+    "name": "zeppelin",
+    "zeppelin_java_opts": "-Dspark.mesos.coarse=true -Dspark.mesos.executor.home=/opt/spark/dist"
+  },
+  "spark": {
+    "uri": "https://downloads.mesosphere.com/spark/assets/spark-2.1.1-bin-2.7.tgz",
+    "executor_docker_image": "mesosphere/spark:1.1.0-2.1.1-hadoop-2.7",
+    "cores_max": "8"
+  }
+}

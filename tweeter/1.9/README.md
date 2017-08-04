@@ -27,22 +27,22 @@ This tutorial demonstrates how you can build a complete IoT pipeline on DC/OS in
 *  The public IP address of your public agent node. After you have installed DC/OS with a public agent node declared, you can [navigate to the public IP address][9] of your public agent node.
 
 # Install services
-From the DC/OS web interface [**Universe**](https://dcos.io/docs/1.9/usage/webinterface/#universe) tab, install Cassandra, Kafka, Marathon-LB, and Zeppelin.
+From the DC/OS web interface [**Universe**](https://dcos.io/docs/1.9/usage/webinterface/#universe) tab, install Cassandra, Kafka, and Marathon-LB.
 
 __Tip:__ You can also install DC/OS packages from the DC/OS CLI with the [`dcos package install`][11] command.
 
 1.  Find the **cassandra** package and click the **Install Package** button and accept the default installation. Cassandra will spin up to at least 3 nodes.
 1.  Find the **kafka** package and click the **Install Package** button and accept the default installation. Kafka will spin up 3 brokers.
 1.  Find the **marathon-lb** package and click the **Install Package** button and accept the default installation.
-1.  Install Zeppelin.
-    1.  Find the **zeppelin** package and click the **Install Package** button and choose the **Advanced Installation** option.
-    1.  Click the **spark** tab and set `cores_max` to `8`.
-    1.  Click **Review and Install** and complete your installation.
 1.  Monitor the **Services** tab to watch as your microservices are deployed on DC/OS. You will see the Health status go from Idle to Unhealthy, and finally to Healthy as the nodes come online. This may take several minutes.
 
-    **Tip:** It can take up to 10 minutes for Cassandra to initialize with DC/OS because of race conditions.
+Now we want to install **Zeppelin** with a specific version from the CLI to work around a temporary package issue in the latest version, use the [zeppelin-config.json](zeppelin-config.json) in this repository.
 
-    ![Deployed services](./img/tweeter-deployed-services.png)
+    $ dcos package install zeppelin --package-version=0.5.6 --options=zeppelin-config.json
+
+**Tip:** It can take up to 10 minutes for Cassandra to initialize with DC/OS because of race conditions.
+
+![Deployed services](./img/tweeter-deployed-services.png)
 
 # Deploy the containerized app
 
