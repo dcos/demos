@@ -73,13 +73,10 @@ Note that you can learn more about Minio and the credentials in the respective [
 Apache [Drill](http://drill.apache.org/docs/) is a distributed SQL query engine, allowing
 you to interactively explore heterogenous datasets across data sources (CSV, JSON, HDFS, HBase, MongoDB, S3).
 
-A prerequisite for the Drill install that the `$PUBLIC_AGENT_IP` environment variable is set, which should have done in the previous step.
-
 Now do the following to install Drill:
 
 ```bash
-$ cd $DEMO_HOME/applogs/1.9/
-$ ./install-drill.sh
+dcos marathon app add https://raw.githubusercontent.com/dcos/demos/master/applogs/1.9/drill/apache-drill.json
 ```
 
 Go to `http://$PUBLIC_AGENT_IP:8047/` to access the Drill Web UI:
