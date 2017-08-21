@@ -111,11 +111,9 @@ dcos package install kafka
 ### Ingestion
 
 Now that the basic SMACK infrastructure is available, let's start with the ingestion part of the setup. 
-Again there are two ways of installing this application. Either with the front end, or by using the dcos cli. 
+Again there are two ways of installing this application - through the UI, or by using the DC/OS CLI. 
 
-Using the frontend 
-
-![](img/image01-1.png)
+Using the UI, copy and paste the JSON into the JSON editor:
 
 ```json
 {
@@ -142,7 +140,7 @@ Using the frontend
 }
 ```
 
-First make sure the port and host are correct. To check for the correct host and ports issue: 
+First make sure the port and host are correct. To check for the correct host and ports: 
 
 ```bash
 dcos kafka connection
