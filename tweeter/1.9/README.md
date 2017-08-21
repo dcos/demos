@@ -54,9 +54,7 @@ In this step you deploy the containerized Tweeter app to a public node.
     $ git clone git@github.com:mesosphere/tweeter.git
     ```
 
-2.  Add the `HAPROXY_0_VHOST` label to the `tweeter.json` Marathon app definition file. `HAPROXY_0_VHOST` exposes Nginx on the external load balancer with a virtual host. The `HAPROXY_0_VHOST` value is the hostname of your [public agent][9] node.
-
-    **Important:** You must remove the leading `http://` and the trailing `/`.
+2.  Add the `HAPROXY_0_VHOST` label to the `tweeter.json` Marathon app definition file. `HAPROXY_0_VHOST` exposes Nginx on the external load balancer with a virtual host. The `HAPROXY_0_VHOST` value is the IP or hostname of your [public agent][9] node, or may be an external loadbalancer IP or hostname depending on your cluster configuration. 
 
     ```json
       ],
@@ -67,7 +65,11 @@ In this step you deploy the containerized Tweeter app to a public node.
     }
     ```
 
-    For example, if you are using AWS, this is your public ELB hostname. It should look similar to this:
+    For example, if you are using AWS, this can be your public ELB hostname. 
+
+    **Important:** You must remove the leading `http://` and the trailing `/`.
+    
+    It should look similar to this:
 
     ```bash
       ],
@@ -92,7 +94,7 @@ In this step you deploy the containerized Tweeter app to a public node.
 
     The service talks to Cassandra via `node-0.cassandra.mesos:9042`, and Kafka via `broker-0.kafka.mesos:9557` in this example. Traffic is routed via the Marathon-LB (Marathon-LB) because you added the HAPROXY_0_VHOST tag on the `tweeter.json` definition.
 
-1.  Go to the DC/OS web interface to verify your app is up and healthy. Then, navigate to [public agent][9] node to see the Tweeter UI and post a Tweet.
+1.  Go to the DC/OS web interface to verify your app is up and healthy. Then, navigate to the [public agent][9] node, or your ELB address if that's what was configured in the previous step, to see the Tweeter UI and post a Tweet.
 
     ![Tweeter][14]
 
