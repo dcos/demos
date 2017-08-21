@@ -8,7 +8,7 @@
     "type": "DOCKER",
     "volumes": [],
     "docker": {
-      "image": "anierbeck/akka-ingest:0.2.0-SNAPSHOT",
+      "image": "anierbeck/akka-ingest:0.2.1-SNAPSHOT",
       "network": "HOST",
       "privileged": false,
       "parameters": [],
