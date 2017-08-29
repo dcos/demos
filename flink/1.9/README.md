@@ -6,6 +6,8 @@ During this demo we use Apache Flink and Apache Kafka to setup a high-volume fin
  - Manual install: 15min
 - Target audience: Anyone interested in stream data processing and analytics with Apache Kafka and Apache Flink.
 
+A video of this demo can be found [here](https://www.youtube.com/watch?v=bwPXNlVHTeI).
+
 **Table of Contents**:
 
 - [Architecture](#architecture)
