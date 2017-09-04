@@ -87,12 +87,16 @@ $ cd $DEMO_HOME/1.9/sensoranalytics/
 $ ./install-minio.sh
 ```
 
-After this, Minio is available on port 80 of the public agent, so open `$PUBLIC_AGENT_IP`
+After this, Minio is available on port 9000 of the public agent, so open `$PUBLIC_AGENT_IP:9000`
 in your browser and you should see the UI.
 
 Next, we will need to get the Minio credentials in order to access the Web UI (and later on the HTTP API).
-The credentials used by Minio are akin to the ones you might know from Amazon S3, called `$ACCESS_KEY_ID`
-and `$SECRET_ACCESS_KEY`. In order to obtain these credentials, first go to the `Services` tab of the DC/OS UI and
+The credentials used by Minio are similar to the ones you might know from Amazon S3, called `$ACCESS_KEY_ID`
+and `$SECRET_ACCESS_KEY`. 
+
+The default credentials in a new deployment of Minio on DC/OS are "minio" and "minio123"
+
+In order to check these credentials, first go to the `Services` tab of the DC/OS UI and
 select the running Minio service. Select the running instance (`minio.75be9be3-f94e-11e6-8051-36a4f2bcaa4f` in my case),
 click on the `Files` tab, and select the `stdout` file to view it (by clicking on the magnifying glass icon):
 
