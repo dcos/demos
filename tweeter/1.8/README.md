@@ -54,7 +54,7 @@ In this step you deploy the containerized Tweeter app to a public node.
     $ git clone git@github.com:mesosphere/tweeter.git
     ```
 
-2.  Add the `HAPROXY_0_VHOST` label to the `tweeter.json` Marathon app definition file. `HAPROXY_0_VHOST` exposes Nginx on the external load balancer with a virtual host. The `HAPROXY_0_VHOST` value is the hostname of your [public agent][9] node.
+2.  Add the `HAPROXY_0_VHOST` label to the `1.8/tweeter.json` Marathon app definition file. `HAPROXY_0_VHOST` exposes Nginx on the external load balancer with a virtual host. The `HAPROXY_0_VHOST` value is the hostname of your [public agent][9] node.
 
     **Important:** You must remove the leading `http://` and the trailing `/`.
 
@@ -81,7 +81,7 @@ In this step you deploy the containerized Tweeter app to a public node.
 4.  Install and deploy Tweeter with this command.
 
     ```bash
-    $ dcos marathon app add tweeter.json
+    $ dcos marathon app add 1.8/tweeter.json
     ```
 
     **Tip:** The `instances` parameter in `tweeter.json` specifies the number of app instances. Use the following command to scale your app up or down:
