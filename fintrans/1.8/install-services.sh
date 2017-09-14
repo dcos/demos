@@ -6,7 +6,7 @@ set -o nounset
 set -o pipefail
 
 # pick the first Kafka broker FQDN (note that -r strips the quotes):
-broker0=`dcos kafka connection | jq -r .dns[0]`
+broker0=`dcos kafka endpoints broker | jq -r .dns[0]`
 
 echo deploying the fintrans generator ...
 if [ "$(uname)" == "Darwin" ]; then

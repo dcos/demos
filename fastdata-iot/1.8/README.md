@@ -62,7 +62,7 @@ dcos package install cassandra
 Make sure the cassandra is fully functional check it with the dcos cassandra command: 
 
 ```bash
-dcos cassandra connection
+dcos cassandra endpoints node
 ```
 
 The setup of the required cassandra schema is done via an [Jobs](https://docs.mesosphere.com/1.8/usage/jobs/getting-started/) job. 
@@ -140,7 +140,7 @@ Using the frontend
 First make sure the port and host are correct. To check for the correct host and ports issue: 
 
 ```bash
-dcos kafka connection
+dcos kafka endpoints broker
 ```
 
 You'll receive a list of hosts and ports, at this point make sure to use the **vip** connection string. 
@@ -153,7 +153,7 @@ Use this connection string to connect to the kafka broker.
 The same applies for the connection of the cassandra. 
 
 ```bash
-dcos cassandra connection
+dcos cassandra endpoints node
 ```
 
 For the client command use the dcos cli use the [akka-ingest.json](configuration/akka-ingest.json) file.  
@@ -175,13 +175,13 @@ dcos spark run --submit-args='--driver-cores 0.1 --driver-memory 1024M --total-e
 Again here make sure you have the proper connection string for Kafka and Cassandra. 
 
 ```bash
-dcos kafka connection | jq .vip | sed -r 's/[\"]+//g'
+dcos kafka endpoints broker | jq .vip | sed -r 's/[\"]+//g'
 ```
 will produce a connection with host and port like the following: _broker.kafka.l4lb.thisdcos.directory:9092_
 
 The same has to be applied for cassandra: 
 ```bash
-dcos cassandra connection | jq .vip | sed -r 's/[\"]+//g'
+dcos cassandra endpoints broker | jq .vip | sed -r 's/[\"]+//g'
 ```
 
 ### Dashboard Application

@@ -124,7 +124,7 @@ Note that if you are unfamiliar with Kafka and its terminology, you can check ou
 Next, figure out where the broker is:
 
 ```bash
-$ dcos kafka connection
+$ dcos kafka endpoints broker
 
 {
   "address": [

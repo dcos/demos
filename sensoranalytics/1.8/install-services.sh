@@ -10,7 +10,7 @@ set -o pipefail
 : ${SECRET_ACCESS_KEY?"ERROR: The environment variable SECRET_ACCESS_KEY is not set."}
 
 # pick the first Kafka broker FQDN (note that -r strips the quotes):
-broker0=`dcos kafka connection | jq -r .dns[0]`
+broker0=`dcos kafka endpoints broker | jq -r .dns[0]`
 
 echo deploying the traffic fetcher ...
 if [ "$(uname)" == "Darwin" ]; then

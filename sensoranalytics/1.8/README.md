@@ -168,7 +168,7 @@ Both the traffic data fetcher and the mapping agent need to know how to connect 
 For that, figure out where the broker is:
 
 ```bash
-$ dcos kafka connection
+$ dcos kafka endpoints broker
 
 {
   "address": [
