@@ -156,7 +156,7 @@ Use this connection string to connect to the kafka broker.
 The same applies for the connection of the cassandra. 
 
 ```bash
-dcos cassandra endpoints brokerÏ
+dcos cassandra endpoints broker
 ```
 
 For the client command use the dcos cli use the [akka-ingest.json](configuration/akka-ingest.json) file.  
