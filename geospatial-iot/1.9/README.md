@@ -1,4 +1,7 @@
 # DC/OS IoT demo
+
+*NOTE* This demo has been contributed by [amollenkopf](https://github.com/amollenkopf/) from [ESRI](https://www.esri.com).
+
 <img src="docs/0-overview/architecture.jpg"/>
 This project demonstrates how to configure a full stack geo-enabled Internet of Things (IoT) solution using <a href="https://mesosphere.com/">Mesosphere's</a> open sourced <a href="https://dcos.io/">Data Center Operating System (DC/OS)</a> using <a href="https://www.docker.com/">Docker</a> containerization and <a href="http://mesos.apache.org/">Mesos</a> frameworks including <a href="https://mesosphere.github.io/marathon/">Marathon</a>, <a href="http://kafka.apache.org/">Kafka</a>, <a href="http://spark.apache.org/">Spark</a>, and <a href="http://elasticsearch.mesosframeworks.com/">Elasticsearch</a>.<br>  <!-- To see the DC/OS IoT demo in action click on the video link below.<br> -->
 <center><table><tr><td width="50%"><img src="docs/9-visual/02.gif"><br>Geohash aggregation replay of taxi movement in New York City.</td><td width="50%"><img src="docs/9-visual/03.gif"><br>Heatmap replay & of taxi movement in New York City.<br><br></td></tr></table></center>
