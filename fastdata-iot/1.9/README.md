@@ -57,10 +57,10 @@ dcos package install spark
 
 ### Cassandra
 
-Install version **1.0.16-3.0.8** of Apache Cassandra, or better from the universe.  
+Install version **1.0.25-3.0.10** of Apache Cassandra from the universe.  
 
 ```bash
-dcos package install cassandra
+dcos package install cassandra --package-version=1.0.25-3.0.10
 ```
 
 Make sure the cassandra is fully functional check it with the dcos cassandra command: 
