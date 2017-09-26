@@ -126,10 +126,21 @@ Now that we have setup Nexus, we can start up our development IDE. The dcos-mave
 
 Last, you need to configure the Maven project so it can access your DC/OS cluster.
 
-* Configure the DC/OS URL and the Nexus URL (same <publicIP>:<port> you have used earlier to access the Nexus UI) in the pom.xml file.
+* Configure the DC/OS URL and the Nexus URL (same <publicIP>:<port> you have used earlier to access the Nexus UI) in the pom.xml file as follows:
+```
+  <configuration>
+      <dcosUrl> CLUSTER_URL </dcosUrl>
+      <nexusUrl> PUBLIC_IP:PORT </nexusUrl>
+      <ignoreSslCertificate>true</ignoreSslCertificate>
+  </configuration>
+```
 ![Project DC/OS Configuration](images/project_dcos.png)
 
-* Create a .dcos-token file with your dcos token in order to enable access to the DC/OS endpoints. The token can be retrieved from the DC/OS CLI with `dcos config show core.dcos_acs_token`.
+* Create a .dcos-token file with your dcos token in order to enable access to the DC/OS endpoints. The token can be retrieved from the DC/OS CLI with the following command:
+```
+dcos config show core.dcos_acs_token
+etJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJib290c3RyYXB1c2VyIiwiZXhwIjoxNTA2ODY0ODEyfQ.UbhBdzZHZPErhXWLQnKT5SLqYubwK6g0we4DjfqkSOWB43gozzDtL1jutrc7zlg5ipHjtneAn4oskkYVqc-ajxN0fRbdRTaVfaLwr_wBWeHN3MEq1Lk7fEzplNQ2mc996ki2X00OkEyfAEsxmgF4JnZfpHBHBg9kOCUprLNc1vpD5y73mv5FVvFCG1QvZCtkSsFvRl23vWGErkcY05Gj5CKHHyOCWl6POBlzrrz0ubRFTpdkRMjHBWtMI6XuTOz6iSKYeySBMmY_aqH91ZlZJMuXO1XxuXBotToOm2aqYhNqlFA8yEuvnEOxbVz5Tcp2XUik3BoDiNrCee_PKjLXzcv 
+```
 ![Project DC/OS token](images/project_token.png)
 
 
@@ -149,6 +160,7 @@ Now we are ready to develop and code our Spring Boot example.
 * Deploy the application using `mvn clean package dcos:uploadArtifact dcos:deployUCR`.
 Note, that the deployment will use the [template app-definition](https://github.com/dcos-labs/dcos-maven-plugin/blob/master/samples/spring-boot-sample/application.json) and replace `<NEXUS_URL>` and `<FILENAME>` 
 with the respective values. You can check from the DC/OS UI that it is deploying.
+
 ![Sample deploy](images/dcos.png)
 
 * Furthermore you can access the application using the public agent IP we used earlier: <publicIP>:8080.
