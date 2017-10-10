@@ -57,7 +57,7 @@ Install the Apache Kafka package :
 $ dcos package install kafka 
 ```
 
-Note that if you are unfamiliar with Kafka and its terminology, you can check out the respective [101 example](https://github.com/dcos/examples/tree/master/1.9/kafka).
+Note that if you are unfamiliar with Kafka and its terminology, you can check out the respective [101 example](https://github.com/dcos/examples/tree/master/kafka).
 
 Next, figure out where the broker is:
 
