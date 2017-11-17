@@ -1,7 +1,7 @@
 Overview of demos in 1.10:
 
 * [Spring Boot Deployments](springboot/1.10/README.md#springboot-demo)
-
+* [Apache Flink Stream Processing](flink/1.10#fast-data-financial-transaction-processing-with-apache-flink)
 
 Overview of demos in 1.9:
 
