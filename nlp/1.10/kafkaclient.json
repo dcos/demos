@@ -1,0 +1,13 @@
+{
+ "id": "/kafka-client",
+ "instances": 1,
+ "container": {
+    "type": "MESOS",
+    "docker": {
+    "image": "wurstmeister/kafka:0.11.0.0"
+    }
+ },
+ "cpus": 0.5,
+ "mem": 256,
+ "cmd": "sleep 100000"
+}

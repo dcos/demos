@@ -1,0 +1,11 @@
+{
+  "id": "preprocessor",
+  "instances": 1,
+  "fetch": [{
+    "uri": "https://raw.githubusercontent.com/dcos/demos/nlp/1.10/master/preprocessor/preprocessor_linux",
+    "executable": true
+  }],
+  "cpus": 0.1,
+  "mem": 32,
+  "cmd": "./preprocessor_linux -b broker.kafka.l4lb.thisdcos.directory:9092"
+}
