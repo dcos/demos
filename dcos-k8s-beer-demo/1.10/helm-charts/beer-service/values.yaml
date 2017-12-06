@@ -1,0 +1,41 @@
+# Default values for beer-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: unterstein/dcos-beer-service
+  tag: latest
+  pullPolicy: Always
+
+deployment:
+  version: 3
+  springDatasourceUrl: jdbc:mysql://database.marathon.l4lb.thisdcos.directory:3306/beer?user=good&password=beer
+  logstashDestination: logstash.marathon.l4lb.thisdcos.directory:5000
+  elasticsearchUrl: http://elasticsearch.marathon.l4lb.thisdcos.directory:9200
+
+service:
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 8080
+
+ingress:
+  enabled: true
+  # Used to create an Ingress record.
+  # Replace with your domain
+  host: beer.mydomain.com
+  annotations:
+    kubernetes.io/ingress.class: cloudflare-warp
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
