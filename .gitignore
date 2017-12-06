@@ -5,3 +5,5 @@ fintrans/1.8/laundering-detector/laundering-detector
 fintrans/1.9/generator/generator
 fintrans/1.9/influx-ingest/influx-ingest
 fintrans/1.9/laundering-detector/laundering-detector
+.dcos-token
+cloudflare-warp.pem
