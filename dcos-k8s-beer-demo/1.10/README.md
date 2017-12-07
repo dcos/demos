@@ -1,4 +1,4 @@
-# The DC/OS + Kubernetes + Helm + Cloudflare Warp - cool beer demo
+# The DC/OS + Kubernetes + Helm - cool beer demo
 
 ![Model](images/components.png)
 
@@ -128,7 +128,7 @@ beer-beer-service-1676235277-tskrp                      1/1       Running   0   
 
 ### Cloudflare Warp
 
-The Cloudflare Warp Ingress Controller makes connections between a Kubernetes service and the Cloudflare edge, exposing an application in your cluster to the internet at a hostname of your choice. A quick description of the details can be found at https://warp.cloudflare.com/quickstart/
+The Cloudflare Warp Ingress Controller makes connections between a Kubernetes service and the Cloudflare edge, exposing an application in your cluster to the internet at a hostname of your choice. A quick description of the details can be found at https://warp.cloudflare.com/quickstart/.
 
 **Note:** Before installing Cloudflare Warp you need to obtain Cloudflare credentials for your domain zone.
 The credentials are obtained by logging in to https://www.cloudflare.com/a/warp, selecting the zone where you will be publishing your services, and saving the file locally to `dcos-k8s-beer-demo` folder.
@@ -150,8 +150,19 @@ beer-ingress-cloudflare-warp-ingress-3061065498-v6mw5   1/1       Running   0   
 ### Testing external access
 
 Now you should be able to check beer at https://beer.mydomain.com/
-And if you noticed Cloudflare Warp Ingress Controller creates `https` connection by default :-)
+And if you noticed Cloudflare Warp creates `https` connection by default :-)
 
+
+### Accessing Frontend App without Cloudflare Warp
+
+If you do not have Cloudflare account or do not want to expose Frontend, skip the `Cloudflare Warp` step and
+then run:
+```bash
+kubectl port-forward -n beer beer-beer-service-1676235277-tskrp 8080
+```
+
+Now you should be able to check beer at `http://127.0.0.1:8080`
 
 ## Conclusion
+
 Cheers 🍺
