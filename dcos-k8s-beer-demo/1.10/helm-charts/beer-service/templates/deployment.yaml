@@ -25,7 +25,7 @@ spec:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "beer-service.name" . }}
+                  name: {{ template "beer-service.fullname" . }}
                   key: springDatasourceUrl
             - name: LOGSTASH_DESTINATION
               value: "{{ .Values.deployment.logstashDestination }}"
