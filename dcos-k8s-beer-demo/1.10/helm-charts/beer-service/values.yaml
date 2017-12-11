@@ -21,7 +21,7 @@ service:
   internalPort: 8080
 
 ingress:
-  enabled: true
+  enabled: false
   # Used to create an Ingress record.
   # Replace with your domain
   host: beer.mydomain.com

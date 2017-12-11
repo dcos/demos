@@ -10,7 +10,7 @@ So that means all the backend is running on DC/OS and Internet facing services a
 
 ## DC/OS cluster with Kubernetes
 
-**Note:** In order to deploy all parts of this demo successfully, I would recommend to spin up a cluster with at least **7** private DC/OS nodes, also you will need Kubernetes package to be installed.
+**Note:** In order to deploy all parts of this demo successfully, I would recommend to spin up a cluster with at least **7** private DC/OS nodes, also you will need Kubernetes package to be installed (Instruction are provided below).
 
 If you do not have DC/OS cluster you can easily bootstrap it as per [dcos-kubernetes-quickstart](https://github.com/mesosphere/dcos-kubernetes-quickstart).
 By default install is set to **3** private DC/OS nodes, you need to [set](https://docs.mesosphere.com/service-docs/beta-kubernetes/0.3.0-1.7.10-beta/advanced-install/#change-the-number-of-kubernetes-worker-nodes) it to **7**.
@@ -81,7 +81,7 @@ kube-node-2-kubelet.kubernetes.mesos   Ready     7m        v1.7.10
 
 ### Helm setup
 
-To deploy `beer-service` and `Cloudflare Warp` we will need [Helm](https://helm.sh).
+To deploy `beer-service` we will need [Helm](https://helm.sh).
 
 To download and install Helm cli run:
 ```bash
@@ -109,13 +109,40 @@ dcos marathon group add marathon-apps/marathon-configuration.json
 
 Wait till it gets installed, you can check it's progress in DC/OS Dashboard/Services/beer.
 
+## Deploy Frontend App on Kubernetes and expose it locally
+
+### Frontend App
+
+To deploy Frontend App run:
+```bash
+helm install --name beer --namespace beer helm-charts/beer-service
+```
+
+Check that pods are running:
+```bash
+kubectl -n beer get pods
+NAME                                                    READY     STATUS    RESTARTS   AGE
+beer-beer-service-1676235277-s9ptv                      1/1       Running   0          2m
+beer-beer-service-1676235277-tskrp                      1/1       Running   0          2m
+```
+
+### Accessing Frontend App locally
+
+To access app locally run:
+```bash
+kubectl port-forward -n beer beer-beer-service-1676235277-tskrp 8080
+```
+
+Now you should be able to check beer at `http://127.0.0.1:8080`
+
 ## Deploy Frontend App and Cloudflare Warp on Kubernetes
 
 ### Frontend App
 
 To deploy Frontend App run (do not forget to replace there with your `domain_name`):
 ```bash
-helm install --name beer --namespace beer helm-charts/beer-service --set ingress.host=beer.mydomain.com
+helm install --name beer --namespace beer helm-charts/beer-service \
+  --set ingress.enabled="true",ingress.host="beer.mydomain.com"
 ```
 
 Check that pods are running:
@@ -151,17 +178,6 @@ beer-ingress-cloudflare-warp-ingress-3061065498-v6mw5   1/1       Running   0   
 
 Now you should be able to check beer at https://beer.mydomain.com/
 And if you noticed Cloudflare Warp creates `https` connection by default :-)
-
-
-### Accessing Frontend App without Cloudflare Warp
-
-If you do not have Cloudflare account or do not want to expose Frontend, skip the `Cloudflare Warp` step and
-then run:
-```bash
-kubectl port-forward -n beer beer-beer-service-1676235277-tskrp 8080
-```
-
-Now you should be able to check beer at `http://127.0.0.1:8080`
 
 ## Conclusion
 
