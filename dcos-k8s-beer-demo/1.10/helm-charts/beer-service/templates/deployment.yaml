@@ -23,7 +23,10 @@ spec:
             - name: VERSION
               value: "{{ .Values.deployment.version }}"
             - name: SPRING_DATASOURCE_URL
-              value: "{{ .Values.deployment.springDatasourceUrl }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "beer-service.fullname" . }}
+                  key: springDatasourceUrl
             - name: LOGSTASH_DESTINATION
               value: "{{ .Values.deployment.logstashDestination }}"
             - name: ELASTICSEARCH_URL
