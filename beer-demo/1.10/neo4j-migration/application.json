@@ -1,0 +1,28 @@
+{
+  "id": "/beer/neo4j-migration",
+  "cmd": "env && java -jar <FILENAME> && sleep 1000",
+  "instances": 1,
+  "cpus": 2,
+  "mem": 2046,
+  "fetch": [
+    {
+      "uri": "http://<NEXUS_URL>/repository/dcos/<FILENAME>",
+      "extract": true,
+      "executable": false,
+      "cache": false
+    }
+  ],
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "java:8"
+    }
+  },
+  "env": {
+    "SQL_URL": "jdbc:mysql://database.marathon.l4lb.thisdcos.directory:3306/beer?user=good&password=beer",
+    "NEO4J_URL": "bolt+routing://neo4j:dcos@core-neo4j.marathon.containerip.dcos.thisdcos.directory:7687",
+    "NEO4J_USER": "neo4j",
+    "NEO4J_PASSWORD": "dcos"
+  }
+}
+
