@@ -1,0 +1,20 @@
+{
+  "id": "/beer/elasticsearch-migration",
+  "cmd": "env && java -jar /app.jar && sleep 1000",
+  "container": {
+    "type": "DOCKER",
+    "volumes": [],
+    "docker": {
+      "image": "mesosphere/dcos-beer-elasticsearch-migration:1.0",
+      "forcePullImage": true
+    }
+  },
+  "cpus": 2,
+  "disk": 0,
+  "env": {
+    "SQL_URL": "jdbc:mysql://database.marathon.l4lb.thisdcos.directory:3306/beer?user=good&password=beer",
+    "ELASTICSEARCH_URL": "elasticsearch.marathon.l4lb.thisdcos.directory"
+  },
+  "instances": 1,
+  "mem": 2048
+}
