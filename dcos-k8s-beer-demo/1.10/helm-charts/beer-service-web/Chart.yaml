@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Beer Service Web Helm chart
+name: beer-service-web
+version: 0.1.2

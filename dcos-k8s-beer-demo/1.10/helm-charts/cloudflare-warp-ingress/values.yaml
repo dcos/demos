@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/stackpoint/warp-controller
-  tag: beta
+  tag: v0.3.1
   pullPolicy: Always
 
 # The Cloudflare Warp cert must be encoded with base64
