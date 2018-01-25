@@ -101,9 +101,10 @@ Server: &version.Version{SemVer:"v2.8.0", GitCommit:"14af25f1de6832228539259b821
 ```
 
 Now we need to add DC/OS Labs Helm Charts repo (where this demo Helm charts are published) to Helm:
-
-$ helm repo add dlc https://dcos-labs.github.io/charts/
-$ helm repo update
+```bash
+helm repo add dlc https://dcos-labs.github.io/charts/
+helm repo update
+```
 
 ## Deploy Backend on DC/OS
 
@@ -118,7 +119,7 @@ Wait till it gets installed, you can check it's progress in DC/OS Dashboard/Serv
 
 ### Frontend App
 
-To deploy Frontend App run:
+To deploy Frontend App [chart](https://github.com/dcos-labs/charts/tree/master/stable/beer-service-web) run:
 ```bash
 helm install --name beer --namespace beer dlc/beer-service-web
 ```
@@ -140,11 +141,11 @@ kubectl port-forward -n beer beer-beer-service-web-1676235277-tskrp 8080
 
 Now you should be able to check beer at `http://127.0.0.1:8080`
 
-## Deploy Frontend App and Cloudflare Warp on Kubernetes
+## Deploy Frontend App and expose it via Cloudflare Warp on Kubernetes
 
 ### Frontend App
 
-To deploy Frontend App run (do not forget to replace there with your `domain_name`):
+To deploy Frontend App [chart](https://github.com/dcos-labs/charts/tree/master/stable/beer-service-web) (do not forget to replace there with your `domain_name`) run:
 ```bash
 helm upgrade --install beer --namespace beer dlc/beer-service-web \
   --set ingress.enabled="true",ingress.host="beer.mydomain.com"
@@ -165,7 +166,7 @@ The Cloudflare Warp Ingress Controller makes connections between a Kubernetes se
 **Note:** Before installing Cloudflare Warp you need to obtain Cloudflare credentials for your domain zone.
 The credentials are obtained by logging in to https://www.cloudflare.com/a/warp, selecting the zone where you will be publishing your services, and saving the file locally to `dcos-k8s-beer-demo` folder.
 
-To deploy Cloudflare Warp Ingress Controller run:
+To deploy Cloudflare Warp Ingress Controller [chart](https://github.com/dcos-labs/charts/tree/master/stable/cloudflare-warp-ingress) run:
 ```bash
 helm install --name beer-ingress --namespace beer helm-charts/cloudflare-warp-ingress --set cert=$(cat cloudflare-warp.pem | base64)
 ```
