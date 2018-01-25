@@ -4,7 +4,7 @@
 
 Are you wondering how [Java](http://www.oracle.com/technetwork/java/index.html), [Spring Boot](https://projects.spring.io/spring-boot/), [MySQL](https://www.mysql.com), [Neo4j](https://neo4j.com), [Apache Zeppelin](https://zeppelin.apache.org/), [Apache Spark](https://spark.apache.org/), [Elasticsearch](https://www.elastic.co),  [Apache Mesos](https://mesos.apache.org/), [DC/OS](https://dcos.io), [Kubernetes](https://kubernetes.io/) and [Helm](https://helm.sh) can all fit in one demo? Well, we'll show you! This is a cool demo, so grab your favourite beer and enjoy. 🍺
 
-**Note:** It is based on [dcos-beer-demo](https://github.com/unterstein/dcos-beer-demo), but `beer-service` is running on Kubernetes and is exposed to Internet with [Cloudflare Warp](https://warp.cloudflare.com/docs/kubernetes/).
+**Note:** It is based on [beer-demo](https://github.com/dcos/demos/tree/master/beer-demo/1.10), but `beer-service` is running on Kubernetes and is exposed to Internet with [Cloudflare Warp](https://warp.cloudflare.com/docs/kubernetes/).
 
 So that means all the backend is running on DC/OS and Internet facing services are running on Kubernetes.
 
@@ -74,9 +74,9 @@ Test access by retrieving the Kubernetes cluster nodes:
 ```bash
 $ kubectl get nodes
 NAME                                   STATUS    AGE       VERSION
-kube-node-0-kubelet.kubernetes.mesos   Ready     7m        v1.7.10
-kube-node-1-kubelet.kubernetes.mesos   Ready     7m        v1.7.10
-kube-node-2-kubelet.kubernetes.mesos   Ready     7m        v1.7.10
+kube-node-0-kubelet.kubernetes.mesos   Ready     7m        v1.9.0
+kube-node-1-kubelet.kubernetes.mesos   Ready     7m        v1.9.0
+kube-node-2-kubelet.kubernetes.mesos   Ready     7m        v1.9.0
 ```
 
 ### Helm setup
@@ -96,8 +96,14 @@ helm init
 Once Tiller is installed, running `helm version` should show you both the client and server version:
 ```bash
 helm version
-Client: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.7.2", GitCommit:"8478fb4fc723885b155c924d1c8c410b7a9444e6", GitTreeState:"clean"}
+Client: &version.Version{SemVer:"v2.8.0", GitCommit:"14af25f1de6832228539259b821949d20069a222", GitTreeState:"clean"}
+Server: &version.Version{SemVer:"v2.8.0", GitCommit:"14af25f1de6832228539259b821949d20069a222", GitTreeState:"clean"}
+```
+
+Now we need to add DC/OS Labs Helm Charts repo (where this demo Helm charts are published) to Helm:
+```bash
+helm repo add dlc https://dcos-labs.github.io/charts/
+helm repo update
 ```
 
 ## Deploy Backend on DC/OS
@@ -113,35 +119,35 @@ Wait till it gets installed, you can check it's progress in DC/OS Dashboard/Serv
 
 ### Frontend App
 
-To deploy Frontend App run:
+To deploy Frontend App [chart](https://github.com/dcos-labs/charts/tree/master/stable/beer-service-web) run:
 ```bash
-helm install --name beer --namespace beer helm-charts/beer-service
+helm install --name beer --namespace beer dlc/beer-service-web
 ```
 
 Check that pods are running:
 ```bash
 kubectl -n beer get pods
 NAME                                                    READY     STATUS    RESTARTS   AGE
-beer-beer-service-1676235277-s9ptv                      1/1       Running   0          2m
-beer-beer-service-1676235277-tskrp                      1/1       Running   0          2m
+beer-beer-service-web-1676235277-s9ptv                  1/1       Running   0          2m
+beer-beer-service-web-1676235277-tskrp                  1/1       Running   0          2m
 ```
 
 ### Accessing Frontend App locally
 
 To access app locally run:
 ```bash
-kubectl port-forward -n beer beer-beer-service-1676235277-tskrp 8080
+kubectl port-forward -n beer beer-beer-service-web-1676235277-tskrp 8080
 ```
 
 Now you should be able to check beer at `http://127.0.0.1:8080`
 
-## Deploy Frontend App and Cloudflare Warp on Kubernetes
+## Deploy Frontend App and expose it via Cloudflare Warp on Kubernetes
 
 ### Frontend App
 
-To deploy Frontend App run (do not forget to replace there with your `domain_name`):
+To deploy Frontend App [chart](https://github.com/dcos-labs/charts/tree/master/stable/beer-service-web) (do not forget to replace there with your `domain_name`) run:
 ```bash
-helm install --name beer --namespace beer helm-charts/beer-service \
+helm upgrade --install beer --namespace beer dlc/beer-service-web \
   --set ingress.enabled="true",ingress.host="beer.mydomain.com"
 ```
 
@@ -149,8 +155,8 @@ Check that pods are running:
 ```bash
 kubectl -n beer get pods
 NAME                                                    READY     STATUS    RESTARTS   AGE
-beer-beer-service-1676235277-s9ptv                      1/1       Running   0          2m
-beer-beer-service-1676235277-tskrp                      1/1       Running   0          2m
+beer-beer-service-web-854fb8dc65-76bk4                  2/2       Running   0          2m
+beer-beer-service-web-854fb8dc65-d8tm9                  2/2       Running   0          2m
 ```
 
 ### Cloudflare Warp
@@ -160,7 +166,7 @@ The Cloudflare Warp Ingress Controller makes connections between a Kubernetes se
 **Note:** Before installing Cloudflare Warp you need to obtain Cloudflare credentials for your domain zone.
 The credentials are obtained by logging in to https://www.cloudflare.com/a/warp, selecting the zone where you will be publishing your services, and saving the file locally to `dcos-k8s-beer-demo` folder.
 
-To deploy Cloudflare Warp Ingress Controller run:
+To deploy Cloudflare Warp Ingress Controller [chart](https://github.com/dcos-labs/charts/tree/master/stable/cloudflare-warp-ingress) run:
 ```bash
 helm install --name beer-ingress --namespace beer helm-charts/cloudflare-warp-ingress --set cert=$(cat cloudflare-warp.pem | base64)
 ```
@@ -169,9 +175,9 @@ Check that pods are running:
 ```bash
 kubectl -n beer get pods
 NAME                                                    READY     STATUS    RESTARTS   AGE
-beer-beer-service-1676235277-s9ptv                      1/1       Running   0          10m
-beer-beer-service-1676235277-tskrp                      1/1       Running   0          10m
-beer-ingress-cloudflare-warp-ingress-3061065498-v6mw5   1/1       Running   0          1m
+beer-beer-service-web-57f9bc955c-c9v4q                  2/2       Running   0          3m
+beer-beer-service-web-57f9bc955c-k4mps                  2/2       Running   0          3m
+beer-ingress-cloudflare-warp-ingress-775b5965fd-qd4rk   1/1       Running   0          16s
 ```
 
 ### Testing external access

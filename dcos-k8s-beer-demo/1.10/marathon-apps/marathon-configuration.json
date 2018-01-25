@@ -9,7 +9,7 @@
          "container":{
             "type":"DOCKER",
             "docker":{
-               "image":"unterstein/dcos-beer-database",
+               "image":"mesosphere/dcos-beer-database:1.0",
                "network":"BRIDGE",
                "portMappings":[
                   {

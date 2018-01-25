@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "beer-service-web.fullname" . }}
+  labels:
+    app: {{ template "beer-service-web.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "beer-service-web.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: beer-service
+          image: "{{ .Values.beerService.image.repository }}:{{ .Values.beerService.image.tag }}"
+          imagePullPolicy: {{ .Values.beerService.image.pullPolicy }}
+          env:
+            - name: VERSION
+              value: "{{ .Values.beerService.deployment.version }}"
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "beer-service-web.fullname" . }}
+                  key: springDatasourceUrl
+            - name: LOGSTASH_DESTINATION
+              value: "{{ .Values.beerService.deployment.logstashDestination }}"
+            - name: ELASTICSEARCH_URL
+              value: "{{ .Values.beerService.deployment.elasticsearchUrl }}"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /application/health
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /application/health
+              port: 8080
+        - name: beer-web
+          image: "{{ .Values.beerWeb.image.repository }}:{{ .Values.beerWeb.image.tag }}"
+          imagePullPolicy: {{ .Values.beerWeb.image.pullPolicy }}
+          env:
+            - name: BEER_URL
+              value: "http://localhost:8080"
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
