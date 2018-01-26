@@ -110,7 +110,7 @@ helm repo update
 
 Let's deploy Backend using the `dcos` cli:
 ```bash
-dcos marathon group add marathon-apps/marathon-configuration.json
+dcos marathon group add https://raw.githubusercontent.com/dcos/demos/master/dcos-k8s-beer-demo/1.10/marathon-apps/marathon-configuration.json
 ```
 
 Wait till it gets installed, you can check it's progress in DC/OS Dashboard/Services/beer.
