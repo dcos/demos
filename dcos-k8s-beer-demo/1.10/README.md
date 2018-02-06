@@ -168,7 +168,7 @@ The credentials are obtained by logging in to https://www.cloudflare.com/a/warp,
 
 To deploy Cloudflare Warp Ingress Controller [chart](https://github.com/dcos-labs/charts/tree/master/stable/cloudflare-warp-ingress) run:
 ```bash
-helm install --name beer-ingress --namespace beer helm-charts/cloudflare-warp-ingress --set cert=$(cat cloudflare-warp.pem | base64)
+helm install --name beer-ingress --namespace beer dlc/cloudflare-warp-ingress --set cert=$(cat cloudflare-warp.pem | base64)
 ```
 
 Check that pods are running:
