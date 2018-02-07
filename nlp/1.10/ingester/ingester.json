@@ -4,6 +4,6 @@
   "run": {
     "cpus": 0.1,
     "mem": 32,
-    "cmd": "curl -s -L https://raw.githubusercontent.com/dcos/demos/master/nlp/ingester/ingester_linux -o ingester && chmod u+x ingester && ./ingester -u https://raw.githubusercontent.com/dcos/demos/master/nlp/stack.json -t ingest -b broker.kafka.l4lb.thisdcos.directory:9092"
+    "cmd": "curl -s -L https://raw.githubusercontent.com/dcos/demos/master/nlp/1.10/ingester/ingester_linux -o ingester && chmod u+x ingester && ./ingester -u https://raw.githubusercontent.com/dcos/demos/master/nlp/1.10/stack.json -t ingest -b broker.kafka.l4lb.thisdcos.directory:9092"
   }
 }
