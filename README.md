@@ -1,3 +1,7 @@
+Overview of demos in 1.11:
+
+ * [Continuous Delivery](cicd/1.11#continuous-delivery-with-gitlab-and-jenkins)
+
 Overview of demos in 1.10:
 
 * [Spring Boot Deployments](springboot/1.10/README.md#springboot-demo)

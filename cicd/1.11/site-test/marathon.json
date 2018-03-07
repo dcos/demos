@@ -1,0 +1,24 @@
+{
+  "id": "/nginx",
+  "cpus": 1,
+  "mem": 128,
+  "instances": 1,
+  "container": {
+    "docker": {
+      "image": "cd.example.com:50000/root/site-test:latest",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp",
+          "name": "http"
+        }
+      ],
+      "network": "BRIDGE"
+    }
+  },
+  "labels": {
+    "DCOS_SERVICE_PORT_INDEX": "0",
+    "DCOS_SERVICE_SCHEME": "http",
+    "DCOS_SERVICE_NAME": "gitlab"
+  }
+}
