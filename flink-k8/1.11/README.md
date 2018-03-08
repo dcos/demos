@@ -35,14 +35,14 @@ The architecture follows more or less the [SMACK stack architecture](https://mes
 
 ## Prerequisites
 
-- A running [DC/OS 1.11](https://dcos.io/releases/) or higher cluster with at least 3 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://docs.mesosphere.com/latest/cli/install/) also needs to be installed.
-- The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos/` if you haven't done so yet.
-- [SSH](https://docs.mesosphere.com/latest/administering-clusters/sshcluster/) cluster access must be set up.
+- A running [DC/OS 1.11](https://dcos.io/releases/) or higher cluster with at least 4 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://docs.mesosphere.com/latest/cli/install/) also needs to be installed.
+
 
 The DC/OS services used in the demo are as follows:
 
 - Apache Kafka
 - Apache Flink
+- Kubernetes
 
 ## Install
 
