@@ -1,0 +1,12 @@
+{
+  "id": "display",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 32,
+  "fetch": [
+    {
+      "uri": "https://raw.githubusercontent.com/dcos/demos/master/flink/1.11/actor/fraudDisplay-linux"
+    }
+  ],
+  "cmd": "chmod u+x fraudDisplay-linux && ./fraudDisplay-linux"
+}
