@@ -1,0 +1,16 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: flink-demo-actor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: flink-demo-actor
+      labels:
+        app: flink-demo-actor
+    spec:
+      containers:
+      - name: flink-demo-actor
+        image: mesosphere/flink-demo-actor:0.1
+        imagePullPolicy: Always

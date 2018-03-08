@@ -1,5 +1,6 @@
 Overview of demos in 1.11:
 * [Apache Flink Stream Processing](flink/1.11#fast-data-financial-transaction-processing-with-apache-flink)
+* [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 
 Overview of demos in 1.10:
 
