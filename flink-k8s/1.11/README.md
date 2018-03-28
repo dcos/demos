@@ -82,7 +82,7 @@ It is possible to use the FQDN of any of the brokers, but using the VIP FQDN wil
 ##### Create Kafka Topics
 
 Fortunately, creating topic is very simple using the DC/OS Kafka CLI. If you have installed Kafka from the UI you might have to
-install the cli extensions using `dcos pacakge install kafka --cli'. If you installed Kafka as above using the CLI then it will automatically install the CLI extensions.
+install the cli extensions using `dcos package install kafka --cli'. If you installed Kafka as above using the CLI then it will automatically install the CLI extensions.
 
 We need two Kafka topics, one with the generated transactions and one for fraudulent transactions, which we can create with:
 
@@ -104,14 +104,14 @@ At this point we have all of the required elements installed - Kafka, Flink and 
 
 ### Kubernetes
 
-As we want to deploy botht he generator and viewer microservice on Kubernetes, we need to install kubernetes next.
+As we want to deploy both the generator and viewer microservice on Kubernetes, we need to install kubernetes next.
 This can be done by a simple
 
 ```bash
 $ dcos package install kubernetes
 ```
 
-Once kubernetes is sucessfully deployed, we need to configure 'kubectl' (kubernetes command line tool). Check the [documentation](https://docs.mesosphere.com/services/kubernetes/1.0.0-1.9.3/connecting-clients/) for detaill.
+Once kubernetes is successfully deployed, we need to configure 'kubectl' (kubernetes command line tool). Check the [documentation](https://docs.mesosphere.com/services/kubernetes/1.0.2-1.9.6/connecting-clients/) for details.
 
 ### Generator
 
@@ -164,7 +164,7 @@ Once we hit Submit, we should see the job begin to run in the Flink web UI.
 
 ### Viewing Output
 
-Now once the Flink job is running, we only need a way to visualize the results. We do that with another [simple GoLang app](https://github.com/dcos/demos/blob/master/flink/1.10/actor/actor_viewer.go) and again we will deploy this microservice using kubernetes using the [flink-demo-actor.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8/1.11/actor/flink-demo-actor.yaml):
+Now once the Flink job is running, we only need a way to visualize the results. We do that with another [simple GoLang app](https://github.com/dcos/demos/blob/master/flink/1.11/actor/actor_viewer.go) and again we will deploy this microservice using kubernetes using the [flink-demo-actor.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8/1.11/actor/flink-demo-actor.yaml):
 
 ```bash
 $ kubectl apply -f https://raw.githubusercontent.com/dcos/demos/master/flink-k8/1.11/actor/flink-demo-actor.yaml
@@ -206,7 +206,45 @@ Transaction{timestamp=1520473177000, origin=2, target='3', amount=1566}
 Transaction{timestamp=1520473412000, origin=2, target='3', amount=5272}}
 ```
 
+### Helm
 
+You can also install `Generator` and `Viewer` with the Helm.
+
+#### Install Helm
+
+Get the latest [Helm release](https://github.com/kubernetes/helm#install).
+
+#### Add remote Helm repo
+
+You need to add this Chart repo:
+
+```bash
+$ helm repo add dlc https://dcos-labs.github.io/charts/
+$ helm repo update
+```
+
+#### Install Flink-demo chart
+
+To install the chart run:
+
+```bash
+helm install --name flink-demo --namespace flink dlc/flink-demo
+```
+
+Check that pods are running:
+
+```bash
+kubectl -n flink get pods
+NAME                                    READY     STATUS    RESTARTS   AGE
+flink-demo-actor-555c6d9767-hflvb       1/1       Running   0          26s
+flink-demo-generator-7d7785f566-gfzpd   1/1       Running   0          26s
+```
+
+Check Display logs:
+
+```bash
+kubectl logs -n flink flink-demo-actor-555c6d9767-hflvb
+```
 
 ###
 
