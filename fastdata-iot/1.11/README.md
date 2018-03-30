@@ -123,7 +123,7 @@ Using the UI, copy and paste the JSON into the JSON editor:
   "disk": 0,
   "instances": 1,
   "container": {
-    "type": "DOCKER",
+    "type": "MESOS",
     "volumes": [],
     "docker": {
       "image": "mesosphere/akka-ingest:0.2.1-SNAPSHOT",
@@ -166,7 +166,7 @@ Either install it via the DC/OS UI by creating a new marathon app:
 {
   "id": "/bus-demo/dashboard",
   "container": {
-    "type": "DOCKER",
+    "type": "MESOS",
     "docker": {
       "image": "mesosphere/akka-server:0.2.1-SNAPSHOT",
       "network": "HOST",

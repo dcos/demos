@@ -1,7 +1,7 @@
 {
   "id": "/bus-demo/dashboard",
   "container": {
-    "type": "DOCKER",
+    "type": "MESOS",
     "docker": {
       "image": "mesosphere/akka-server:0.2.1-SNAPSHOT",
       "network": "HOST",
