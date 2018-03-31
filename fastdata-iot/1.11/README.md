@@ -177,7 +177,7 @@ Either install it via the DC/OS UI by creating a new marathon app:
     "slave_public"
   ],
   "env": {
-      "CASSANDRA_CONNECT": "node.cassandra.l4lb.thisdcos.directory:9042",
+      "CASSANDRA_CONNECT": "node-0-server.cassandra.autoip.dcos.thisdcos.directory:9042",
       "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
   },
   "dependencies": ["/bus-demo/ingest"],
