@@ -115,10 +115,10 @@ Once kubernetes is successfully deployed, we need to configure 'kubectl' (kubern
 
 ### Generator
 
-Now, we can deploy the [data generator](https://github.com/dcos/demos/blob/master/flink/1.11/generator/generator.go) using the [flink-demo-generator.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8/1.11/generator/flink-demo-generator.yaml):
+Now, we can deploy the [data generator](https://github.com/dcos/demos/blob/master/flink/1.11/generator/generator.go) using the [flink-demo-generator.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8s/1.11/generator/flink-demo-generator.yaml):
 
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/dcos/demos/master/flink-k8/1.11/generator/flink-demo-generator.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/dcos/demos/master/flink-k8s/1.11/generator/flink-demo-generator.yaml
 ```
 
 We can check the status of the deployment:
@@ -164,12 +164,10 @@ Once we hit Submit, we should see the job begin to run in the Flink web UI.
 
 ### Viewing Output
 
-Now once the Flink job is running, we only need a way to visualize the results. We do that with another [simple GoLang app](https://github.com/dcos/demos/blob/master/flink/1.11/actor/actor_viewer.go) and again we will deploy this microservice using kubernetes using the [flink-demo-actor.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8/1.11/actor/flink-demo-actor.yaml):
-
+Now once the Flink job is running, we only need a way to visualize the results. We do that with another [simple GoLang app](https://github.com/dcos/demos/blob/master/flink/1.11/actor/actor_viewer.go) and again we will deploy this microservice using kubernetes using the [flink-demo-actor.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8s/1.11/actor/flink-demo-actor.yaml):
 ```bash
-$ kubectl apply -f https://raw.githubusercontent.com/dcos/demos/master/flink-k8/1.11/actor/flink-demo-actor.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/dcos/demos/master/flink-k8s/1.11/actor/flink-demo-actor.yaml
 ```
-
 We can check the status of the deployment:
 
 ```bash
