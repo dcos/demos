@@ -63,13 +63,13 @@ Install DC/OS Apache Cassandra package:
 dcos package install cassandra
 ```
 
-Once it sucessfully deploye, check the dcos cassandra subcommand:
+Once it sucessfully deployed, check the dcos cassandra subcommand:
 
 ```bash
 dcos cassandra endpoints native-client
 ```
 
-The setup of the required cassandra schema is done via an [Jobs](https://docs.mesosphere.com/1.11/deploying-jobs/) job.
+The setup of the required cassandra schema is done via a [Jobs](https://docs.mesosphere.com/1.11/deploying-jobs/) job.
 
 With the jobs frontend you're able to use the following configuration which will pull down a simple Docker Hub image with code from the [BusFloatingData](https://github.com/ANierbeck/BusFloatingData) repository and the [import_data.sh](bus-demo/import_data.sh) script.
 
@@ -127,7 +127,6 @@ Using the UI, copy and paste the JSON into the JSON editor:
     "volumes": [],
     "docker": {
       "image": "mesosphere/akka-ingest:0.2.1-SNAPSHOT",
-      "network": "HOST",
       "privileged": false,
       "parameters": [],
       "forcePullImage": true
@@ -169,7 +168,6 @@ Either install it via the DC/OS UI by creating a new marathon app:
     "type": "MESOS",
     "docker": {
       "image": "mesosphere/akka-server:0.2.1-SNAPSHOT",
-      "network": "HOST",
       "forcePullImage": true
     }
   },
