@@ -1,8 +1,8 @@
 Overview of demos in 1.11:
 * [Apache Flink Stream Processing](flink/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 * [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8/1.11#fast-data-financial-transaction-processing-with-apache-flink)
-*  [Iot Fast Data Analytics](fastdata-iot/1.11#iot-fast-data-analytics)
-
+* [Iot Fast Data Analytics](fastdata-iot/1.11#iot-fast-data-analytics)
+* [Spring Boot Deployments](springboot/1.11/README.md#springboot-demo)
 
 Overview of demos in 1.10:
 
