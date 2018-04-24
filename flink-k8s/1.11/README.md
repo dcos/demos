@@ -113,6 +113,12 @@ $ dcos package install kubernetes
 
 Once kubernetes is successfully deployed, we need to configure 'kubectl' (kubernetes command line tool). Check the [documentation](https://docs.mesosphere.com/services/kubernetes/1.0.2-1.9.6/connecting-clients/) for details.
 
+We now need to create our Kubernetes context, which will allow Kubectl to send commands to corect cluster.
+
+```bash
+$ dcos kubernetes kubeconfig
+```
+
 ### Generator
 
 Now, we can deploy the [data generator](https://github.com/dcos/demos/blob/master/flink/1.11/generator/generator.go) using the [flink-demo-generator.yaml deployment definition](https://github.com/dcos/demos/blob/master/flink-k8s/1.11/generator/flink-demo-generator.yaml):
