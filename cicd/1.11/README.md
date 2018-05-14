@@ -111,6 +111,8 @@ As you're copying these into your new site-test repository, update the Jenkinsfi
 
 Now we'll want to create a pipeline job in Jenkins. On the main page for Jenkins, select "New Item". The item name will be "site-test" and it's a "Pipeline" after hitting "OK" on that screen, you'll get to the page for configuring the pipeline. Scroll down to "Build Triggers" and select "Poll SCM" which takes cron-style scheduling. For this demo, we want to run it every minute, so in the text box put: * * * * *
 
+![Jenkins Poll SCM](img/jenkins_poll_scm.png)
+
 In the Pipeline section of the same screen the definition should be "Pipeline script from SCM" and then select "Git". This will give you a place to put a Git repository, which in our example is http://cd.example.com/root/site-test.git and we will want to add credentials, since these will also be used for sending the image to the GitLab Docker registry, add the credential now and give it an ID of "gitlab".
 
 ![Jenkins GitLab Credentials](img/jenkins_gitlab_credentials.png)
