@@ -1,5 +1,5 @@
 {
-  "id": "/nginx",
+  "id": "/site-test",
   "cpus": 1,
   "mem": 128,
   "instances": 1,
