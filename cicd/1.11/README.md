@@ -72,7 +72,7 @@ Next, install Jenkins. In production you'll want to make sure Jenkins is running
 
 ![Jenkins Pinned Hostname](img/jenkins_pinned_hostname.png)
 
-Once Jenkins is installed, if you don't have SSL certificates set up you'll need to configure Jenkins to accept the insecure registry you set up. This can be completed by referencing the <a href="https://docs.mesosphere.com/services/jenkins/advanced-configuration/">Jenkins Advanced Configuration</a> section of the documentation.
+Once Jenkins is installed, if you don't have SSL certificates set up you'll need to configure Jenkins to accept an insecure registry so it can launch Docker images from it. This can be completed by follwoing instructions in the <a href="https://docs.mesosphere.com/services/jenkins/advanced-configuration/">Jenkins Advanced Configuration</a> section of the DC/OS service documentation.
 
 Now it's time to install GitLab. Just like Jenkins, we'll want to pin this to a hostname for this demo just in case the container restarts. In a production environment you'll want to mount external storage shared storage so that GitLab can move between nodes, but for a quick demo you may use the limited in-container non-persistent storage. In order to pin it to a node, go into the "Single Node" section of the configuration and put in the IP address of the private node you wish to run it on in the section for "pinned hostname".
 
@@ -82,17 +82,64 @@ You'll also want to set the "virtual host" in the routing section to match the n
 
 ![GitLab Virtual Host](img/gitlab_virtual_host.png)
 
-This concludes the tooling you need installed, you can now log into GitLab and get started setting up your repository and deployment pipeline!
+Once GitLab is installed, immediately navigate to the address you set up (we're using http://cd.example.com as an example) and set a password for GitLab. Once a password is set, you can log in with the "root" user and this password.
 
-## Set Up Job
+This concludes the tooling you need installed, you can now get started setting up your repository and deployment pipeline!
 
-Configure job in Jenkins
+## Set Up Repository and Job
 
-- Support custom Git repository for website HTML files
-- Build website Docker image
-- Upload to GitLab Docker registry
-- UCR to launch the Docker image for testing with http://wummel.github.io/linkchecker/
-- Once passed, launch Docker image with UCR into production
+Once you've logged into GitLab, you want click on "New Project" to create a repository. You'll want to give it a Project name of "site-test" and make it Public.
+
+Tip: In production, the root user wouldn't typically own repositories like this, they would be owned by less privileged users.
+
+You can now clone this empty repository to your local system:
+
+```
+git clone http://cd.example.com/root/site-test.git
+Cloning into 'site-test'...
+warning: You appear to have cloned an empty repository.
+```
+
+One of the prerequisites for this demo was cloning the dcos/demos repository from GitHub as well. In the `demos/cicd/1.11/site-test/` directory you will find all the files that should now go into your newly created site-test repository, going through them one by one:
+
+* index.html - Basic site file that we will deploy
+* Dockerfile - Very basic Dockerfile which installs the index.html
+* Jenkinsfile - Basic Jenkinsfile that defines the pipeline in Jenkins for building and deploying the test site
+* marathon.json - Marathon definition for deploying the resulting image
+
+As you're copying these into your new site-test repository, update the Jenkinsfile and marathon.json so that our cd.example.com is replaced with the address you're using for GitLab.
+
+Now we'll want to create a pipeline job in Jenkins. On the main page for Jenkins, select "New Item". The item name will be "ngnix" and it's a "Pipeline" after hitting "OK" on that screen, you'll get to the page for configuring the pipeline. Scroll down to "Build Triggers" and select "Poll SCM" which takes cron-style scheduling. For this demo, we want to run it every minute, so in the text box put: * * * * *
+
+![Jenkins Poll SCM](img/jenkins_poll_scm.png)
+
+In the Pipeline section of the same screen the definition should be "Pipeline script from SCM" and then select "Git". This will give you a place to put a Git repository, which in our example is http://cd.example.com/root/site-test.git and we will want to add credentials, since these will also be used for sending the image to the GitLab Docker registry, add the credential now and give it an ID of "gitlab".
+
+![Jenkins GitLab Credentials](img/jenkins_gitlab_credentials.png)
+
+Once this is saved, you have a pipeline.
+
+Now return to your local site-test directory. We'll want to commit all the files you've added and push them to GitLab:
+
+```
+git add -A
+git commit -m "Initial commit"
+git push
+```
+
+You may navigate to your http://cd.example.com/root/site-test to see the files now uploaded there.
+
+Now return to Jenkins and nagivate to your ngnix pipeline, it will run within a minute.
+
+![Jenkins Success](img/jenkins_success.png)
+
+If the pipeline fails for any reason, there are logs there in the UI you can use to debug where the problem is.
+
+Once the deployment succeeds, you can go back to the DC/OS UI and you will now see an "ngnix" service running. Naviate to /service/ngnix to see the website running.
+
+![DC/OS Serivce](img/dcos_services_running_ngnix.png)
+
+Congratulations, you now have a deployment!
 
 ### 
 
