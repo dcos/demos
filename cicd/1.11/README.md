@@ -16,7 +16,7 @@ This demo presents a continuous integration and deployment (CI/CD) workflow usin
 
 ## Prerequisites
 
-- A running [DC/OS 1.10](https://dcos.io/releases/) or higher cluster with at least 3 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://dcos.io/docs/1.11/usage/cli/install/) also needs to be installed.
+- A running [DC/OS 1.11](https://dcos.io/releases/) or higher cluster with at least 3 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://dcos.io/docs/1.11/usage/cli/install/) also needs to be installed.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos/` if you haven't done so yet.
 - [SSH](https://dcos.io/docs/1.11/administration/access-node/sshcluster/) cluster access must be set up.
 - Ports 22222 and 50000 opened on the public agent where Marathon-lb is running.
@@ -72,7 +72,7 @@ Next, install Jenkins. In production you'll want to make sure Jenkins is running
 
 ![Jenkins Pinned Hostname](img/jenkins_pinned_hostname.png)
 
-Once Jenkins is installed, if you don't have SSL certificates set up you'll need to configure Jenkins to accept an insecure registry so it can launch Docker images from it. This can be completed by follwoing instructions in the <a href="https://docs.mesosphere.com/services/jenkins/advanced-configuration/">Jenkins Advanced Configuration</a> section of the DC/OS service documentation.
+Once Jenkins is installed, if you don't have SSL certificates set up you'll need to configure Jenkins to accept an insecure registry so it can launch Docker images from it. This can be completed by following instructions in the <a href="https://docs.mesosphere.com/services/jenkins/advanced-configuration/">Jenkins Advanced Configuration</a> section of the DC/OS service documentation.
 
 Now it's time to install GitLab. Just like Jenkins, we'll want to pin this to a hostname for this demo just in case the container restarts. In a production environment you'll want to mount external storage shared storage so that GitLab can move between nodes, but for a quick demo you may use the limited in-container non-persistent storage. In order to pin it to a node, go into the "Single Node" section of the configuration and put in the IP address of the private node you wish to run it on in the section for "pinned hostname".
 
@@ -109,9 +109,7 @@ One of the prerequisites for this demo was cloning the dcos/demos repository fro
 
 As you're copying these into your new site-test repository, update the Jenkinsfile and marathon.json so that our cd.example.com is replaced with the address you're using for GitLab.
 
-Now we'll want to create a pipeline job in Jenkins. On the main page for Jenkins, select "New Item". The item name will be "ngnix" and it's a "Pipeline" after hitting "OK" on that screen, you'll get to the page for configuring the pipeline. Scroll down to "Build Triggers" and select "Poll SCM" which takes cron-style scheduling. For this demo, we want to run it every minute, so in the text box put: * * * * *
-
-![Jenkins Poll SCM](img/jenkins_poll_scm.png)
+Now we'll want to create a pipeline job in Jenkins. On the main page for Jenkins, select "New Item". The item name will be "site-test" and it's a "Pipeline" after hitting "OK" on that screen, you'll get to the page for configuring the pipeline. Scroll down to "Build Triggers" and select "Poll SCM" which takes cron-style scheduling. For this demo, we want to run it every minute, so in the text box put: * * * * *
 
 In the Pipeline section of the same screen the definition should be "Pipeline script from SCM" and then select "Git". This will give you a place to put a Git repository, which in our example is http://cd.example.com/root/site-test.git and we will want to add credentials, since these will also be used for sending the image to the GitLab Docker registry, add the credential now and give it an ID of "gitlab".
 
@@ -129,13 +127,13 @@ git push
 
 You may navigate to your http://cd.example.com/root/site-test to see the files now uploaded there.
 
-Now return to Jenkins and nagivate to your ngnix pipeline, it will run within a minute.
+Now return to Jenkins and nagivate to your site-test pipeline, it will run within a minute.
 
 ![Jenkins Success](img/jenkins_success.png)
 
 If the pipeline fails for any reason, there are logs there in the UI you can use to debug where the problem is.
 
-Once the deployment succeeds, you can go back to the DC/OS UI and you will now see an "ngnix" service running. Naviate to /service/ngnix to see the website running.
+Once the deployment succeeds, you can go back to the DC/OS UI and you will now see an "site-test" service running. Naviate to /service/site-test to see the website running.
 
 ![DC/OS Serivce](img/dcos_services_running_ngnix.png)
 

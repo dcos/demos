@@ -1,4 +1,4 @@
-    def gitCommit() {
+def gitCommit() {
     sh "git rev-parse HEAD > GIT_COMMIT"
 def gitCommit = readFile('GIT_COMMIT').trim()
     sh "rm -f GIT_COMMIT"
@@ -36,7 +36,7 @@ node {
         url: 'http://marathon.mesos:8080',
         forceUpdate: false,
         filename: 'marathon.json',
-        id: 'nginx',
+        id: 'site-test',
         docker: "cd.example.com:50000/root/site-test:${gitCommit()}".toString()
     )
 }
