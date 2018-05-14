@@ -18,7 +18,7 @@ This demo presents a continuous integration and deployment (CI/CD) workflow usin
 
 - A running [DC/OS 1.11](https://dcos.io/releases/) or higher cluster with at least 3 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://dcos.io/docs/1.11/usage/cli/install/) also needs to be installed.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos/` if you haven't done so yet.
-- [SSH](https://dcos.io/docs/1.11/administration/access-node/sshcluster/) cluster access must be set up.
+- [SSH](https://docs.mesosphere.com/1.11/administering-clusters/sshcluster/) cluster access must be set up.
 - Ports 22222 and 50000 opened on the public agent where Marathon-lb is running.
 - The ability to add a DNS A record to use for GitLab that you and the cluster have access to, if you don't have a domain or run DNS, you may use a free service like <a href="https://www.noip.com/">noip.com</a>.
 
@@ -32,7 +32,16 @@ The DC/OS services used in the demo are as follows:
 
 Get the <a href="https://docs.mesosphere.com/1.11/administering-clusters/locate-public-agent/">address of your public agent</a> and set up a DNS A record to use for GitLab. In this demo we'll be using cd.example.com, you'll want to replace this in all examples.
 
-If you have SSL certificates configured which will be used by the Public Agent, you're all set. Otherwise, you'll want to log into your private nodes and configure Docker to <a href="https://docs.docker.com/registry/insecure/">use an insecure registry</a>. Using an insecure registry is not appropriate for production, but for the purpose of a private demo it may be used:
+If you have SSL certificates configured which will be used by the Public Agent, you're all set. Otherwise, you'll want to log into your private nodes and configure Docker to <a href="https://docs.docker.com/registry/insecure/">use an insecure registry</a>. Using an insecure registry is not appropriate for production, but for the purpose of a private demo it may be used.
+
+First, log into each of the private nodes, you should get the Mesos ID and then use that to ssh into the nodes:
+
+```
+dcos node
+dcos node ssh --master-proxy --mesos-id=4cb15493-2ca7-4b8b-8d4d-83b76cdcf7bb-S1
+```
+
+Then configure Docker on each one:
 
 ```
 sudo mkdir -p /etc/systemd/system/docker.service.d/
