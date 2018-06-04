@@ -2,7 +2,11 @@ Overview of demos in 1.11:
 * [Apache Flink Stream Processing](flink/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 * [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 *  [Iot Fast Data Analytics](fastdata-iot/1.11#iot-fast-data-analytics)
+<<<<<<< HEAD
 * [Continuous Delivery with Gitlab and Jenkins](cicd/1.11#continuous-delivery-with-gitlab-and-jenkins)
+=======
+* [Continuous Delivery](cicd/1.11#continuous-delivery-with-gitlab-and-jenkins)
+>>>>>>> d21cb6283c8aca8fefebbc1b20d10d85d79b747d
 
 Overview of demos in 1.10:
 
