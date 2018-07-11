@@ -1,0 +1,16 @@
+{
+  "id": "device",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 16,
+  "cmd": "./device.py -b mqtt.marathon.l4lb.thisdcos.directory -r 2",
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "mattjarvis/device",
+      "forcePullImage": true,
+      "privileged": false
+    }
+  },
+  "requirePorts": false
+}

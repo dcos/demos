@@ -1,0 +1,7 @@
+{
+  "user": "mongogw",
+  "pwd": "123456",
+  "roles": [
+    { "db": "mongogw", "role": "readWrite" }
+  ]
+}
