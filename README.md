@@ -3,6 +3,7 @@ Overview of demos in 1.11:
 * [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 *  [Iot Fast Data Analytics](fastdata-iot/1.11#iot-fast-data-analytics)
 * [Continuous Delivery with Gitlab and Jenkins](cicd/1.11#continuous-delivery-with-gitlab-and-jenkins)
+* [Highly Scalable IOT architecture using MQTT and MongoDB](mqtt-iot/1.11#highly-scalable-iot-architecture-using-mosquitto-and-mongodb)
 
 Overview of demos in 1.10:
 
