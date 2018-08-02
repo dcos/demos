@@ -2,7 +2,7 @@
   "id": "preprocessor",
   "instances": 1,
   "fetch": [{
-    "uri": "https://raw.githubusercontent.com/dcos/demos/nlp/1.10/master/preprocessor/preprocessor_linux",
+    "uri": "https://raw.githubusercontent.com/dcos/demos/master/nlp/1.10/preprocessor/preprocessor_linux",
     "executable": true
   }],
   "cpus": 0.1,
