@@ -78,7 +78,14 @@ Or using the [jupyterlab_options.json](./jupyterlab_options.json) with the follo
 ```
 
 
-* After configuring those two settings we can install JupyterLab either with by clicking `Run Service` in the UI:
+* Furthermore for better monitoring and debugging, we can enable the following two parameter either via the UI or in [jupyterlab_options.json](./jupyterlab_options.json):
+
+``` json
+    "start_spark_history_server": true,
+    "start_tensorboard": true,
+```
+
+* After configuring those settings we can install JupyterLab either with by clicking `Run Service` in the UI:
 ![Install](img/install_ui.png)
 
 Or with the CLI and `dcos package install jupyterlab --options=jupyterlab_options.json`.
@@ -194,7 +201,7 @@ unzip mnist.zip
 Let us briefly check HDFS is working as expected and the `mnist` directory does not exist yet from the Terminal:
 
 ``` bash
-nobody@2442bc8f-94d4-4f74-8321-b8b8b40436d7:~$  hdfs dfs -ls  mnist/
+hdfs dfs -ls  mnist/
 ls: `mnist/': No such file or directory
 ```
 
@@ -216,7 +223,8 @@ eval \
 
 
 ``` bash
-nobody@2442bc8f-94d4-4f74-8321-b8b8b40436d7:~$  hdfs dfs -ls -R  mnist/drwxr-xr-x   - nobody supergroup          0 2018-08-08 01:33 mnist/csv
+hdfs dfs -ls -R  mnist
+/drwxr-xr-x   - nobody supergroup          0 2018-08-08 01:33 mnist/csv
 drwxr-xr-x   - nobody supergroup          0 2018-08-08 01:33 mnist/csv/test
 drwxr-xr-x   - nobody supergroup          0 2018-08-08 01:33 mnist/csv/test/images
 -rw-r--r--   3 nobody supergroup          0 2018-08-08 01:33 mnist/csv/test/images/_SUCCESS
@@ -270,6 +278,11 @@ eval \
   --mode train \
   --model mnist/mnist_csv_model
 ```
+
+As we configured TensorBoard to be enabled, we can goto `<VHOST>/jupyterlab-notebook/tensorboard` and looks at the Training progress.
+![TensorBoard](img/TensorBoard.png)
+
+
 
 
 7. Check trained model on HDFS using the Terminal
