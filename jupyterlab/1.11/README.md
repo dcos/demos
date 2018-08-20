@@ -48,12 +48,12 @@ $ dcos package install marathon-lb
 
 ### JupyterLab
 
-We can install Jupyterlab also from the UI or CLI. In both cases we need to change two paparameter;
+We can install Jupyterlab also from the UI or CLI. In both cases we need to change two parameter;
 
 * First the VHOST for exposing the service on a [public agent](https://docs.mesosphere.com/latest/overview/architecture/node-types/) externally.
 
 This means changing the `networking.external_access.external_public_agent_hostname` to the externally reachable VHOST (e.g., the Public Agent ELB in an AWS environment).
-We can to that via the UI as shown here:
+We can check that using the UI:
 ![VHOST configuration](img/VHOST_UI.png)
 
 
@@ -92,7 +92,7 @@ Or with the CLI and `dcos package install jupyterlab --options=jupyterlab_option
 
 
 For more options of installing Jupyterlab please refer to the [installation section in the README](
-https://github.com/dcos/examples/tree/master/jupyterlab/1.11#deploy-via-cli)
+https://github.com/dcos/examples/tree/master/jupyterlab/1.11#deploy-via-cli).
 
 
 ## Demo
@@ -101,10 +101,10 @@ https://github.com/dcos/examples/tree/master/jupyterlab/1.11#deploy-via-cli)
 The first step is to login into JupyterLab. If we have used the default name and VHOST setting above it should be reachable via `<VHOST>/jupyterlab-notebook`.
 ![Login](img/login.png).
 
-The default password witht he above settings is `jupyter` and
+The default password witht he above settings is `jupyter`.
 ![UI](img/jupyterlab_ui.png)
 
-Once logged in you should be to see the JupyterLab Launcher:
+Once logged in you should be able to see the JupyterLab Launcher:
 ![JupyterLab Launcher](img/jupyterlab_ui.png).
 
 
@@ -279,13 +279,11 @@ eval \
   --model mnist/mnist_csv_model
 ```
 
-As we configured TensorBoard to be enabled, we can goto `<VHOST>/jupyterlab-notebook/tensorboard` and looks at the Training progress.
+As we configured TensorBoard to be enabled, we can go to `<VHOST>/jupyterlab-notebook/tensorboard` and check the Training progress.
 ![TensorBoard](img/TensorBoard.png)
 
 
-
-
-7. Check trained model on HDFS using the Terminal
+7. Check if trained model exists on HDFS using the Terminal
 
 ``` bash
 nobody@2442bc8f-94d4-4f74-8321-b8b8b40436d7:~$ hdfs dfs -ls -R mnist/mnist_csv_model
@@ -300,15 +298,3 @@ nobody@2442bc8f-94d4-4f74-8321-b8b8b40436d7:~$ hdfs dfs -ls -R mnist/mnist_csv_m
 -rw-r--r--   3 nobody supergroup        408 2018-08-08 02:37 mnist/mnist_csv_model/model.ckpt-600.index
 -rw-r--r--   3 nobody supergroup      74941 2018-08-08 02:37 mnist/mnist_csv_model/model.ckpt-600.meta
 ```
-
-
-
-
-
-
-
-
-
-
-
-
