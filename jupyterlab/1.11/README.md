@@ -112,7 +112,7 @@ Once logged in you should be able to see the JupyterLab Launcher:
 
 As a first test let us run the [SparkPi example job](https://github.com/apache/spark/blob/master/examples/src/main/java/org/apache/spark/examples/JavaSparkPi.java).
 
-For this we simply launch a Terminal and then use the following command:
+For this we simply launch a Terminal from inside the notebook and then use the following command:
 
 ``` bash
 eval \
@@ -181,14 +181,14 @@ print(get_available_devices())
 Next let us use [TensorFlowOnSpark](https://github.com/yahoo/TensorFlowOnSpark) and the [MNIST database](http://yann.lecun.com/exdb/mnist/) to train a network recognizing handwritten digits.
 
 
-1. Clone the [Yahoo TensorFlowOnSpark Github Repo](https://github.com/yahoo/TensorFlowOnSpark) using the Terminal:
+1. Clone the [Yahoo TensorFlowOnSpark Github Repo](https://github.com/yahoo/TensorFlowOnSpark) using the notebook's Terminal:
 
 ``` bash
 git clone https://github.com/yahoo/TensorFlowOnSpark
 ```
 
 
-2. Retrieve and extract raw MNIST Dataset using the Terminal:
+2. Retrieve and extract raw MNIST Dataset using the notebook's Terminal:
 
 ``` bash
 cd $MESOS_SANDBOX
@@ -198,7 +198,7 @@ unzip mnist.zip
 
 3.  Check HDFS
 
-Let us briefly check HDFS is working as expected and the `mnist` directory does not exist yet from the Terminal:
+Let us briefly check HDFS is working as expected and the `mnist` directory does not exist yet from the notebook's Terminal:
 
 ``` bash
 hdfs dfs -ls  mnist/
@@ -206,7 +206,7 @@ ls: `mnist/': No such file or directory
 ```
 
 
-4. Prepare MNIST Dataset in CSV format and store on HDFS from Terminal
+4. Prepare MNIST Dataset in CSV format and store on HDFS from the notebook's Terminal
 
 ``` bash
 eval \
@@ -219,7 +219,7 @@ eval \
 
 ```
 
-5. Check for mnist directory in HDFS from Terminal
+5. Check for mnist directory in HDFS from notebook's Terminal
 
 
 ``` bash
@@ -239,7 +239,7 @@ drwxr-xr-x   - nobody supergroup          0 2018-08-08 01:33 mnist/csv/test/imag
 
 
 
-6. Train MNIST model with CPUs from Terminal
+6. Train MNIST model with CPUs from the notebook's Terminal
 
 
 ``` bash
@@ -283,7 +283,7 @@ As we configured TensorBoard to be enabled, we can go to `<VHOST>/jupyterlab-not
 ![TensorBoard](img/TensorBoard.png)
 
 
-7. Check if trained model exists on HDFS using the Terminal
+7. Check if trained model exists on HDFS using the notebook's Terminal
 
 ``` bash
 nobody@2442bc8f-94d4-4f74-8321-b8b8b40436d7:~$ hdfs dfs -ls -R mnist/mnist_csv_model
