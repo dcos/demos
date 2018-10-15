@@ -25,16 +25,43 @@ This demo presents a highly scalable IOT architecture using Mosquitto, MongoDB a
 The DC/OS services used in the demo are as follows:
 
 - Marathon
-- Percona-Mongo
+- Percona-Server-MongoDB
 
 ## Setup
 
 ### MongoDB
 
-Our first task is to deploy a MongoDB replica set, we can just use the defaults from the percona-mongo package which will give us a three node set. MongoDB is a widely used choice for deployment in IOT applications due to it's scalability, support for complex queries, and the fact that it doesn’t require strict schemas, so you can push documents to it in native JSON with different types for each field
+Our first task is to deploy a MongoDB replica set, we can just use the defaults from the percona-server-mongodb package which will give us a three node set. MongoDB is a widely used choice for deployment in IOT applications due to it's scalability, support for complex queries, and the fact that it doesn’t require strict schemas, so you can push documents to it in native JSON with different types for each field.
+
+Firstly we need to create a config file which sets up the default users, passwords and keys. It should look something like this :
 
 ```
-dcos package install percona-mongo
+Mattbook-Pro:percona matt$ cat demo.json 
+{
+  "mongodb-credentials": {
+    "backupUser": "backup",
+    "backupPassword": "backupuserpassword",
+    "userAdminUser": "useradmin",
+    "userAdminPassword": "useradminpassword",
+    "clusterAdminUser": "clusteradmin",
+    "clusterAdminPassword": "clusteradminpassword",
+    "clusterMonitorUser": "clustermonitor",
+    "clusterMonitorPassword": "monitoruserpassword",
+    "key": "8cNNTVP6GqEOKzhUVDVryxIt04K6kDbXygamH4upPGAO59gzXVQAgX9NwxwqDvpt 094zMkkRWDLzuCgbg3Aj8EFVEM0/W1Nz+XUSTHEn4HiNzCVG4TTHFP6P1PEPswG6 tQMP6bnRXL7uGWmdGhbAxOV/+p6AfNs67MTvfCeH0EaPCgPPXhJft9D0nZ0SPOm9 VvfxG3djnHClIlclkchoIwc1Kw21loyXwuOjX4RkywVDdmFXjKC+l9yxfyt/9Gyh YE0OlS7ozWLiH8zy0MyzBdK+rc0fsxb2/Kb/8/2diC3O3gdVxjneQxaf66+FHVNW mV9/IHDptBHosdWkv0GboW8ZnTXnk0lyY0Jw85JFuTeFBzqPlB37jR0NU/HFm5QT Ld62woaGIWCTuXGb81QHaglPZUBIhEq/b3tahJBmLc+LKd0FUShoupTtPc2FjxbH xD8dZ+L9Uv7NPtSe+o3sTD60Pnsw1wbOrNDrrC+wpwoMy2GbQjXk/d+SRK/CXfuk Z676GKQDivpinhdF58l4OEi+WEN633yuNtNAQDgz+aOVZKN4oLoyR22B1nrea1qW wzZjRw7kpVxcQKiyn+gDmAZZPbctiVqTNHPE5n9LrOcctuLZKpoQk97lvZTSCKfy d32mfx9szZZ/QCfF9Dt7+G5nJUAULigKnQYRi/i86ZTPHSzfun+ZIzYLCzJuZfyS 7E8DMsmv9wCPrPAF/8cOFMWW0o0Na7GZKCJ8U+AMm92R725h4g5ao6+kQPG7vOkY LR8MJzDOqcmAC0M9AwE5UXQl56V6qBNyREx/WGGYS1B5DOfZvVTJNDkoHVIL1upZ geSlACiXQ+M0Rkgo0h8BJUhGY9LTuc6S8qiMBEnhBClg4kA/u4FJ06nlmF3ZpIXT KsVSr9ee3mu0vSr6P52slvAAX+RL3y+JgSlz2kC8oVgCZZdKn7yq9e6yB3zHNMjX 8VIi/UgFmfqCiaAlUT0pt2ZzGuw1L9QUOuNAZfufSkK1ED4V"
+  }
+}
+```
+
+The passwords for the users must have a minimum of 10 characters, and the key must be at least 1024 characters long, you can generate an appropriate key on MacOS using :
+
+```
+Mattbook-Pro:percona matt$ openssl rand -base64 756
+```
+
+Now we have our options.json we can use it to install the package :
+
+```
+dcos package install percona-server-mongodb --options=demo.json
 ```
 
 We also need to configure a user for the database we're going to use. To do this we need a JSON file defining the user, which you can find in the demo directory : 
@@ -53,13 +80,11 @@ Mattbook-Pro:1.11 matt$ cat mongouser.json
 To add the user :
 
 ```
-Mattbook-Pro:1.11 matt$ dcos percona-mongo user add mongogw mongouser.json useradmin useradminpassword
+Mattbook-Pro:1.11 matt$ dcos percona-server-mongodb user add mongogw mongouser.json
 {
-  "message": "Received cmd: start"
+"message": "Received cmd: start update-user with parameters: {MONGODB_CHANGE_USER_DB=mongogw, MONGODB_CHANGE_USER_DATA=eyJ1c2VycyI6W3sidXNlciI6Im1vbmdvZ3ciLCJwd2QiOiIxMjM0NTYiLCJyb2xlcyI6W3sicm9sZSI6InJlYWRXcml0ZSIsImRiIjoibW9uZ29ndyJ9XX1dfQ==}"
 }
 ```
-
-The percona-mongo package creates the useradmin user automatically, although in a production deployment you should change this password before deployment with an options.json. See the percona-mongo [service docs](https://docs.mesosphere.com/services/percona-mongo/) for more details. 
 
 ### MQTT layer
 
@@ -233,9 +258,14 @@ rs:PRIMARY> db.devices.find().limit(5).sort({$natural:-1})
 { "_id" : ObjectId("5b461b833613f800047dcca3"), "date" : ISODate("2018-07-11T15:00:19.396Z"), "deviceUID" : "cd3da0de-14b3-423f-a1bb-ef64173f29bb", "value" : 21, "gatewayID" : "mqtt.instance-535430a1-850f-11e8-9832-a63d4d1f1cb3.mongogw" }
 ```
 
-Finally we can also scale our MongoDB layer, horizontally by adding further instances to our replica set or vertically by changing the size of the instances. For the purposes of this demo, let’s add another two instances to our replica set. We can do this very simply in the DC/OS UI, by clicking on the MongoDB service, then clicking Edit, and selecting the MongoDB tab :
+Finally we can also scale our MongoDB layer, horizontally by adding further instances to our replica set or vertically by changing the size of the instances. For the purposes of this demo, let’s add another two instances to our replica set. We can do this very simply using the DC/OS CLI :
 
-![Scale MongoDB](images/mongoconfig.png)
+```
+Mattbook-Pro:percona matt$ dcos percona-server-mongodb scale up 5
+Pod task count for 'percona-server-mongodb' is currently 3
+Updating service configuration for 'percona-server-mongodb'
+Pod task count for 'percona-server-mongodb' is updated to 5
+```
 
 Once we’ve changed the configuration, click on Review and Run, then Run Service, and the percona-mongo service will deploy an additional two instances to our replica set. 
 

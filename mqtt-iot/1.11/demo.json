@@ -1,0 +1,13 @@
+{
+  "mongodb-credentials": {
+    "backupUser": "backup",
+    "backupPassword": "backupuserpassword",
+    "userAdminUser": "useradmin",
+    "userAdminPassword": "useradminpassword",
+    "clusterAdminUser": "clusteradmin",
+    "clusterAdminPassword": "clusteradminpassword",
+    "clusterMonitorUser": "clustermonitor",
+    "clusterMonitorPassword": "monitoruserpassword",
+    "key": "8cNNTVP6GqEOKzhUVDVryxIt04K6kDbXygamH4upPGAO59gzXVQAgX9NwxwqDvpt 094zMkkRWDLzuCgbg3Aj8EFVEM0/W1Nz+XUSTHEn4HiNzCVG4TTHFP6P1PEPswG6 tQMP6bnRXL7uGWmdGhbAxOV/+p6AfNs67MTvfCeH0EaPCgPPXhJft9D0nZ0SPOm9 VvfxG3djnHClIlclkchoIwc1Kw21loyXwuOjX4RkywVDdmFXjKC+l9yxfyt/9Gyh YE0OlS7ozWLiH8zy0MyzBdK+rc0fsxb2/Kb/8/2diC3O3gdVxjneQxaf66+FHVNW mV9/IHDptBHosdWkv0GboW8ZnTXnk0lyY0Jw85JFuTeFBzqPlB37jR0NU/HFm5QT Ld62woaGIWCTuXGb81QHaglPZUBIhEq/b3tahJBmLc+LKd0FUShoupTtPc2FjxbH xD8dZ+L9Uv7NPtSe+o3sTD60Pnsw1wbOrNDrrC+wpwoMy2GbQjXk/d+SRK/CXfuk Z676GKQDivpinhdF58l4OEi+WEN633yuNtNAQDgz+aOVZKN4oLoyR22B1nrea1qW wzZjRw7kpVxcQKiyn+gDmAZZPbctiVqTNHPE5n9LrOcctuLZKpoQk97lvZTSCKfy d32mfx9szZZ/QCfF9Dt7+G5nJUAULigKnQYRi/i86ZTPHSzfun+ZIzYLCzJuZfyS 7E8DMsmv9wCPrPAF/8cOFMWW0o0Na7GZKCJ8U+AMm92R725h4g5ao6+kQPG7vOkY LR8MJzDOqcmAC0M9AwE5UXQl56V6qBNyREx/WGGYS1B5DOfZvVTJNDkoHVIL1upZ geSlACiXQ+M0Rkgo0h8BJUhGY9LTuc6S8qiMBEnhBClg4kA/u4FJ06nlmF3ZpIXT KsVSr9ee3mu0vSr6P52slvAAX+RL3y+JgSlz2kC8oVgCZZdKn7yq9e6yB3zHNMjX 8VIi/UgFmfqCiaAlUT0pt2ZzGuw1L9QUOuNAZfufSkK1ED4V"
+  }
+}
