@@ -6,6 +6,7 @@ import (
 	"flag"
         "os"
 	"os/signal"
+        "strings"
 
 	"github.com/Shopify/sarama"
 )
@@ -22,7 +23,7 @@ func main() {
 	config.Consumer.Return.Errors = true
 
 	// Specify brokers address. This is default one
-	brokers := []string{*brokerFlag}
+	brokers := strings.Split(*brokerFlag, ",")
 
 	// Create new consumer
 	master, err := sarama.NewConsumer(brokers, config)
