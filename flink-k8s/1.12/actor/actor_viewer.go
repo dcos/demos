@@ -1,30 +1,29 @@
-
 package main
 
 import (
-	"fmt"
 	"flag"
-        "os"
+	"fmt"
+	"os"
 	"os/signal"
-        "strings"
+	"strings"
 
 	"github.com/Shopify/sarama"
 )
 
 func main() {
-       
-       var brokerFlag = flag.String("broker", "broker.kafka.l4lb.thisdcos.directory:9092", "VIP of the Kafka broker.")
-       fmt.Println("Broker:  ", *brokerFlag)
-       
-       var topicFlag = flag.String("topic", "fraud", "Name of the Kafka topic.")
-       fmt.Println("Topic:  ", *topicFlag)
+
+	var brokerFlag = flag.String("broker", "broker.kafka.l4lb.thisdcos.directory:9092", "VIP of the Kafka broker.")
+	var topicFlag = flag.String("topic", "fraud", "Name of the Kafka topic.")
+	flag.Parse()
+
+	fmt.Println("Broker:  ", *brokerFlag)
+	fmt.Println("Topic:  ", *topicFlag)
 
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true
 
 	// Specify brokers address. This is default one
 	brokers := strings.Split(*brokerFlag, ",")
-
 	// Create new consumer
 	master, err := sarama.NewConsumer(brokers, config)
 	if err != nil {
