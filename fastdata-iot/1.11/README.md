@@ -52,7 +52,7 @@ or Kafka via the Akka backendsystem.
 Install the DC/OS Apache Spark package (Version 1.0.2-2.0.0 or higher):
 
 ```bash
-dcos package install spark
+dcos package install spark --options=configuration/spark.json
 ```
 
 ### Cassandra
