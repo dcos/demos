@@ -1,0 +1,62 @@
+{
+  "id": "/mqtt",
+  "containers": [
+    {
+      "name": "mosquitto",
+      "resources": {
+        "cpus": 0.1,
+        "mem": 64
+      },
+      "image": {
+        "id": "eclipse-mosquitto",
+        "kind": "DOCKER"
+      },
+      "endpoints": [
+        {
+          "name": "mqtt",
+          "containerPort": 1883,
+          "hostPort": 1883,
+          "protocol": [
+            "tcp"
+          ],
+          "labels": {
+            "VIP_0": "/mqtt:1883"
+          }
+        }
+      ]
+    },
+    {
+      "name": "mongogw",
+      "resources": {
+        "cpus": 0.1,
+        "mem": 64
+      },
+      "image": {
+        "id": "mattjarvis/mongogw",
+        "kind": "DOCKER"
+      },
+      "exec": {
+        "command": {
+          "shell": "./mongogw.py -b localhost -m mongo-rs-0-mongod.percona-server-mongodb.autoip.dcos.thisdcos.directory,mongo-rs-1-mongod.percona-server-mongodb.autoip.dcos.thisdcos.directory,mongo-rs-2-mongod.percona-server-mongodb.autoip.dcos.thisdcos.directory:27017 -u mongogw -w 123456"
+        }
+      }
+    }
+  ],
+  "scaling": {
+    "instances": 1,
+    "kind": "fixed"
+  },
+  "networks": [
+    {
+      "name": "dcos",
+      "mode": "container"
+    }
+  ],
+  "volumes": [],
+  "fetch": [],
+  "scheduling": {
+    "placement": {
+      "constraints": []
+    }
+  }
+}
