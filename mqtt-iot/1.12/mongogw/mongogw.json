@@ -1,0 +1,16 @@
+{
+  "id": "mongogw",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 64,
+  "cmd": "./mongogw.py -b mosquitto.marathon.l4lb.thisdcos.directory -m mongo-rs-0-mongod.percona-server-mongodb.autoip.dcos.thisdcos.directory,mongo-rs-1-mongod.percona-server-mongodb.autoip.dcos.thisdcos.directory,mongo-rs-2-mongod.percona-server-mongodb.autoip.dcos.thisdcos.directory:27017 -u mongogw -w 123456",
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "mattjarvis/mongogw",
+      "forcePullImage": true,
+      "privileged": false
+    }
+  },
+  "requirePorts": false
+}
