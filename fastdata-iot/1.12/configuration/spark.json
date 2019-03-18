@@ -1,0 +1,7 @@
+{
+    "service": {
+        "user": "root",
+        "name": "spark",
+        "use_bootstrap_for_IP_detect": true
+    }
+}

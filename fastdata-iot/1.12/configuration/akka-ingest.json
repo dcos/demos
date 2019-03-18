@@ -1,0 +1,21 @@
+{
+  "id": "/bus-demo/ingest",
+  "cpus": 0.1,
+  "mem": 2048,
+  "disk": 0,
+  "instances": 1,
+  "container": {
+    "type": "MESOS",
+    "volumes": [],
+    "docker": {
+      "image": "mesosphere/akka-ingest:0.2.2",
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "env": {
+    "CASSANDRA_CONNECT": "node-0-server.cassandra.autoip.dcos.thisdcos.directory:9042",
+    "KAFKA_CONNECT": "broker.kafka.l4lb.thisdcos.directory:9092"
+  }
+}
