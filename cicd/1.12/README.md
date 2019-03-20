@@ -2,7 +2,7 @@
 
 This demo presents a continuous integration and deployment (CI/CD) workflow using GitLab and Jenkins on DC/OS. In this demo we’ll be creating a simple website, testing it to make sure all the links work, and then deploying it in production if it passes.
 
-- Estimated time for completion: 30min
+- Estimated time for completion: 30 minutes
 - Target audience: Anyone interested in simplifying the deployment of a CI/CD pipeline.
 
 **Table of Contents**:
@@ -16,41 +16,42 @@ This demo presents a continuous integration and deployment (CI/CD) workflow usin
 
 ## Prerequisites
 
-- A running [DC/OS 1.11](https://dcos.io/releases/) or higher cluster with at least 3 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://dcos.io/docs/1.11/usage/cli/install/) also needs to be installed.
+- A DC/OS cluster running [1.12](https://dcos.io/releases/) or newer, with at least 3 private agents and 1 public agent. Each agent should have 2 CPUs and 5 GB of RAM available. The [DC/OS CLI](https://dcos.io/docs/1.12/usage/cli/install/) also needs to be installed.
 - The [dcos/demo](https://github.com/dcos/demos/) Git repo must be available locally, use: `git clone https://github.com/dcos/demos/` if you haven't done so yet.
-- [SSH](https://docs.mesosphere.com/1.11/administering-clusters/sshcluster/) cluster access must be set up.
+- [SSH](https://docs.mesosphere.com/1.12/administering-clusters/sshcluster/) cluster access must be set up.
 - Ports 22222 and 50000 opened on the public agent where Marathon-lb is running.
-- The ability to add a DNS A record to use for GitLab that you and the cluster have access to, if you don't have a domain or run DNS, you may use a free service like <a href="https://www.noip.com/">noip.com</a>.
+- The ability to add a DNS record that will be used by users and services (Jenkins) to access GitLab. If you're deploying on AWS and using ELB then this could be your ELB address, otherwise if not and you don't have a domain or run DNS, you may use a free service like [noip](https://noip.com).
 
 The DC/OS services used in the demo are as follows:
 
-- GitLab
-- Jenkins
-- Marathon-lb
+- [GitLab](https://about.gitlab.com/install/)
+- [Jenkins](https://jenkins.io)
+- [Marathon-lb](https://github.com/mesosphere/marathon-lb)
 
 ## Setup
 
-Get the <a href="https://docs.mesosphere.com/1.11/administering-clusters/locate-public-agent/">address of your public agent</a> and set up a DNS A record to use for GitLab. In this demo we'll be using cd.example.com, you'll want to replace this in all examples.
+Retrieve the [external address of your public agent](https://docs.mesosphere.com/1.12/administering-clusters/locate-public-agent/) and set up a DNS record to use for GitLab, if you don't have one already. In this demo we'll be using `cd.example.com`, you'll want to replace this in all examples.
 
-If you have SSL certificates configured which will be used by the Public Agent, you're all set. Otherwise, you'll want to log into your private nodes and configure Docker to <a href="https://docs.docker.com/registry/insecure/">use an insecure registry</a>. Using an insecure registry is not appropriate for production, but for the purpose of a private demo it may be used.
+Next, you'll want to log into your private nodes and configure Docker to [use an insecure registry](https://docs.docker.com/registry/insecure/). Using an insecure registry is not appropriate for production, but for the purpose of a private demo it may be used.
 
-First, log into each of the private nodes, you should get the Mesos ID and then use that to ssh into the nodes:
+This is a change that needs making on any client which needs to be able to push and pull Docker images from our private registry.  In the case of the demo, the only client services is Jenkins, so we'll just make the change in the one place where this service is running.
 
-```
-dcos node
-dcos node ssh --master-proxy --mesos-id=4cb15493-2ca7-4b8b-8d4d-83b76cdcf7bb-S1
+
+```bash
+$ dcos node
+$ dcos node ssh --master-proxy --mesos-id=4cb15493-2ca7-4b8b-8d4d-83b76cdcf7bb-S1
 ```
 
 Then configure Docker on each one:
 
-```
-sudo mkdir -p /etc/systemd/system/docker.service.d/
-sudo vim /etc/systemd/system/docker.service.d/insecure-registry.conf
+```bash
+$ sudo mkdir -p /etc/systemd/system/docker.service.d/
+$ sudo vim /etc/systemd/system/docker.service.d/insecure-registry.conf
 ```
 
 The contents of insecure-registry.conf should be the following:
 
-```
+```bash
 [Service]
 Environment='DOCKER_OPTS=--insecure-registry=cd.example.com:50000'
 ```
@@ -59,10 +60,10 @@ Remember to replace `cd.example.com` with the A record you have pointed at your 
 
 Now reload Docker and confirm the parameter has been passed:
 
-```
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-systemctl show --property=Environment docker
+```bash
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart docker
+$ systemctl show --property=Environment docker
 ```
 
 Warning: By default, restarting Docker will cause your running containers to restart.
@@ -73,15 +74,15 @@ Later, we will also need to configure Jenkins to pull from an insecure registry 
 
 Now you'll want to install Marathon-LB. We're not making any changes, so it's easy to simply do this from the DC/OS CLI if you wish:
 
-```
-dcos package install marathon-lb
+```bash
+$ dcos package install marathon-lb
 ```
 
 Next, install Jenkins. In production you'll want to make sure Jenkins is running on one of the nodes where shared, persistent storage is located. For this demo it's fine to simply pin it to a private node of your choosing and save the files in /tmp on that node. Pinning to a node can easily be done by installing Jenkins through the web UI and filling out the Storage tab and setting a "Pinned Hostname" that points to one of your private nodes.
 
 ![Jenkins Pinned Hostname](img/jenkins_pinned_hostname.png)
 
-Once Jenkins is installed, if you don't have SSL certificates set up you'll need to configure Jenkins to accept an insecure registry so it can launch Docker images from it. This can be completed by following instructions in the <a href="https://docs.mesosphere.com/services/jenkins/advanced-configuration/">Jenkins Advanced Configuration</a> section of the DC/OS service documentation. You will use the DNS name you set up and the GitLab registry port (default 50000) when following these instructions.
+Once Jenkins is installed, if you don't have SSL certificates set up you'll need to configure Jenkins to accept an insecure registry so it can launch Docker images from it. This can be completed by following instructions in the [Jenkins Advanced Configuration](https://docs.mesosphere.com/services/jenkins/3.5.3-2.150.1/advanced-configuration/) section of the DC/OS service documentation. You will use the DNS name you set up earlier and the GitLab registry port (default 50000) when following these instructions.
 
 Now it's time to install GitLab. Just like Jenkins, we'll want to pin this to a hostname for this demo just in case the container restarts. In a production environment you'll want to mount external storage shared storage so that GitLab can move between nodes, but for a quick demo you may use the limited in-container non-persistent storage. In order to pin it to a node, go into the "Single Node" section of the configuration and put in the IP address of the private node you wish to run it on in the section for "pinned hostname".
 
@@ -103,13 +104,13 @@ Tip: In production, the root user wouldn't typically own repositories like this,
 
 You can now clone this empty repository to your local system:
 
-```
-git clone http://cd.example.com/root/site-test.git
+```bash
+$ git clone http://cd.example.com/root/site-test.git
 Cloning into 'site-test'...
 warning: You appear to have cloned an empty repository.
 ```
 
-One of the prerequisites for this demo was cloning the dcos/demos repository from GitHub as well. In the `demos/cicd/1.11/site-test/` directory you will find all the files that should now go into your newly created site-test repository, going through them one by one:
+One of the prerequisites for this demo was cloning the dcos/demos repository from GitHub as well. In the `demos/cicd/1.12/site-test/` directory you will find all the files that should now go into your newly created site-test repository, going through them one by one:
 
 * index.html - Basic site file that we will deploy
 * Dockerfile - Very basic Dockerfile which installs the index.html
@@ -130,10 +131,10 @@ Once this is saved, you have a pipeline.
 
 Now return to your local site-test directory. We'll want to commit all the files you've added and push them to GitLab:
 
-```
-git add -A
-git commit -m "Initial commit"
-git push
+```bash
+$ git add -A
+$ git commit -m "Initial commit"
+$ git push
 ```
 
 You may navigate to your http://cd.example.com/root/site-test to see the files now uploaded there.
