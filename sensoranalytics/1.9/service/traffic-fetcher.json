@@ -1,7 +1,0 @@
-{
-  "id": "/sensor-analytics/traffic-fetcher",
-  "instances": 1,
-  "cpus": 0.1,
-  "mem": 100,
-  "cmd": "curl -s -L https://github.com/dcos/demos/releases/download/0.2/traffic-fetcher -o traffic-fetcher && chmod u+x traffic-fetcher && ./traffic-fetcher --broker BROKER"
-}
