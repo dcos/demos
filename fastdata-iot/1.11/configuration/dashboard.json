@@ -3,7 +3,7 @@
   "container": {
     "type": "MESOS",
     "docker": {
-      "image": "mesosphere/akka-server:0.2.1-SNAPSHOT",
+      "image": "mesosphere/akka-server:0.2.2",
       "forcePullImage": true
     }
   },
