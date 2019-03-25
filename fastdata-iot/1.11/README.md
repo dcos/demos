@@ -52,7 +52,7 @@ or Kafka via the Akka backendsystem.
 Install the DC/OS Apache Spark package (Version 1.0.2-2.0.0 or higher):
 
 ```bash
-dcos package install spark --options=configuration/spark.json
+dcos package install spark --options=configuration/spark.json --package-version=2.5.0-2.2.1
 ```
 
 ### Cassandra
@@ -126,7 +126,7 @@ Using the UI, copy and paste the JSON into the JSON editor:
     "type": "MESOS",
     "volumes": [],
     "docker": {
-      "image": "mesosphere/akka-ingest:0.2.1-SNAPSHOT",
+      "image": "mesosphere/akka-ingest:0.2.2",
       "privileged": false,
       "parameters": [],
       "forcePullImage": true

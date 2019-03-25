@@ -1,7 +1,7 @@
 {
-  "service": {
-    "name": "fastdata-spark",
-    "user": "root",
-    "use_bootstrap_for_IP_detect": true
-  }
+    "service": {
+        "user": "root",
+        "name": "spark",
+        "use_bootstrap_for_IP_detect": true
+    }
 }
