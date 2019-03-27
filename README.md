@@ -1,17 +1,25 @@
-Overview of demos in 1.12:
+# DC/OS Demonstrations
+
+## Introduction
+
+This repository contains various demos that are designed to functionally represent real-world application deployment patterns and use-cases on DC/OS.  A pre-requisite to each of these is a running DC/OS cluster, and we recommend getting started by using the Universal Installer and deploying on a [supported cloud platform](https://docs.mesosphere.com/1.12/installing/evaluation/).
+
+We welcome community contributions to this repository, and feel free to [join in](https://dcos.io/community/) with any questions, comments or suggestions.
+
+## Overview of demos in 1.12:
 * [Apache Flink Stream Processing](flink/1.12#fast-data-financial-transaction-processing-with-apache-flink)
 * [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8s/1.12#fast-data-financial-transaction-processing-with-apache-flink)
 * [Highly Scalable IOT architecture using MQTT and MongoDB](mqtt-iot/1.12#highly-scalable-iot-architecture-using-mosquitto-and-mongodb)
 * [Iot Fast Data Analytics](fastdata-iot/1.12#iot-fast-data-analytics)
 
-Overview of demos in 1.11:
+## Overview of demos in 1.11:
 * [Apache Flink Stream Processing](flink/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 * [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8s/1.11#fast-data-financial-transaction-processing-with-apache-flink)
 * [Iot Fast Data Analytics](fastdata-iot/1.11#iot-fast-data-analytics)
 * [Continuous Delivery with Gitlab and Jenkins](cicd/1.11#continuous-delivery-with-gitlab-and-jenkins)
 * [Highly Scalable IOT architecture using MQTT and MongoDB](mqtt-iot/1.11#highly-scalable-iot-architecture-using-mosquitto-and-mongodb)
 
-Overview of demos in 1.10:
+## Overview of demos in 1.10:
 
 * [Spring Boot Deployments](springboot/1.10/README.md#springboot-demo)
 * [Apache Flink Stream Processing](flink/1.10#fast-data-financial-transaction-processing-with-apache-flink)
