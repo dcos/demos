@@ -1,0 +1,7 @@
+{
+  "id": "generator",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 32,
+  "cmd": "curl -s -L https://github.com/dcos/demos/raw/flink2/flink/1.9/generator/generator-linux -o generator && chmod u+x generator && ./generator --broker broker.kafka.l4lb.thisdcos.directory:9092"
+}
