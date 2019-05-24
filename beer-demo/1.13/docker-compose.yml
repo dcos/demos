@@ -1,0 +1,41 @@
+version: '2'
+services:
+  database:
+    image: mesosphere/dcos-beer-database:1.0
+
+  service:
+    image: mesosphere/dcos-beer-service:1.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - logstash
+    environment:
+      - SERVICE_VERSION=2
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/beer?user=good&password=beer
+      - LOGSTASH_DESTINATION=logstash:5000
+      - WAIT_AT_STARTUP=true
+
+  elasticsearch:
+    image: elasticsearch:5.5.2
+    volumes:
+      - /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  logstash:
+    image: logstash:5.5.2
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    command: "-e 'input { tcp { port => 5000 codec => json } } output { elasticsearch { hosts => \"http://elasticsearch:9200\" } }'"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:5.5.2
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200

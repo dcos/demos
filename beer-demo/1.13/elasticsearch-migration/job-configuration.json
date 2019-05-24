@@ -1,0 +1,15 @@
+{
+  "id": "elasticsearch-migration",
+  "description": "dcos beer demo elasticsearch migration",
+  "run": {
+    "cpus": 2,
+    "mem": 2046,
+    "docker": {
+      "image": "mesosphere/dcos-beer-elasticsearch-migration:1.0"
+    },
+    "env": {
+      "SQL_URL": "jdbc:mysql://database.marathon.l4lb.thisdcos.directory:3306/beer?user=good&password=beer",
+      "ELASTICSEARCH_URL": "elasticsearch.marathon.l4lb.thisdcos.directory"
+    }
+  }
+}
