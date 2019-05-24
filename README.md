@@ -9,6 +9,7 @@ We welcome community contributions to this repository, and feel free to [join in
 ## Overview of demos in 1.13:
 * [Apache Flink Stream Processing](flink/1.13#fast-data-financial-transaction-processing-with-apache-flink)
 * [Apache Flink Stream Processing (Kubernetes Edition)](flink-k8s/1.13#fast-data-financial-transaction-processing-with-apache-flink)
+* [Iot Fast Data Analytics](fastdata-iot/1.13#iot-fast-data-analytics)
 
 ## Overview of demos in 1.12:
 * [Apache Flink Stream Processing](flink/1.12#fast-data-financial-transaction-processing-with-apache-flink)
