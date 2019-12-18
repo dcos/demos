@@ -2,9 +2,12 @@
 
 ## Introduction
 
-This repository contains various demos that are designed to functionally represent real-world application deployment patterns and use-cases on DC/OS.  A pre-requisite to each of these is a running DC/OS cluster, and we recommend getting started by using the Universal Installer and deploying on a [supported cloud platform](https://docs.mesosphere.com/1.12/installing/evaluation/).
+This repository contains various demos that are designed to functionally represent real-world application deployment patterns and use-cases on DC/OS.  A pre-requisite to each of these is a running DC/OS cluster, and we recommend getting started by using the Universal Installer and deploying on a [supported cloud platform](https://docs.d2iq.com/mesosphere/dcos/2.0/installing/).
 
 We welcome community contributions to this repository, and feel free to [join in](https://dcos.io/community/) with any questions, comments or suggestions.
+
+## Overview of demos in 2.0:
+* [Apache Flink Stream Processing](flink/2.0#fast-data-financial-transaction-processing-with-apache-flink)
 
 ## Overview of demos in 1.13:
 * [Apache Flink Stream Processing](flink/1.13#fast-data-financial-transaction-processing-with-apache-flink)
